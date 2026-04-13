@@ -1,0 +1,58 @@
+================================================================================
+  FREELANCERS HUB — Git steps for teammates (Windows)
+================================================================================
+
+1) Install Git for Windows
+   https://git-scm.com/download/win
+   Install with defaults. Use "Git Bash" from the Start menu for commands below.
+
+2) Set your name and email (once per computer)
+   Open Git Bash and run:
+
+   git config --global user.name "Your Full Name"
+   git config --global user.email "your@email.com"
+
+3) Go to the folder where you want the project (example: Desktop)
+
+   cd ~/Desktop
+
+4) Clone the repository
+
+   git clone https://github.com/Genix090/Freelancers_Hub.git
+   cd Freelancers_Hub
+
+5) Get the latest code from main
+
+   git checkout main
+   git pull origin main
+
+6) Create your own branch (use a clear name, e.g. your task)
+
+   git checkout -b feature/your-name-task
+
+7) After you edit files — save, then:
+
+   git add .
+   git commit -m "Short description of what you changed"
+
+8) Push your branch to GitHub (first time for this branch)
+
+   git push -u origin feature/your-name-task
+
+   Next times on the same branch you can use:
+
+   git push
+
+9) On GitHub — open the repo in the browser
+   Use "Compare & pull request" to open a Pull Request into main.
+
+================================================================================
+  Important
+================================================================================
+
+• You must be added as a collaborator on the repo, or push will fail.
+• GitHub does not accept your normal password for git push. Use a Personal
+  Access Token when Git asks for a password (HTTPS), or set up SSH keys.
+• Repo: https://github.com/Genix090/Freelancers_Hub
+
+================================================================================
