@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Freelence Hub</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <style>
+        .table-wrapper{background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07);overflow-x:auto}
+        table{width:100%;border-collapse:collapse;min-width:750px}
+        thead{background:#f8faf8;border-bottom:2px solid #e0e0e0}
+        th{padding:13px 14px;text-align:left;font-size:12px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.5px}
+        td{padding:13px 14px;font-size:14px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
+        tbody tr:hover{background:#f9fcf9}
+        tbody tr:last-child td{border-bottom:none}
+        .action-btns{display:flex;gap:5px}
+        .btn-act{padding:5px 9px;border:none;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+        .btn-v{background:#e7f3ff;color:#0066cc}.btn-v:hover{background:#0066cc;color:white}
+        .btn-e{background:#fff3e0;color:#e65100}.btn-e:hover{background:#e65100;color:white}
+        .btn-d{background:#ffe7e7;color:#cc0000}.btn-d:hover{background:#cc0000;color:white}
+        .btn-ban{background:#fce4ec;color:#c62828}.btn-ban:hover{background:#c62828;color:white}
+        .btn-unban{background:#e8f5e9;color:#2e7d32}.btn-unban:hover{background:#2e7d32;color:white}
+        .badge-role{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+        .role-admin{background:#ede9fe;color:#5b21b6}
+        .role-freelance{background:#dbeafe;color:#1e40af}
+        .role-client{background:#fef3c7;color:#92400e}
+        .badge-status-user{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+        .st-active{background:#d1fae5;color:#065f46}
+        .st-banned{background:#fee2e2;color:#991b1b}
+        .st-inactive{background:#f3f4f6;color:#6b7280}
+        .user-avatar{width:36px;height:36px;border-radius:50%;background:#00a852;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+        .user-cell{display:flex;align-items:center;gap:10px}
+        .user-cell .name{font-weight:600;color:#222}
+        .user-cell .email{font-size:12px;color:#888}
+        @media(max-width:700px){table th,table td{padding:9px 8px;font-size:12px}}
+
+        /* ── ADMIN SIDEBAR ── */
+        .sidebar{width:260px;background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);color:white;position:fixed;top:0;left:0;bottom:0;z-index:300;display:flex;flex-direction:column;overflow-y:auto}
+        .sidebar-logo{padding:28px 24px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+        .sidebar-logo .s-logo{width:42px;height:42px;background:#00a852;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:20px;color:white}
+        .sidebar-logo .brand{font-size:20px;font-weight:700;letter-spacing:.5px}
+        .sidebar-label{padding:24px 24px 10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.35)}
+        .sidebar-nav{display:flex;flex-direction:column;gap:2px;padding:0 12px}
+        .sidebar-nav a{display:flex;align-items:center;gap:14px;padding:13px 16px;text-decoration:none;border-radius:10px;font-size:14px;font-weight:500;color:rgba(255,255,255,.7);transition:all .25s;border:none;background:none;width:100%}
+        .sidebar-nav a .nav-icon{font-size:20px;width:28px;text-align:center}
+        .sidebar-nav a:hover{background:rgba(255,255,255,.08);color:white;transform:translateX(4px)}
+        .sidebar-nav a.active{background:rgba(0,168,82,.25);color:#00d084;font-weight:600;box-shadow:inset 3px 0 0 #00d084}
+        .sidebar-bottom{margin-top:auto;padding:20px 12px;border-top:1px solid rgba(255,255,255,.08)}
+        .sidebar-bottom a{display:flex;align-items:center;gap:14px;padding:13px 16px;text-decoration:none;border-radius:10px;font-size:14px;font-weight:500;color:rgba(255,255,255,.7);transition:all .25s}
+        .sidebar-bottom a:hover{background:rgba(255,80,80,.15);color:#ff6b6b}
+        body{display:flex;min-height:100vh}
+        .content-wrapper{margin-left:260px;flex:1}
+        @media(max-width:768px){
+            .sidebar{width:70px}
+            .sidebar-logo .brand,.sidebar-label,.sidebar-nav a span:not(.nav-icon),.sidebar-bottom a span:not(.nav-icon){display:none}
+            .sidebar-nav a{justify-content:center;padding:14px 8px}
+            .sidebar-bottom a{justify-content:center;padding:14px 8px}
+            .content-wrapper{margin-left:70px}
+        }
+        @media(max-width:480px){.sidebar{display:none}.content-wrapper{margin-left:0}}
+    </style>
+</head>
+<body>
+
+<!-- ═══ ADMIN SIDEBAR ═══ -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="s-logo">FH</div>
+        <span class="brand">Freelence Hub</span>
+    </div>
+    <div class="sidebar-label">Main</div>
+    <nav class="sidebar-nav">
+        <a href="../dashboard.html"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    </nav>
+    <div class="sidebar-label">Modules</div>
+    <nav class="sidebar-nav">
+        <a href="../users/dashboard.html" class="active"><span class="nav-icon">👤</span><span>Users</span></a>
+        <a href="../missions/dashboard.html"><span class="nav-icon">💼</span><span>Missions</span></a>
+        <a href="../formations/dashboard.html"><span class="nav-icon">📚</span><span>Formations</span></a>
+        <a href="../projets/dashboard.html"><span class="nav-icon">📁</span><span>Projects</span></a>
+        <a href="../experience/dashboard.html"><span class="nav-icon">✍️</span><span>Experience</span></a>
+    </nav>
+    <div class="sidebar-label">User View</div>
+    <nav class="sidebar-nav">
+        <a href="../Main.html"><span class="nav-icon">🏠</span><span>Home</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+        <a href="../Main.html"><span class="nav-icon">🚪</span><span>Logout</span></a>
+    </div>
+</aside>
+
+<div class="content-wrapper">
+<main>
+    <div class="page-header">
+        <h1 class="page-title">👤 User Management</h1>
+        <button class="btn-primary" onclick="openAddUser()">＋ Add New User</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number" id="s-total">0</div><div class="stat-label">Total Users</div></div>
+        <div class="stat-card"><div class="stat-number" id="s-active">0</div><div class="stat-label">Active</div></div>
+        <div class="stat-card"><div class="stat-number" id="s-banned">0</div><div class="stat-label">Banned</div></div>
+        <div class="stat-card"><div class="stat-number" id="s-freelancers">0</div><div class="stat-label">Freelancers</div></div>
+        <div class="stat-card"><div class="stat-number" id="s-clients">0</div><div class="stat-label">Clients</div></div>
+        <div class="stat-card"><div class="stat-number" id="s-admins">0</div><div class="stat-label">Admins</div></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-bar">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search by name, email or role..." oninput="renderUsers()">
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-f="all" onclick="setFilter(this)">All</button>
+            <button class="filter-tab" data-f="Active" onclick="setFilter(this)">🟢 Active</button>
+            <button class="filter-tab" data-f="Banned" onclick="setFilter(this)">🔴 Banned</button>
+            <button class="filter-tab" data-f="Inactive" onclick="setFilter(this)">⚪ Inactive</button>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>User</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Location</th>
+                    <th>Registered</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="users-tbody"></tbody>
+        </table>
+        <div class="empty-state" id="empty" style="display:none"><div class="empty-icon">👤</div><p>No users found.</p></div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-text">
+        <p>&copy; 2026 Freelence Hub - All rights reserved</p>
+        <p class="copyright">Manage your platform users</p>
+    </div>
+</footer>
+
+<!-- ═══ ADD / EDIT MODAL ═══ -->
+<div class="modal-overlay" id="formModal" onclick="closeOnBg(event,'formModal')">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="formTitle">Add New User</h2>
+            <button class="modal-close" onclick="closeModal('formModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="userForm" method="POST" action="../../Controllers/UtilisateurController.php" onsubmit="return saveUser(event)" novalidate>
+                <input type="hidden" name="form_action" id="f_action" value="user_create">
+                <input type="hidden" name="user_id" id="f_id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>CIN / ID <span class="required">*</span></label>
+                        <input type="text" name="cin" id="f_cin" placeholder="e.g. 12345678">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="text" name="email" id="f_email" placeholder="user@email.com">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Password <span class="required">*</span></label>
+                        <input type="password" name="password" id="f_password" placeholder="Min 6 characters">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Role <span class="required">*</span></label>
+                        <select name="role" id="f_role">
+                            <option value="">-- Select --</option>
+                            <option value="Freelancer">Freelancer</option>
+                            <option value="Client">Client</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Status <span class="required">*</span></label>
+                        <select name="status" id="f_status">
+                            <option value="">-- Select --</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="Banned">Banned</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Registration Date <span class="required">*</span></label>
+                        <input type="date" name="date_inscription" id="f_date">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" name="localisation" id="f_location" placeholder="e.g. Tunis, Tunisia">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" name="phone" id="f_phone" placeholder="e.g. +216 XX XXX XXX">
+                    </div>
+                </div>
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Bio</label>
+                        <textarea name="bio" id="f_bio" placeholder="Short biography..."></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('formModal')">Cancel</button>
+            <button class="btn-save" onclick="document.getElementById('userForm').requestSubmit()">💾 Save User</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ VIEW MODAL ═══ -->
+<div class="modal-overlay" id="viewModal" onclick="closeOnBg(event,'viewModal')">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>👤 User Details</h2>
+            <button class="modal-close" onclick="closeModal('viewModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="detail-grid">
+                <div class="detail-item"><label>CIN / ID</label><span id="d_cin">—</span></div>
+                <div class="detail-item"><label>Email</label><span id="d_email">—</span></div>
+                <div class="detail-item"><label>Role</label><span id="d_role">—</span></div>
+                <div class="detail-item"><label>Status</label><span id="d_status">—</span></div>
+                <div class="detail-item"><label>Location</label><span id="d_location">—</span></div>
+                <div class="detail-item"><label>Phone</label><span id="d_phone">—</span></div>
+                <div class="detail-item"><label>Registered</label><span id="d_date">—</span></div>
+                <div class="detail-item full"><label>Bio</label><div class="detail-desc" id="d_bio">—</div></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('viewModal')">Close</button>
+            <button class="btn-save" onclick="editFromView()">✏️ Edit</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ DELETE MODAL ═══ -->
+<div class="modal-overlay" id="deleteModal" onclick="closeOnBg(event,'deleteModal')">
+    <div class="modal-box" style="max-width:420px">
+        <div class="modal-header">
+            <h2>Confirm Delete</h2>
+            <button class="modal-close" onclick="closeModal('deleteModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="confirm-body">
+                <div class="confirm-icon">🗑️</div>
+                <h3 id="delTitle">Delete this user?</h3>
+                <p>This action cannot be undone.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('deleteModal')">Cancel</button>
+            <button class="btn-confirm-delete" id="delBtn">Yes, Delete</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<form id="deleteForm" method="POST" action="../../Controllers/UtilisateurController.php" style="display:none">
+    <input type="hidden" name="form_action" value="user_delete">
+    <input type="hidden" name="user_id" id="del_user_id">
+</form>
+<form id="banForm" method="POST" action="../../Controllers/UtilisateurController.php" style="display:none">
+    <input type="hidden" name="form_action" value="user_toggle_ban">
+    <input type="hidden" name="user_id" id="ban_user_id">
+</form>
+
+</div><!-- /content-wrapper -->
+
+<script>
+var users = [];
+var currentFilter = 'all';
+var viewingId = null;
+
+function loadUsers() {
+    fetch('../../Controllers/UtilisateurController.php?action=list_users')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.error) { showToast('Access denied', true); return; }
+            users = data;
+            updateStats();
+            renderUsers();
+        })
+        .catch(function() { showToast('Failed to load users', true); });
+}
+
+function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+function closeOnBg(e,id){if(e.target===document.getElementById(id))closeModal(id);}
+function showToast(msg,err){var t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(err?' error':'');t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
+function fmtDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});}catch(e){return d;}}
+
+function vld(id){
+    var el=document.getElementById(id),v=el.value.trim(),err=el.parentElement.querySelector('.field-error');
+    if(!v){el.classList.add('error');if(err){err.textContent='Required.';err.classList.add('visible');}return false;}
+    el.classList.remove('error');if(err){err.textContent='';err.classList.remove('visible');}return true;
+}
+function vldEmail(id){
+    if(!vld(id))return false;
+    var el=document.getElementById(id);
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim())){
+        el.classList.add('error');var err=el.parentElement.querySelector('.field-error');
+        if(err){err.textContent='Invalid email.';err.classList.add('visible');}return false;
+    }return true;
+}
+function vldMin(id,n){
+    if(!vld(id))return false;
+    var el=document.getElementById(id);
+    if(el.value.trim().length<n){
+        el.classList.add('error');var err=el.parentElement.querySelector('.field-error');
+        if(err){err.textContent='Min '+n+' chars.';err.classList.add('visible');}return false;
+    }return true;
+}
+document.addEventListener('input',function(e){if(e.target.classList.contains('error')){e.target.classList.remove('error');var er=e.target.parentElement.querySelector('.field-error');if(er){er.textContent='';er.classList.remove('visible');}}});
+
+function updateStats(){
+    document.getElementById('s-total').textContent=users.length;
+    document.getElementById('s-active').textContent=users.filter(function(u){return u.status==='Active';}).length;
+    document.getElementById('s-banned').textContent=users.filter(function(u){return u.status==='Banned';}).length;
+    document.getElementById('s-freelancers').textContent=users.filter(function(u){return u.role==='Freelancer';}).length;
+    document.getElementById('s-clients').textContent=users.filter(function(u){return u.role==='Client';}).length;
+    document.getElementById('s-admins').textContent=users.filter(function(u){return u.role==='Admin';}).length;
+}
+
+function setFilter(btn){
+    document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    currentFilter=btn.getAttribute('data-f');
+    renderUsers();
+}
+
+var roleCls={'Admin':'role-admin','Freelancer':'role-freelance','Client':'role-client'};
+var stCls={'Active':'st-active','Banned':'st-banned','Inactive':'st-inactive'};
+
+function renderUsers(){
+    var q=(document.getElementById('searchInput').value||'').toLowerCase();
+    var data=users.filter(function(u){
+        if(currentFilter!=='all'&&u.status!==currentFilter)return false;
+        if(q&&u.email.toLowerCase().indexOf(q)===-1&&u.cin.toLowerCase().indexOf(q)===-1&&u.role.toLowerCase().indexOf(q)===-1&&(u.location||'').toLowerCase().indexOf(q)===-1)return false;
+        return true;
+    });
+    var tbody=document.getElementById('users-tbody');
+    tbody.innerHTML='';
+    document.getElementById('empty').style.display=data.length?'none':'block';
+    data.forEach(function(u,i){
+        var initials=u.email.charAt(0).toUpperCase();
+        var isSeed=u.is_seed;
+        var row=document.createElement('tr');
+        row.innerHTML=
+            '<td style="color:#aaa;font-size:12px">'+(i+1)+'</td>'+
+            '<td><div class="user-cell"><div class="user-avatar">'+initials+'</div><div><div class="name">'+u.cin+'</div><div class="email">'+u.email+'</div></div></div></td>'+
+            '<td><span class="badge-role '+(roleCls[u.role]||'')+'">'+u.role+'</span></td>'+
+            '<td><span class="badge-status-user '+(stCls[u.status]||'')+'">'+u.status+'</span></td>'+
+            '<td>'+(u.location||'—')+'</td>'+
+            '<td>'+fmtDate(u.date)+'</td>'+
+            '<td><div class="action-btns">'+
+                '<button class="btn-act btn-v" onclick="viewUser('+u.id+')">👁</button>'+
+                '<button class="btn-act btn-e" onclick="editUser('+u.id+')">✏️</button>'+
+                (isSeed?'':
+                    (u.status==='Banned'?'<button class="btn-act btn-unban" onclick="toggleBan('+u.id+')">✅</button>':'<button class="btn-act btn-ban" onclick="toggleBan('+u.id+')">🚫</button>')+
+                    '<button class="btn-act btn-d" onclick="confirmDel('+u.id+')">🗑</button>'
+                )+
+            '</div></td>';
+        tbody.appendChild(row);
+    });
+}
+
+function openAddUser(){
+    document.getElementById('formTitle').textContent='➕ Add New User';
+    document.getElementById('userForm').reset();
+    document.getElementById('f_action').value='user_create';
+    document.getElementById('f_id').value='';
+    document.getElementById('f_password').placeholder='Min 6 characters';
+    document.querySelectorAll('#userForm .error').forEach(function(e){e.classList.remove('error');});
+    document.querySelectorAll('#userForm .field-error').forEach(function(e){e.textContent='';e.classList.remove('visible');});
+    openModal('formModal');
+}
+
+function editUser(id){
+    var u=users.find(function(x){return x.id===id;});if(!u)return;
+    document.getElementById('formTitle').textContent='✏️ Edit User';
+    document.getElementById('f_action').value='user_update';
+    document.getElementById('f_id').value=id;
+    document.getElementById('f_cin').value=u.cin;
+    document.getElementById('f_email').value=u.email;
+    document.getElementById('f_password').value='';
+    document.getElementById('f_password').placeholder='Leave blank to keep current';
+    document.getElementById('f_role').value=u.role;
+    document.getElementById('f_status').value=u.status;
+    document.getElementById('f_date').value=u.date;
+    document.getElementById('f_location').value=u.location||'';
+    document.getElementById('f_phone').value=u.phone||'';
+    document.getElementById('f_bio').value=u.bio||'';
+    document.querySelectorAll('#userForm .error').forEach(function(e){e.classList.remove('error');});
+    document.querySelectorAll('#userForm .field-error').forEach(function(e){e.textContent='';e.classList.remove('visible');});
+    openModal('formModal');
+}
+
+function saveUser(e){
+    var isEdit=document.getElementById('f_id').value!=='';
+    var ok=vldMin('f_cin',5)&vldEmail('f_email')&vld('f_role')&vld('f_status')&vld('f_date');
+    if(!isEdit){ok=ok&vldMin('f_password',6);}
+    else{var pw=document.getElementById('f_password').value.trim();if(pw!==''&&pw.length<6){ok=0;var el=document.getElementById('f_password');el.classList.add('error');var er=el.parentElement.querySelector('.field-error');if(er){er.textContent='Min 6 chars or leave blank.';er.classList.add('visible');}}}
+    if(!ok){e.preventDefault();showToast('Please fix the errors.',true);return false;}
+    return true;
+}
+
+function viewUser(id){
+    var u=users.find(function(x){return x.id===id;});if(!u)return;
+    viewingId=id;
+    document.getElementById('d_cin').textContent=u.cin;
+    document.getElementById('d_email').textContent=u.email;
+    document.getElementById('d_role').textContent=u.role;
+    document.getElementById('d_status').textContent=u.status;
+    document.getElementById('d_location').textContent=u.location||'—';
+    document.getElementById('d_phone').textContent=u.phone||'—';
+    document.getElementById('d_date').textContent=fmtDate(u.date);
+    document.getElementById('d_bio').textContent=u.bio||'—';
+    openModal('viewModal');
+}
+function editFromView(){closeModal('viewModal');if(viewingId)editUser(viewingId);}
+
+function toggleBan(id){
+    document.getElementById('ban_user_id').value=id;
+    document.getElementById('banForm').submit();
+}
+
+function confirmDel(id){
+    var u=users.find(function(x){return x.id===id;});if(!u)return;
+    document.getElementById('delTitle').textContent='Delete "'+u.email+'"?';
+    document.getElementById('delBtn').onclick=function(){
+        document.getElementById('del_user_id').value=id;
+        document.getElementById('deleteForm').submit();
+    };
+    openModal('deleteModal');
+}
+
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(function(m){m.classList.remove('open');document.body.style.overflow='';});});
+
+(function(){
+    var params=new URLSearchParams(window.location.search);
+    var msg=params.get('msg');
+    if(msg){
+        var msgs={created:'User added successfully',updated:'User updated successfully',deleted:'User deleted successfully',toggled:'User status changed',protected:'Cannot modify the admin account',exists:'Email or CIN already exists',missing:'Please fill all required fields',server:'Server error occurred',badpass:'Password must be at least 6 characters',reserved_email:'This email is reserved'};
+        var errors=['protected','exists','missing','server','badpass','reserved_email','invalid','notfound','delete_fail','toggle_fail'];
+        showToast(msgs[msg]||msg,errors.indexOf(msg)!==-1);
+        history.replaceState(null,'',window.location.pathname);
+    }
+})();
+
+loadUsers();
+</script>
+</body>
+</html>
