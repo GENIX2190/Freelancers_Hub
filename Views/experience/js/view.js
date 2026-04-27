@@ -14,6 +14,109 @@ function showToast(msg){
     setTimeout(function(){t.classList.remove('show');},3000);
 }
 
+/* ════════════ MODAL FUNCTIONS ════════════ */
+function openModal(modalId) {
+    var modal = document.getElementById(modalId);
+    modal.classList.add('open');
+    resetPostForm();
+    setDefaultDate();
+}
+
+function closeModal(modalId) {
+    var modal = document.getElementById(modalId);
+    modal.classList.remove('open');
+}
+
+function setDefaultDate() {
+    var dateInput = document.getElementById('p_date');
+    if (!dateInput.value) {
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = String(today.getMonth() + 1).padStart(2, '0');
+        var day = String(today.getDate()).padStart(2, '0');
+        dateInput.value = year + '-' + month + '-' + day;
+    }
+}
+
+function resetPostForm() {
+    document.getElementById('postForm').reset();
+    document.getElementById('p_action').value = 'post_create';
+    document.getElementById('p_id').value = '';
+    document.getElementById('postModalTitle').textContent = '➕ Add Post';
+    clearPostErrors();
+}
+
+function clearPostErrors() {
+    var form = document.getElementById('postForm');
+    var errors = form.querySelectorAll('.field-error');
+    errors.forEach(function(err) { err.textContent = ''; });
+    var inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(function(inp) { inp.classList.remove('error'); });
+}
+
+function savePost(e) {
+    e.preventDefault();
+    clearPostErrors();
+    
+    var title = document.getElementById('p_title').value.trim();
+    var category = document.getElementById('p_category').value.trim();
+    var author = document.getElementById('p_author').value.trim();
+    var status = document.getElementById('p_status').value.trim();
+    var date = document.getElementById('p_date').value.trim();
+    var content = document.getElementById('p_content').value.trim();
+    
+    var hasError = false;
+    
+    if (!title || title.length < 3) {
+        showFieldError('p_title', 'Title is required (min 3 chars).');
+        hasError = true;
+    }
+    if (!category) {
+        showFieldError('p_category', 'Category is required.');
+        hasError = true;
+    }
+    if (!author || author.length < 2) {
+        showFieldError('p_author', 'Author name is required (min 2 chars).');
+        hasError = true;
+    }
+    if (!status) {
+        showFieldError('p_status', 'Status is required.');
+        hasError = true;
+    }
+    if (!date) {
+        showFieldError('p_date', 'Date is required.');
+        hasError = true;
+    }
+    if (!content || content.length < 10) {
+        showFieldError('p_content', 'Content is required (min 10 chars).');
+        hasError = true;
+    }
+    
+    if (hasError) return false;
+    
+    document.getElementById('postForm').submit();
+    return true;
+}
+
+function showFieldError(fieldId, message) {
+    var field = document.getElementById(fieldId);
+    var errorSpan = field.nextElementSibling;
+    if (errorSpan && errorSpan.classList.contains('field-error')) {
+        errorSpan.textContent = message;
+    }
+    field.classList.add('error');
+}
+
+/* Close modal when clicking outside */
+document.addEventListener('click', function(e) {
+    var modals = document.querySelectorAll('.modal-overlay');
+    modals.forEach(function(modal) {
+        if (e.target === modal) {
+            modal.classList.remove('open');
+        }
+    });
+});
+
 /* ════════════ LOAD ════════════ */
 function loadAll(){
     Promise.all([
@@ -117,6 +220,8 @@ function submitReply(pid){
     var params = new URLSearchParams(window.location.search);
     var msg = params.get('msg');
     if(msg === 'reply_created') showToast('Reply posted! ✅');
+    if(msg === 'post_created') showToast('Post created successfully! ✅');
+    if(msg === 'post_error') showToast('Error creating post. Please try again. ❌');
     if(msg) window.history.replaceState({}, '', window.location.pathname);
 })();
 

@@ -1,0 +1,87 @@
+# Sensitive Configuration
+.env
+config.php
+db_config.php
+database.php
+*.key
+*.pem
+credentials.json
+secrets.json
+
+# System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.project
+.settings/
+nbproject/
+
+# Logs and Cache
+*.log
+error_log
+access_log
+/logs/
+/cache/
+*.cache
+/tmp/
+
+# Uploaded Files (usually)
+/uploads/*
+!/uploads/.gitkeep
+/files/*
+!/files/.gitkeep
+/images/uploads/*
+!/images/uploads/.gitkeep
+
+# Dependencies
+/vendor/
+/node_modules/
+composer.phar
+package-lock.json
+yarn.lock
+
+# Build Files
+/dist/
+/build/
+*.min.js
+*.min.css
+/public/build/
+
+# PHP
+*.php~
+.phpunit.result.cache
+
+# Database
+*.sql
+*.sqlite
+*.db
+/database/*.sql
+
+# Backup Files
+*.bak
+*.backup
+*_backup
+*.old
+
+# OS Generated
+ehthumbs.db
+Icon?
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+
+# Misc
+.env.backup
+.phpcs.xml
+.php_cs
+.php_cs.cache

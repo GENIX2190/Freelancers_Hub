@@ -3,7 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Experience &amp; Stories - Freelence Hub</title>
     <link rel="stylesheet" href="../assets/css/common.css">
-    <link rel="stylesheet" href="css/view.css">
+    <link rel="stylesheet" href="css/view.css?v=3">
 </head>
 <body>
 
@@ -35,11 +35,88 @@
 <main>
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="🔍 Search posts by title, author or tag..." oninput="renderPosts()">
+        <button class="btn-add-post" onclick="openModal('postModal')">➕ Share Your Story</button>
     </div>
 
     <div id="postsContainer"></div>
     <div class="empty-state" id="emptyState" style="display:none"><div class="icon">📝</div><p>No posts found.</p></div>
 </main>
+
+<!-- Add Post Modal -->
+<div class="modal-overlay" id="postModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="postModalTitle">➕ Add Post</h2>
+            <button class="modal-close" onclick="closeModal('postModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="postForm" method="POST" action="../../Controllers/ExperienceController.php" onsubmit="return savePost(event)" novalidate>
+                <input type="hidden" name="form_action" id="p_action" value="post_create">
+                <input type="hidden" name="post_id" id="p_id" value="">
+                <input type="hidden" name="redirect" value="view">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Title <span class="required">*</span></label>
+                        <input type="text" id="p_title" name="title" placeholder="Post title">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Category <span class="required">*</span></label>
+                        <select id="p_category" name="category">
+                            <option value="">-- Select --</option>
+                            <option>Tech Tips</option>
+                            <option>Career Advice</option>
+                            <option>Project Story</option>
+                            <option>Life as Freelancer</option>
+                            <option>Tutorial</option>
+                            <option>Other</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Author <span class="required">*</span></label>
+                        <input type="text" id="p_author" name="author" placeholder="Your name">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Status <span class="required">*</span></label>
+                        <select id="p_status" name="status">
+                            <option value="">-- Select --</option>
+                            <option>Published</option>
+                            <option>Draft</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date <span class="required">*</span></label>
+                        <input type="date" id="p_date" name="date">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Tags</label>
+                        <input type="text" id="p_tags" name="tags" placeholder="e.g. React, PHP, Freelance">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Content <span class="required">*</span></label>
+                        <textarea id="p_content" name="content" style="min-height:120px" placeholder="Write your experience post..."></textarea>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('postModal')">Cancel</button>
+            <button class="btn-save" onclick="document.getElementById('postForm').requestSubmit()">💾 Save Post</button>
+        </div>
+    </div>
+</div>
 
 <footer>
     <p>© 2026 Freelence Hub — All rights reserved | Experience — Yassine Zaabi</p>

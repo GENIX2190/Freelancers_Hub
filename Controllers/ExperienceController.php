@@ -192,9 +192,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'tags'      => $_POST['tags'] ?? null,
                 'statut'    => Post::uiStatusToDb($_POST['status'] ?? 'Draft'),
             ]);
-            header('Location: ' . $dash . '?msg=post_created');
+            $redirect = $_POST['redirect'] ?? '';
+            if ($redirect === 'view') {
+                header('Location: ../Views/experience/view.html?msg=post_created');
+            } else {
+                header('Location: ' . $dash . '?msg=post_created');
+            }
         } catch (PDOException $e) {
-            header('Location: ' . $dash . '?msg=post_error&err=' . urlencode($e->getMessage()));
+            $redirect = $_POST['redirect'] ?? '';
+            if ($redirect === 'view') {
+                header('Location: ../Views/experience/view.html?msg=post_error&err=' . urlencode($e->getMessage()));
+            } else {
+                header('Location: ' . $dash . '?msg=post_error&err=' . urlencode($e->getMessage()));
+            }
         }
         exit;
     }
