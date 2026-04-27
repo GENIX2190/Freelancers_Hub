@@ -239,5 +239,154 @@ function viewPost(id){
     if(msg) window.history.replaceState({}, '', window.location.pathname);
 })();
 
+/* ════════════ PDF EXPORT ════════════ */
+function exportPostsPDF() {
+    var { jsPDF } = window.jspdf;
+    var doc = new jsPDF();
+    
+    // Title
+    doc.setFontSize(18);
+    doc.setTextColor(0, 168, 82);
+    doc.text('Freelance Hub - Posts Report', 14, 22);
+    
+    // Date
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text('Generated: ' + new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString(), 14, 30);
+    
+    // Stats
+    doc.setFontSize(11);
+    doc.setTextColor(0);
+    doc.text('Total Posts: ' + posts.length + '  |  Published: ' + posts.filter(function(p){return p.status==='Published';}).length + '  |  Drafts: ' + posts.filter(function(p){return p.status==='Draft';}).length, 14, 38);
+    
+    // Table data
+    var tableData = posts.map(function(p, i) {
+        return [
+            i + 1,
+            p.title.substring(0, 30) + (p.title.length > 30 ? '...' : ''),
+            p.category || '-',
+            p.author || '-',
+            p.status,
+            countReplies(p.id),
+            p.date
+        ];
+    });
+    
+    // Generate table
+    doc.autoTable({
+        startY: 45,
+        head: [['#', 'Title', 'Category', 'Author', 'Status', 'Replies', 'Date']],
+        body: tableData,
+        theme: 'grid',
+        headStyles: { 
+            fillColor: [0, 168, 82],
+            textColor: 255,
+            fontStyle: 'bold'
+        },
+        alternateRowStyles: {
+            fillColor: [245, 245, 245]
+        },
+        styles: {
+            fontSize: 9,
+            cellPadding: 3
+        },
+        columnStyles: {
+            0: { cellWidth: 10 },
+            1: { cellWidth: 50 },
+            2: { cellWidth: 30 },
+            3: { cellWidth: 25 },
+            4: { cellWidth: 22 },
+            5: { cellWidth: 15 },
+            6: { cellWidth: 25 }
+        }
+    });
+    
+    // Footer
+    var pageCount = doc.internal.getNumberOfPages();
+    for (var i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text('Freelance Hub - Experience Module | Page ' + i + ' of ' + pageCount, 14, doc.internal.pageSize.height - 10);
+    }
+    
+    // Save
+    doc.save('posts_report_' + new Date().toISOString().slice(0,10) + '.pdf');
+    showToast('Posts exported to PDF! 📄');
+}
+
+function exportRepliesPDF() {
+    var { jsPDF } = window.jspdf;
+    var doc = new jsPDF();
+    
+    // Title
+    doc.setFontSize(18);
+    doc.setTextColor(0, 168, 82);
+    doc.text('Freelance Hub - Replies Report', 14, 22);
+    
+    // Date
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text('Generated: ' + new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString(), 14, 30);
+    
+    // Stats
+    doc.setFontSize(11);
+    doc.setTextColor(0);
+    doc.text('Total Replies: ' + replies.length, 14, 38);
+    
+    // Table data
+    var tableData = replies.map(function(r, i) {
+        return [
+            i + 1,
+            (r.postTitle || getPostTitle(r.postId)).substring(0, 25) + ((r.postTitle || getPostTitle(r.postId)).length > 25 ? '...' : ''),
+            r.author || '-',
+            r.email || '-',
+            r.content.substring(0, 40) + (r.content.length > 40 ? '...' : ''),
+            r.date
+        ];
+    });
+    
+    // Generate table
+    doc.autoTable({
+        startY: 45,
+        head: [['#', 'Post', 'Author', 'Email', 'Reply', 'Date']],
+        body: tableData,
+        theme: 'grid',
+        headStyles: { 
+            fillColor: [0, 168, 82],
+            textColor: 255,
+            fontStyle: 'bold'
+        },
+        alternateRowStyles: {
+            fillColor: [245, 245, 245]
+        },
+        styles: {
+            fontSize: 9,
+            cellPadding: 3
+        },
+        columnStyles: {
+            0: { cellWidth: 10 },
+            1: { cellWidth: 35 },
+            2: { cellWidth: 25 },
+            3: { cellWidth: 35 },
+            4: { cellWidth: 50 },
+            5: { cellWidth: 22 }
+        }
+    });
+    
+    // Footer
+    var pageCount = doc.internal.getNumberOfPages();
+    for (var i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text('Freelance Hub - Experience Module | Page ' + i + ' of ' + pageCount, 14, doc.internal.pageSize.height - 10);
+    }
+    
+    // Save
+    doc.save('replies_report_' + new Date().toISOString().slice(0,10) + '.pdf');
+    showToast('Replies exported to PDF! 📄');
+}
+
 /* ── INIT ── */
 loadAll();

@@ -150,6 +150,24 @@ main {
     transform: translateY(-1px);
 }
 
+.btn-export {
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .3s;
+    white-space: nowrap;
+}
+
+.btn-export:hover {
+    background: #4f46e5;
+    transform: translateY(-1px);
+}
+
 /* ── TABLE ── */
 .table-wrapper {
     background: white;

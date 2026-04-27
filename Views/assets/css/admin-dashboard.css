@@ -410,3 +410,53 @@ body {
     justify-content: center;
     cursor: pointer;
 }
+
+/* ── CONTROLS BAR ── */
+.controls-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.controls-bar .search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .25s;
+}
+
+.controls-bar .search-input:focus {
+    border-color: #00a852;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 6px;
+}
+
+.filter-tab {
+    padding: 8px 14px;
+    border: none;
+    background: #f3f4f6;
+    color: #555;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.filter-tab:hover {
+    background: #e5e7eb;
+}
+
+.filter-tab.active {
+    background: #00a852;
+    color: white;
+}

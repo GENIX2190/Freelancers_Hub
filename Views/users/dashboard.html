@@ -20,6 +20,8 @@
         .btn-d{background:#ffe7e7;color:#cc0000}.btn-d:hover{background:#cc0000;color:white}
         .btn-ban{background:#fce4ec;color:#c62828}.btn-ban:hover{background:#c62828;color:white}
         .btn-unban{background:#e8f5e9;color:#2e7d32}.btn-unban:hover{background:#2e7d32;color:white}
+        .btn-export{background:#6366f1;color:white;border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;white-space:nowrap}
+        .btn-export:hover{background:#4f46e5;transform:translateY(-1px)}
         .badge-role{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
         .role-admin{background:#ede9fe;color:#5b21b6}
         .role-freelance{background:#dbeafe;color:#1e40af}
@@ -109,6 +111,7 @@
     <!-- Controls -->
     <div class="controls-bar">
         <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search by name, email or role..." oninput="renderUsers()">
+        <button class="btn-export" onclick="exportUsersPDF()">📄 Export PDF</button>
         <div class="filter-tabs">
             <button class="filter-tab active" data-f="all" onclick="setFilter(this)">All</button>
             <button class="filter-tab" data-f="Active" onclick="setFilter(this)">🟢 Active</button>
@@ -286,6 +289,8 @@
 
 </div><!-- /content-wrapper -->
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <script>
 var users = [];
 var currentFilter = 'all';
@@ -468,6 +473,87 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')document.que
 })();
 
 loadUsers();
+
+/* ════════════ PDF EXPORT ════════════ */
+function exportUsersPDF() {
+    var { jsPDF } = window.jspdf;
+    var doc = new jsPDF();
+    
+    // Title
+    doc.setFontSize(18);
+    doc.setTextColor(0, 168, 82);
+    doc.text('Freelance Hub - Users Report', 14, 22);
+    
+    // Date
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text('Generated: ' + new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString(), 14, 30);
+    
+    // Stats
+    doc.setFontSize(11);
+    doc.setTextColor(0);
+    var statsText = 'Total: ' + users.length + 
+        '  |  Active: ' + users.filter(function(u){return u.status==='Active';}).length + 
+        '  |  Banned: ' + users.filter(function(u){return u.status==='Banned';}).length +
+        '  |  Freelancers: ' + users.filter(function(u){return u.role==='Freelancer';}).length +
+        '  |  Clients: ' + users.filter(function(u){return u.role==='Client';}).length;
+    doc.text(statsText, 14, 38);
+    
+    // Table data
+    var tableData = users.map(function(u, i) {
+        return [
+            i + 1,
+            u.cin || '-',
+            u.email || '-',
+            u.role || '-',
+            u.status || '-',
+            u.location || '-',
+            fmtDate(u.date)
+        ];
+    });
+    
+    // Generate table
+    doc.autoTable({
+        startY: 45,
+        head: [['#', 'CIN', 'Email', 'Role', 'Status', 'Location', 'Registered']],
+        body: tableData,
+        theme: 'grid',
+        headStyles: { 
+            fillColor: [0, 168, 82],
+            textColor: 255,
+            fontStyle: 'bold'
+        },
+        alternateRowStyles: {
+            fillColor: [245, 245, 245]
+        },
+        styles: {
+            fontSize: 9,
+            cellPadding: 3
+        },
+        columnStyles: {
+            0: { cellWidth: 10 },
+            1: { cellWidth: 25 },
+            2: { cellWidth: 45 },
+            3: { cellWidth: 22 },
+            4: { cellWidth: 20 },
+            5: { cellWidth: 30 },
+            6: { cellWidth: 25 }
+        }
+    });
+    
+    // Footer
+    var pageCount = doc.internal.getNumberOfPages();
+    for (var i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text('Freelance Hub - Users Module | Page ' + i + ' of ' + pageCount, 14, doc.internal.pageSize.height - 10);
+    }
+    
+    // Save
+    doc.save('users_report_' + new Date().toISOString().slice(0,10) + '.pdf');
+    showToast('Users exported to PDF! 📄');
+}
 </script>
 </body>
 </html>
