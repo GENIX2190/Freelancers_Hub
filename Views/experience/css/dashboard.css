@@ -151,7 +151,7 @@ main {
 }
 
 .btn-export {
-    background: #6366f1;
+    background: #00a852;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -164,7 +164,7 @@ main {
 }
 
 .btn-export:hover {
-    background: #4f46e5;
+    background: #009044;
     transform: translateY(-1px);
 }
 

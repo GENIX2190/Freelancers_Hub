@@ -4,6 +4,21 @@ var API = '../../Controllers/ExperienceController.php';
 var posts = [], replies = [];
 var activeTab = 'posts';
 
+var RX_ORDER = ['like', 'love', 'haha', 'sad', 'thanks'];
+var RX_EMOJI = { like: '👍', love: '❤️', haha: '😂', sad: '😢', thanks: '🙏' };
+
+function formatReactionsCell(p) {
+    var react = p.reactions || {};
+    var c = react.counts || {};
+    var parts = [];
+    RX_ORDER.forEach(function (k) {
+        var n = c[k] || 0;
+        if (n) parts.push(RX_EMOJI[k] + n);
+    });
+    if (!parts.length) return '—';
+    return '<small style="white-space:nowrap">' + parts.join(' ') + '</small>';
+}
+
 /* ════════════ LOAD DATA ════════════ */
 function loadAll() {
     Promise.all([
@@ -80,6 +95,7 @@ function renderPosts(){
             '<td>'+(p.author||'—')+'</td>'+
             '<td><span class="badge '+statusBadge+'">'+p.status+'</span></td>'+
             '<td><span class="badge reply-badge">'+countReplies(p.id)+'</span></td>'+
+            '<td>'+formatReactionsCell(p)+'</td>'+
             '<td>'+p.date+'</td>'+
             '<td>'+
                 '<button class="btn-act" onclick="viewPost('+p.id+')" title="View" style="color:#0066cc">👁</button>'+
@@ -231,7 +247,14 @@ function viewPost(id){
         reply_created:'Reply created ✅', reply_updated:'Reply updated ✅', reply_deleted:'Reply deleted 🗑️',
         post_error:'Post error ❌', reply_error:'Reply error ❌'
     };
-    if(msg && msgs[msg]) showToast(msgs[msg], msg.includes('error'));
+    if(msg === 'policy_block') {
+        var reason = params.get('reason');
+        showToast(reason ? ('Blocked: ' + reason) : 'Blocked by spam & policy check.', true);
+    } else if(msg === 'post_moderated') {
+        showToast('Post not saved — spam or policy filters.', true);
+    } else if(msg === 'reply_moderated') {
+        showToast('Reply not saved — spam or policy filters.', true);
+    } else if(msg && msgs[msg]) showToast(msgs[msg], msg.includes('error'));
     if(params.get('tab')==='replies'){
         var btn = document.querySelectorAll('.tab-btn')[1];
         switchTab('replies', btn);

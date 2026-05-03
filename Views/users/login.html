@@ -6,37 +6,40 @@
     <title>Login / Sign Up - Freelence Hub</title>
     <link rel="stylesheet" href="../assets/css/common.css">
     <style>
-        body { background: linear-gradient(135deg, #00a852 0%, #00d084 100%); min-height: 100vh; }
+        /* Background + motion: ../assets/css/animations.css (body.page-auth) */
 
-        /* ── HEADER override for auth page ── */
-        header { background: rgba(0,0,0,.15); box-shadow: none; }
+        /* Header + night sky: ../assets/css/animations.css (body.page-auth) */
 
         /* ── AUTH CARD ── */
         .auth-wrapper {
+            position: relative;
             display: flex; align-items: center; justify-content: center;
-            min-height: calc(100vh - 80px); padding: 30px 16px;
+            min-height: calc(100vh - 80px);
+            min-height: calc(100dvh - 80px);
+            padding: 30px 16px;
+            }
+        .auth-card-shell {
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            z-index: 2;
+            transform-style: preserve-3d;
+            perspective: 1200px;
         }
         .auth-card {
-            background: white; border-radius: 20px;
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
             box-shadow: 0 24px 80px rgba(0,0,0,.25);
-            width: 100%; max-width: 480px;
+            width: 100%;
             overflow: hidden;
+            color-scheme: light;
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
         }
 
-        /* ── TABS ── */
-        .auth-tabs {
-            display: flex;
-        }
-        .auth-tab {
-            flex: 1; padding: 18px; border: none; background: #f8f9fa;
-            font-size: 15px; font-weight: 700; color: #888;
-            cursor: pointer; transition: all .25s; letter-spacing: .3px;
-        }
-        .auth-tab.active {
-            background: white; color: #00a852;
-            border-bottom: 3px solid #00a852;
-        }
-        .auth-tab:hover:not(.active) { background: #f0f0f0; color: #555; }
+        /* Tabs + moving background: ../assets/css/animations.css */
 
         /* ── FORM BODY ── */
         .auth-body { padding: 32px; }
@@ -56,12 +59,25 @@
         .form-group textarea {
             width: 100%; padding: 11px 14px;
             border: 2px solid #e0e0e0; border-radius: 10px;
-            font-size: 14px; outline: none; transition: border-color .25s;
+            font-size: 14px; outline: none;
             font-family: inherit; background: #fafafa;
+            color: #181818;
+            -webkit-text-fill-color: #181818;
+            caret-color: #111;
         }
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus { border-color: #00a852; background: white; }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #888;
+            opacity: 1;
+        }
+        .form-group input:-webkit-autofill,
+        .form-group input:-webkit-autofill:hover,
+        .form-group input:-webkit-autofill:focus {
+            -webkit-text-fill-color: #181818;
+            caret-color: #111;
+            box-shadow: 0 0 0 1000px #fafafa inset;
+            transition: background-color 9999s ease-out;
+        }
         .form-group input.error,
         .form-group select.error,
         .form-group textarea.error { border-color: #e53e3e; }
@@ -73,15 +89,15 @@
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
         @media(max-width: 500px){ .form-row { grid-template-columns: 1fr; } }
 
-        /* ── BUTTONS ── */
+        /* ── BUTTONS (hover / shine: animations.css) ── */
         .btn-submit {
             width: 100%; padding: 13px;
             background: linear-gradient(135deg, #00a852, #00d084);
             color: white; border: none; border-radius: 10px;
             font-size: 16px; font-weight: 700; cursor: pointer;
-            transition: all .3s; margin-top: 8px; letter-spacing: .3px;
+            margin-top: 8px; letter-spacing: .3px;
         }
-        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,168,82,.4); }
+        .btn-submit .btn-rocket { display: inline-block; margin-right: 6px; }
 
         .divider { text-align: center; color: #bbb; font-size: 13px; margin: 20px 0; position: relative; }
         .divider::before, .divider::after {
@@ -92,8 +108,17 @@
         .divider::after { right: 0; }
 
         .switch-link { text-align: center; font-size: 13px; color: #888; margin-top: 16px; }
-        .switch-link a { color: #00a852; font-weight: 700; text-decoration: none; }
-        .switch-link a:hover { text-decoration: underline; }
+        .switch-link a {
+            color: #00a852; font-weight: 700; text-decoration: none;
+            transition: color 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-block;
+        }
+        .switch-link a:hover {
+            color: #009044;
+            transform: translateY(-1px);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
 
         /* ── SUCCESS ── */
         .success-banner {
@@ -108,7 +133,7 @@
         .forgot-link:hover { text-decoration: underline; }
     </style>
 </head>
-<body>
+<body class="page-auth">
 
 <header>
     <div class="header-container">
@@ -127,20 +152,45 @@
     </div>
 </header>
 
+<div class="auth-fx" aria-hidden="true">
+    <div class="auth-stars-layer auth-stars-layer--deep"></div>
+    <div class="auth-stars-layer auth-stars-layer--mid"></div>
+    <div class="auth-celestial">
+        <div class="auth-earthshine"></div>
+        <span class="auth-planet auth-planet-gas"></span>
+        <span class="auth-planet auth-planet-rock"></span>
+        <div class="auth-orbit">
+            <span class="auth-orbit-dot"></span>
+        </div>
+        <div class="auth-star-bloom"></div>
+    </div>
+    <div class="auth-aurora"></div>
+    <span class="meteor meteor-1"></span>
+    <span class="meteor meteor-2"></span>
+    <span class="meteor meteor-3"></span>
+</div>
+
+<div class="auth-lightning" aria-hidden="true"></div>
+<div class="auth-lightning auth-lightning--b" aria-hidden="true"></div>
+
 <div class="auth-wrapper">
+    <div class="auth-card-shell">
     <div class="auth-card">
+        <span class="auth-sparkle" aria-hidden="true"></span>
+        <span class="auth-sparkle auth-sparkle--b" aria-hidden="true"></span>
+        <span class="auth-sparkle auth-sparkle--c" aria-hidden="true"></span>
 
         <!-- ── TABS ── -->
         <div class="auth-tabs">
-            <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">🔐 Login</button>
-            <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">✍️ Sign Up</button>
+            <button type="button" class="auth-tab active" id="tab-login" onclick="switchTab('login')">🔐 Login</button>
+            <button type="button" class="auth-tab" id="tab-signup" onclick="switchTab('signup')">✍️ Sign Up</button>
         </div>
 
         <div class="auth-body">
 
             <!-- ══ LOGIN PANEL ══ -->
             <div class="form-panel active" id="panel-login">
-                <div class="auth-title">Welcome back 👋</div>
+                <div class="auth-title">Welcome back <span class="auth-wiggle">👋</span></div>
                 <div class="auth-subtitle">Sign in to your Freelence Hub account</div>
 
                 <div class="success-banner" id="loginSuccess">✅ Login successful! Redirecting...</div>
@@ -163,7 +213,7 @@
                         <input type="password" name="password" id="l_password" placeholder="Your password" autocomplete="current-password">
                         <span class="field-error"></span>
                     </div>
-                    <button type="submit" name="submit" value="login" class="btn-submit">🚀 Login</button>
+                    <button type="submit" name="submit" value="login" class="btn-submit"><span class="btn-rocket" aria-hidden="true">🚀</span> Login</button>
                 </form>
 
                 <div class="divider">or</div>
@@ -174,7 +224,7 @@
 
             <!-- ══ SIGN UP PANEL ══ -->
             <div class="form-panel" id="panel-signup">
-                <div class="auth-title">Create an account 🎉</div>
+                <div class="auth-title">Create an account <span class="auth-wiggle">🎉</span></div>
                 <div class="auth-subtitle">Join Freelence Hub and grow your career</div>
 
                 <div class="success-banner" id="signupSuccess">✅ Registration successful! You can now login.</div>
@@ -226,7 +276,7 @@
                         <textarea name="bio" id="bio" placeholder="Tell us about yourself..."></textarea>
                         <span class="field-error"></span>
                     </div>
-                    <button type="submit" name="submit" value="register" class="btn-submit">🚀 Register</button>
+                    <button type="submit" name="submit" value="register" class="btn-submit"><span class="btn-rocket" aria-hidden="true">🚀</span> Register</button>
                 </form>
 
                 <div class="divider">or</div>
@@ -236,6 +286,7 @@
             </div>
 
         </div>
+    </div>
     </div>
 </div>
 

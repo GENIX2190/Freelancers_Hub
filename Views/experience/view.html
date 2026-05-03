@@ -1,11 +1,13 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Experience &amp; Stories - Freelence Hub</title>
     <link rel="stylesheet" href="../assets/css/common.css">
-    <link rel="stylesheet" href="css/view.css?v=3">
+    <link rel="stylesheet" href="css/view.css?v=11">
 </head>
-<body>
+<body class="page-auth page-experience">
 
 <header>
     <div class="header-container">
@@ -16,7 +18,7 @@
         <nav>
             <a href="../missions/candidature.html">💼 Missions</a>
             <a href="../formations/create.html">📚 Formations</a>
-            <a href="view.html">✍️ Experience</a>
+            <a href="view.html" class="active">✍️ Experience</a>
             <a href="../projets/view.html">📁 Projects</a>
             <a href="../users/login.html" class="nav-right">🔐 Login</a>
             <a href="../users/login.html?redirect=dashboard.html">📊 Dashboard</a>
@@ -24,8 +26,26 @@
     </div>
 </header>
 
-<!-- Side Nav -->
+<div class="auth-fx" aria-hidden="true">
+    <div class="auth-stars-layer auth-stars-layer--deep"></div>
+    <div class="auth-stars-layer auth-stars-layer--mid"></div>
+    <div class="auth-celestial">
+        <div class="auth-earthshine"></div>
+        <span class="auth-planet auth-planet-gas"></span>
+        <span class="auth-planet auth-planet-rock"></span>
+        <div class="auth-orbit">
+            <span class="auth-orbit-dot"></span>
+        </div>
+        <div class="auth-star-bloom"></div>
+    </div>
+    <div class="auth-aurora"></div>
+    <span class="meteor meteor-1"></span>
+    <span class="meteor meteor-2"></span>
+    <span class="meteor meteor-3"></span>
+</div>
 
+<div class="auth-lightning" aria-hidden="true"></div>
+<div class="auth-lightning auth-lightning--b" aria-hidden="true"></div>
 
 <div class="hero">
     <h1>✍️ Experience &amp; Stories</h1>
@@ -118,14 +138,73 @@
     </div>
 </div>
 
+<!-- Report post -->
+<div class="modal-overlay" id="reportModal">
+    <div class="modal-box report-modal-box">
+        <div class="modal-header">
+            <h2>🚩 Report post</h2>
+            <button type="button" class="modal-close" onclick="closeModal('reportModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <p class="report-post-title" id="reportPostTitle"></p>
+            <p class="report-help">We automatically scan the post (title, body, author) and your note for spam patterns, insults, and fight or threat language. This is rule-based — not ML. A moderator can still review the report.</p>
+            <form id="reportForm" method="POST" action="../../Controllers/ExperienceController.php">
+                <input type="hidden" name="form_action" value="report_post">
+                <input type="hidden" name="post_id" id="report_post_id" value="">
+                <div class="form-group">
+                    <label>Reason <span class="required">*</span></label>
+                    <select name="report_reason" id="report_reason" required>
+                        <option value="">-- Choose --</option>
+                        <option value="Spam or scam">Spam or scam</option>
+                        <option value="Harassment or hate">Harassment or hate</option>
+                        <option value="Violence or threats">Violence or threats</option>
+                        <option value="Offensive language">Offensive language</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Details for moderators (optional)</label>
+                    <textarea name="report_note" id="report_note" rows="3" placeholder="What’s wrong with this post?"></textarea>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel-form" onclick="closeModal('reportModal')">Cancel</button>
+            <button type="button" class="btn-report-submit" onclick="submitReport()">Send report</button>
+        </div>
+    </div>
+</div>
+
 <footer>
     <p>© 2026 Freelence Hub — All rights reserved | Experience — Yassine Zaabi</p>
 </footer>
 
 <div class="toast" id="toast"></div>
 
+<div class="support-chat-stack">
+    <div class="support-chat-panel" id="supportChatPanel" role="dialog" aria-label="Support chat">
+        <div class="support-chat-header">
+            <span class="support-chat-title">💬 Support</span>
+            <button type="button" class="support-chat-close" id="supportChatClose" aria-label="Close support chat">✕</button>
+        </div>
+        <div class="support-chat-log" id="supportChatLog" aria-live="polite">
+            <div class="support-chat-row support-chat-row--bot">
+                <div class="support-chat-bubble">Hi! Ask anything about <strong>Experience</strong> (posts, replies, spam checks). With an API key on the server you get <strong>smart explanations</strong>; otherwise quick auto-answers. Human help: <strong>support@freelencehub.example</strong></div>
+            </div>
+        </div>
+        <div class="support-chat-compose">
+            <input type="text" id="supportChatInput" class="support-chat-input" placeholder="Type a message…" autocomplete="off">
+            <button type="button" class="support-chat-send" id="supportChatSend">Send</button>
+        </div>
+        <p class="support-chat-note">Spam &amp; policy filter applies before send. Chat uses an API key from <code>Controllers/config.local.php</code> (e.g. free Groq). Never put keys in the browser.</p>
+    </div>
+    <button type="button" class="support-chat-fab" id="supportChatFab" aria-label="Open support chat" aria-expanded="false" aria-controls="supportChatPanel">💬</button>
+</div>
+
 <script src="../assets/js/common.js"></script>
-<script src="js/view.js?v=2"></script>
+<script src="js/content-policy.js?v=1"></script>
+<script src="js/support-chat.js?v=7"></script>
+<script src="js/view.js?v=7"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

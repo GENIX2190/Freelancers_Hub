@@ -3,8 +3,15 @@
    Freelence Hub
    ============================================= */
 
+@import url('animations.css');
+
 /* ── RESET & BASE ── */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+    margin: 0;
+    padding: 0;
+}
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

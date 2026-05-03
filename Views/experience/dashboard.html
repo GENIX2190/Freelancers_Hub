@@ -45,7 +45,7 @@
     </div>
 
     <!-- Stats -->
-    <div class="stats-grid">
+    <div class="stats-grid animate-on-load">
         <div class="stat-card"><div class="stat-number" id="s-posts">0</div><div class="stat-label">Total Posts</div></div>
         <div class="stat-card"><div class="stat-number" id="s-replies">0</div><div class="stat-label">Total Replies</div></div>
         <div class="stat-card"><div class="stat-number" id="s-published">0</div><div class="stat-label">Published</div></div>
@@ -62,7 +62,7 @@
     <div id="tab-posts" class="tab-section active-tab">
         <div class="sec-controls">
             <input type="text" class="search-input" id="search-posts" placeholder="🔍 Search posts..." oninput="renderPosts()">
-            <button class="btn-export" onclick="exportPostsPDF()">📄 Export PDF</button>
+            <button class="btn-primary" onclick="exportPostsPDF()">📄 Export PDF</button>
             <button class="btn-primary" onclick="openAddPost()">＋ Add Post</button>
         </div>
         <div class="table-wrapper">
@@ -70,7 +70,7 @@
                 <thead>
                     <tr>
                         <th>#</th><th>Title</th><th>Category</th><th>Author</th>
-                        <th>Status</th><th>Replies</th><th>Date</th><th>Actions</th>
+                        <th>Status</th><th>Replies</th><th>Reactions</th><th>Date</th><th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="posts-tbody"></tbody>
@@ -85,7 +85,7 @@
     <div id="tab-replies" class="tab-section">
         <div class="sec-controls">
             <input type="text" class="search-input" id="search-replies" placeholder="🔍 Search replies..." oninput="renderReplies()">
-            <button class="btn-export" onclick="exportRepliesPDF()">📄 Export PDF</button>
+            <button class="btn-primary" onclick="exportRepliesPDF()">📄 Export PDF</button>
             <button class="btn-primary" onclick="openAddReply()">＋ Add Reply</button>
         </div>
         <div class="table-wrapper">

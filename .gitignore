@@ -1,6 +1,6 @@
 # Sensitive Configuration
 .env
-config.php
+Controllers/config.local.php
 db_config.php
 database.php
 *.key

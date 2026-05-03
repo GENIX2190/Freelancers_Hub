@@ -1,0 +1,1651 @@
+/* =============================================
+   ANIMATIONS.CSS — Advanced CSS (keyframes, layers)
+   Freelence Hub — same green theme as common.css
+   MVC path: Views/assets/css/ (shared across modules)
+   ============================================= */
+
+/* ── THEME TOKENS (reuse in animations / glows) ── */
+:root {
+    --fh-green-dark: #00a852;
+    --fh-green-mid: #00c46f;
+    --fh-green-bright: #00d084;
+    --fh-green-glow: rgba(0, 208, 132, 0.45);
+    --fh-surface: rgba(255, 255, 255, 0.14);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --stagger-step: 55ms;
+}
+
+/* ── ACCESSIBILITY: respect system motion preference ── */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* Sky flashes: long, gentle cycle only (higher specificity than *; avoids “invisible” 0.01ms one-shot) */
+    body.page-auth .auth-lightning {
+        animation: authLightningFlashA 24s linear infinite !important;
+    }
+}
+
+/* ═══ KEYFRAMES ═══ */
+@keyframes gradientDrift {
+    0%, 100% { background-position: 0% 40%; }
+    50% { background-position: 100% 60%; }
+}
+
+@keyframes orbDrift {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+    33% { transform: translate(4%, -3%) scale(1.05); opacity: 0.92; }
+    66% { transform: translate(-3%, 4%) scale(1.02); opacity: 1; }
+}
+
+@keyframes cardRise {
+    from {
+        opacity: 0;
+        transform: translateY(22px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-120%); }
+    100% { transform: translateX(120%); }
+}
+
+@keyframes logoFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+@keyframes pulseRing {
+    0% { box-shadow: 0 0 0 0 var(--fh-green-glow); }
+    70% { box-shadow: 0 0 0 14px rgba(0, 208, 132, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 208, 132, 0); }
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: scale(0.94) translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes authPanelIn {
+    from {
+        opacity: 0;
+        transform: translateX(28px) scale(0.97);
+        filter: blur(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes authPanelInAlt {
+    from {
+        opacity: 0;
+        transform: translateX(-28px) scale(0.97);
+        filter: blur(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes cardGlowBreath {
+    0%, 100% {
+        box-shadow:
+            0 24px 80px rgba(0, 0, 0, 0.22),
+            0 0 0 1px rgba(255, 255, 255, 0.5),
+            0 0 48px rgba(0, 208, 132, 0.22);
+    }
+    50% {
+        box-shadow:
+            0 32px 96px rgba(0, 0, 0, 0.18),
+            0 0 0 1px rgba(0, 208, 132, 0.35),
+            0 0 72px rgba(0, 220, 150, 0.45);
+    }
+}
+
+@keyframes floatBlobA {
+    0%, 100% { transform: translate(-5%, 10%) scale(1); }
+    50% { transform: translate(15%, -8%) scale(1.08); }
+}
+
+@keyframes floatBlobB {
+    0%, 100% { transform: translate(10%, 0%) scale(1); }
+    50% { transform: translate(-20%, 15%) scale(1.12); }
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.35; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.15); }
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(14deg); }
+    40% { transform: rotate(-10deg); }
+    60% { transform: rotate(8deg); }
+    80% { transform: rotate(-4deg); }
+}
+
+@keyframes rocketLaunch {
+    0%, 100% { transform: translate(0, 0) rotate(-12deg); }
+    25% { transform: translate(6px, -10px) rotate(8deg); }
+    50% { transform: translate(-2px, -14px) rotate(-6deg); }
+    75% { transform: translate(8px, -6px) rotate(10deg); }
+}
+
+@keyframes dividerGrow {
+    from { transform: scaleX(0.3); opacity: 0.5; }
+    to { transform: scaleX(1); opacity: 1; }
+}
+
+@keyframes nightSkyDrift {
+    0%, 100% {
+        background-position: 20% 30%, 80% 70%, 5% 45%;
+    }
+    33% {
+        background-position: 70% 20%, 30% 80%, 60% 55%;
+    }
+    66% {
+        background-position: 40% 60%, 90% 40%, 25% 70%;
+    }
+}
+
+@keyframes nebulaLayerDrift {
+    0%, 100% {
+        background-position: 0% 20%, 100% 80%, 30% 0%;
+        opacity: 0.75;
+    }
+    50% {
+        background-position: 100% 60%, 0% 40%, 70% 35%;
+        opacity: 0.95;
+    }
+}
+
+@keyframes starfieldDrift {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        /* Fixed distances — stable when browser zoom changes (vw/vh in keyframes can glitch) */
+        transform: translate(-260px, -220px);
+    }
+}
+
+@keyframes moonGlow {
+    0%, 100% {
+        filter: drop-shadow(0 0 10px rgba(220, 235, 255, 0.4));
+    }
+    50% {
+        filter: drop-shadow(0 0 16px rgba(235, 245, 255, 0.55));
+    }
+}
+
+@keyframes starsTwinkle {
+    0%, 100% { opacity: 0.52; }
+    18% { opacity: 0.92; }
+    36% { opacity: 0.48; }
+    54% { opacity: 0.88; }
+    72% { opacity: 0.4; }
+    88% { opacity: 0.82; }
+}
+
+@keyframes starGridWander {
+    0%, 100% {
+        background-position:
+            0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0,
+            0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0,
+            12px 20px, 30px 50px;
+    }
+    50% {
+        background-position:
+            0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0,
+            0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0,
+            160px -110px, -70px 190px;
+    }
+}
+
+/* Continuous tile drift — reads as “living” motion on hero pages */
+@keyframes authStarsScrollDeep {
+    0% {
+        background-position:
+            0 0,
+            140px 90px;
+    }
+    100% {
+        background-position:
+            620px -480px,
+            760px -420px;
+    }
+}
+
+@keyframes authStarsScrollMid {
+    0% {
+        background-position:
+            0 0,
+            60px 45px;
+    }
+    100% {
+        background-position:
+            -620px 480px,
+            -560px 525px;
+    }
+}
+
+@keyframes authStarsLayerShimmer {
+    0%, 100% { opacity: 0.5; }
+    35% { opacity: 0.8; }
+    68% { opacity: 0.4; }
+}
+
+@keyframes starsTwinkleFine {
+    0%, 100% { opacity: 0.32; }
+    33% { opacity: 0.72; }
+    66% { opacity: 0.45; }
+}
+
+@keyframes starAuroraParallax {
+    0% { background-position: 0 0, 22px 40px; }
+    100% { background-position: 64px 56px, -18px 12px; }
+}
+
+/* Opacity-only sky flash — cheap compositing, no filter (good FPS + zoom stability) */
+@keyframes authLightningFlashA {
+    /* Quick flash early in cycle so you can verify it’s working */
+    0%, 3%, 100% { opacity: 0; }
+    1.4% { opacity: 0.72; }
+    1.9% { opacity: 0.1; }
+    2.5% { opacity: 0.55; }
+    3.4% { opacity: 0; }
+    86%, 100% { opacity: 0; }
+    86.4% { opacity: 0.75; }
+    86.55% { opacity: 0.12; }
+    86.75% { opacity: 0.6; }
+    87% { opacity: 0.18; }
+    87.4% { opacity: 0; }
+}
+
+@keyframes authLightningFlashB {
+    0%, 8%, 100% { opacity: 0; }
+    5.5% { opacity: 0.55; }
+    6.8% { opacity: 0; }
+    91%, 100% { opacity: 0; }
+    91.2% { opacity: 0.65; }
+    91.45% { opacity: 0.08; }
+    91.75% { opacity: 0; }
+}
+
+@keyframes nebulaSlow {
+    0%, 100% { opacity: 0.38; }
+    50% { opacity: 0.52; }
+}
+
+@keyframes moonDrift {
+    0%, 100% {
+        transform: translate3d(0, 0, 0) rotate(-27deg) skewX(2deg);
+    }
+    33% {
+        transform: translate3d(-12px, 6px, 0) rotate(-31deg) skewX(3deg);
+    }
+    66% {
+        transform: translate3d(10px, -7px, 0) rotate(-23deg) skewX(1.2deg);
+    }
+}
+
+@keyframes authRingSpin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes auroraWave {
+    0%, 100% {
+        transform: translateX(-8%) skewX(-4deg) scaleY(1);
+        opacity: 0.55;
+    }
+    50% {
+        transform: translateX(12%) skewX(5deg) scaleY(1.08);
+        opacity: 0.85;
+    }
+}
+
+@keyframes meteorShoot {
+    0% {
+        opacity: 0;
+        transform: translate(115vw, -18vh) rotate(-41deg) scaleX(0.12);
+    }
+    5% {
+        opacity: 1;
+    }
+    22% {
+        opacity: 0.9;
+        transform: translate(-35vw, 62vh) rotate(-41deg) scaleX(1);
+    }
+    28%,
+    100% {
+        opacity: 0;
+        transform: translate(-50vw, 75vh) rotate(-41deg) scaleX(1);
+    }
+}
+
+@keyframes meteorShootSlow {
+    0% {
+        opacity: 0;
+        transform: translate(105vw, -8vh) rotate(-38deg) scaleX(0.1);
+    }
+    6% {
+        opacity: 0.95;
+    }
+    32% {
+        opacity: 0.75;
+        transform: translate(-40vw, 48vh) rotate(-38deg) scaleX(0.95);
+    }
+    38%,
+    100% {
+        opacity: 0;
+        transform: translate(-55vw, 58vh) rotate(-38deg) scaleX(0.95);
+    }
+}
+
+@keyframes cardInnerReveal {
+    from {
+        opacity: 0.92;
+        clip-path: inset(8% 8% 8% 8% round 18px);
+        filter: blur(5px);
+    }
+    to {
+        opacity: 1;
+        clip-path: inset(0% 0% 0% 0% round 19px);
+        filter: blur(0);
+    }
+}
+
+@keyframes tabGliderGlow {
+    0%, 100% {
+        box-shadow: 0 -2px 16px rgba(0, 208, 132, 0.55);
+    }
+    50% {
+        box-shadow: 0 -2px 28px rgba(0, 255, 200, 0.85), 0 0 24px rgba(0, 208, 132, 0.45);
+    }
+}
+
+/* “Wow” pack: login page showpieces */
+@keyframes headlineDrop {
+    from {
+        opacity: 0;
+        transform: translateY(-18px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes formBlockRise {
+    from {
+        opacity: 0;
+        transform: translateY(26px) scale(0.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes authTitleGlow {
+    0%, 100% {
+        text-shadow:
+            0 0 0 transparent,
+            0 2px 0 rgba(0, 0, 0, 0.04);
+    }
+    50% {
+        text-shadow:
+            0 0 28px rgba(0, 208, 132, 0.35),
+            0 0 56px rgba(0, 168, 82, 0.15),
+            0 2px 0 rgba(0, 0, 0, 0.04);
+    }
+}
+
+@keyframes titleBarShine {
+    0%, 100% {
+        width: min(52px, 14vw);
+        box-shadow: 0 2px 10px rgba(0, 208, 132, 0.45);
+        filter: brightness(1);
+    }
+    50% {
+        width: min(76px, 22vw);
+        box-shadow: 0 2px 20px rgba(0, 255, 200, 0.7), 0 0 24px rgba(0, 208, 132, 0.35);
+        filter: brightness(1.15);
+    }
+}
+
+@keyframes sparkleDrift {
+    0%, 100% {
+        opacity: 0.35;
+        transform: translate(0, 0) scale(0.8) rotate(0deg);
+    }
+    33% {
+        opacity: 1;
+        transform: translate(-4px, -6px) scale(1.15) rotate(120deg);
+    }
+    66% {
+        opacity: 0.75;
+        transform: translate(5px, 3px) scale(0.95) rotate(240deg);
+    }
+}
+
+@keyframes logoAuraPulse {
+    0%, 100% {
+        box-shadow:
+            0 2px 8px rgba(0, 0, 0, 0.15),
+            0 0 0 0 rgba(0, 208, 132, 0.5);
+    }
+    50% {
+        box-shadow:
+            0 2px 12px rgba(0, 0, 0, 0.12),
+            0 0 0 14px rgba(0, 208, 132, 0);
+    }
+}
+
+@keyframes tabSelectPop {
+    0% {
+        transform: scale(0.92);
+        filter: brightness(1.12);
+    }
+    55% {
+        transform: scale(1.03);
+    }
+    100% {
+        transform: scale(1);
+        filter: none;
+    }
+}
+
+@keyframes btnIdlePulse {
+    0%, 100% {
+        box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.18) inset,
+            0 8px 24px rgba(0, 168, 82, 0.28),
+            0 0 0 0 rgba(0, 255, 200, 0.35);
+    }
+    50% {
+        box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.22) inset,
+            0 12px 32px rgba(0, 168, 82, 0.42),
+            0 0 20px 2px rgba(0, 255, 200, 0.25);
+    }
+}
+
+@keyframes dividerLabelPulse {
+    0%, 100% {
+        opacity: 0.85;
+    }
+    50% {
+        opacity: 1;
+        color: var(--fh-green-mid);
+        text-shadow: 0 0 18px rgba(0, 208, 132, 0.35);
+    }
+}
+
+@keyframes switchLinkGlow {
+    0%, 100% {
+        text-shadow: none;
+    }
+    50% {
+        text-shadow: 0 0 12px rgba(0, 208, 132, 0.45);
+    }
+}
+
+/* ═══ LOGIN / AUTH: moonlit night + stars (green accents stay on UI) ═══ */
+body.page-auth {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-top: 78px;
+    color-scheme: dark;
+    background:
+        radial-gradient(ellipse 120% 90% at 15% 75%, rgba(25, 55, 80, 0.45) 0%, transparent 58%),
+        radial-gradient(ellipse 90% 70% at 85% 25%, rgba(45, 35, 85, 0.22) 0%, transparent 52%),
+        linear-gradient(
+            168deg,
+            #010102 0%,
+            #080c14 22%,
+            #141c2e 48%,
+            #0a0e18 72%,
+            #020308 100%
+        );
+    background-size: 180% 180%, 160% 160%, 320% 320%;
+    background-repeat: no-repeat;
+    /* Under the gradients (background: shorthand clears earlier background-color) */
+    background-color: #080c14;
+    position: relative;
+    isolation: isolate;
+    overflow-x: hidden;
+    overflow-x: clip;
+}
+
+body.page-auth ::selection {
+    background: rgba(0, 208, 132, 0.35);
+    color: inherit;
+}
+
+/* Extra sky: earthshine, planets, orbit — complements the waxing crescent */
+body.page-auth .auth-celestial {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+@keyframes earthshinePulse {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 0.88; }
+}
+
+@keyframes planetBob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(14px, -12px) scale(1.04); }
+}
+
+@keyframes orbitSpin {
+    from {
+        transform: skewX(-8deg) rotate(0deg);
+    }
+    to {
+        transform: skewX(-8deg) rotate(360deg);
+    }
+}
+
+@keyframes starBloomPulse {
+    0%, 100% { opacity: 0.65; }
+    50% { opacity: 1; }
+}
+
+/* Earthshine on the night side (left bulk) of a waxing crescent */
+body.page-auth .auth-earthshine {
+    position: fixed;
+    top: max(92px, 12vh);
+    right: clamp(102px, 17vw, 188px);
+    width: min(72px, 12vw);
+    height: min(120px, 19vw);
+    background: radial-gradient(
+        ellipse 55% 85% at 82% 50%,
+        rgba(200, 225, 255, 0.22) 0%,
+        rgba(120, 160, 220, 0.08) 42%,
+        transparent 68%
+    );
+    filter: blur(10px);
+    animation: earthshinePulse 9s ease-in-out infinite;
+    transform: rotate(-22deg);
+    transform-origin: 82% 50%;
+}
+
+/* Distant gas-giant haze (bottom-left) */
+body.page-auth .auth-planet-gas {
+    position: fixed;
+    bottom: 6%;
+    left: 2%;
+    width: min(200px, 34vw);
+    height: min(200px, 34vw);
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 38% 28%, rgba(255, 235, 210, 0.22) 0%, transparent 42%),
+        radial-gradient(circle at 62% 58%, rgba(200, 160, 220, 0.12) 0%, transparent 48%),
+        radial-gradient(circle at 48% 50%, rgba(80, 120, 180, 0.18) 0%, transparent 72%);
+    filter: blur(3px) saturate(125%);
+    animation: planetBob 52s ease-in-out infinite;
+}
+
+/* Small “Mars-like” body */
+body.page-auth .auth-planet-rock {
+    position: fixed;
+    top: 24%;
+    left: 10%;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 32% 28%, #ffc8b8 0%, #c85c48 45%, #4a1a14 100%);
+    box-shadow:
+        0 0 10px rgba(255, 140, 120, 0.45),
+        0 0 22px rgba(200, 80, 60, 0.2);
+    animation: planetBob 36s ease-in-out infinite reverse;
+}
+
+/* Elliptical orbit + spark satellite */
+body.page-auth .auth-orbit {
+    position: fixed;
+    top: 16%;
+    left: 14%;
+    width: min(84px, 14vw);
+    height: min(52px, 9vw);
+    border: 1px solid rgba(255, 255, 255, 0.085);
+    border-radius: 50%;
+    animation: orbitSpin 28s linear infinite;
+    transform: skewX(-8deg);
+    transform-origin: center center;
+}
+
+body.page-auth .auth-orbit-dot {
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    margin-left: -2.5px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #f4ffff, #40c4ff);
+    box-shadow: 0 0 10px rgba(160, 235, 255, 1), 0 0 20px rgba(0, 200, 255, 0.45);
+}
+
+/* Tight star cluster */
+body.page-auth .auth-star-bloom {
+    position: fixed;
+    top: 32%;
+    right: 22%;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: rgba(255, 255, 250, 0.95);
+    box-shadow:
+        0 0 16px 4px rgba(255, 250, 235, 0.35),
+        24px -28px 0 0 rgba(255, 255, 255, 0.75),
+        -18px 22px 0 0 rgba(200, 235, 255, 0.65),
+        38px 16px 0 -0.5px rgba(255, 255, 255, 0.55),
+        -12px 36px 0 0 rgba(255, 255, 255, 0.4),
+        52px -8px 0 0 rgba(180, 220, 255, 0.5);
+    animation: starBloomPulse 6s ease-in-out infinite;
+}
+
+/* Waxing ~10%: one white disk + mask — no full “stacked circles” */
+body.page-auth::before {
+    content: '';
+    position: fixed;
+    inset: max(92px, 12vh) clamp(26px, 7vw, 76px) auto auto;
+    width: min(52px, 8.8vw);
+    height: min(52px, 8.8vw);
+    max-width: 14vmin;
+    max-height: 14vmin;
+    margin: 0;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle at 34% 38%,
+        #ffffff 0%,
+        #f4f6f2 40%,
+        #dce1dc 65%,
+        #7d8580 100%
+    );
+    box-shadow: inset -3px 2px 10px rgba(255, 255, 255, 0.5);
+    -webkit-mask-image: radial-gradient(
+        circle 58px at -10px 50%,
+        transparent 54px,
+        #fff 55px
+    );
+    mask-image: radial-gradient(
+        circle 58px at -10px 50%,
+        transparent 54px,
+        #fff 55px
+    );
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    transform-origin: 76% 50%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    contain: layout;
+    animation:
+        moonGlow 7s ease-in-out infinite,
+        moonDrift 22s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Depth haze — keep *behind* .auth-fx so lightning/stars aren’t wiped */
+body.page-auth::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background:
+        radial-gradient(ellipse 100% 55% at 25% -5%, rgba(40, 90, 140, 0.2) 0%, transparent 52%),
+        radial-gradient(ellipse 80% 45% at 92% 35%, rgba(100, 60, 160, 0.12) 0%, transparent 48%),
+        radial-gradient(ellipse 110% 70% at 50% 115%, rgba(15, 40, 65, 0.35) 0%, transparent 55%);
+    background-size: 140% 140%, 130% 130%, 100% 100%;
+    background-repeat: no-repeat;
+    animation: nebulaLayerDrift 38s ease-in-out infinite;
+}
+
+body.page-auth > header,
+body.page-auth > .auth-wrapper,
+body.page-auth > .hero,
+body.page-auth > main,
+body.page-auth > footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* Nav bar: flush top, dark glass, no gap */
+body.page-auth header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 40px;
+    z-index: 400;
+    background: linear-gradient(
+        180deg,
+        rgba(6, 8, 14, 0.92) 0%,
+        rgba(10, 14, 22, 0.88) 100%
+    );
+    backdrop-filter: saturate(120%) blur(14px);
+    -webkit-backdrop-filter: saturate(120%) blur(14px);
+    border-bottom: 1px solid rgba(0, 208, 132, 0.28);
+    box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.45),
+        0 1px 0 rgba(255, 255, 255, 0.06) inset;
+    transition: background 0.35s ease, border-color 0.35s ease;
+}
+
+body.page-auth header nav a {
+    border-color: rgba(0, 208, 132, 0.32);
+    background: rgba(0, 0, 0, 0.35);
+}
+
+body.page-auth header nav a:hover {
+    background: rgba(0, 168, 82, 0.4);
+    border-color: rgba(0, 255, 200, 0.45);
+}
+
+body.page-auth header nav a.active {
+    background: linear-gradient(135deg, #00a852, #00d084);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.35);
+    box-shadow: 0 0 24px rgba(0, 208, 132, 0.35);
+    animation: navActivePulse 2.4s ease-in-out infinite;
+}
+
+@keyframes navActivePulse {
+    0%, 100% {
+        box-shadow: 0 0 24px rgba(0, 208, 132, 0.35);
+    }
+    50% {
+        box-shadow: 0 0 36px rgba(0, 255, 200, 0.55), 0 0 60px rgba(0, 168, 82, 0.22);
+    }
+}
+
+body.page-auth .logo-section .logo {
+    animation:
+        logoFloat 4.5s ease-in-out infinite,
+        logoAuraPulse 2.8s ease-in-out infinite;
+}
+
+body.page-auth .logo-section .site-name {
+    animation: brandNameShine 4s ease-in-out infinite;
+}
+
+@keyframes brandNameShine {
+    0%, 100% {
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+        text-shadow:
+            0 0 20px rgba(255, 255, 255, 0.35),
+            0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* Nebula wisps */
+body.page-auth .auth-fx {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+/* Large drifting star tiles (always-on motion; sits under celestial / aurora) */
+body.page-auth .auth-stars-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: repeat;
+    /* normal blending = cheaper than screen on full-viewport layers */
+    opacity: 0.55;
+}
+
+body.page-auth .auth-stars-layer--deep {
+    opacity: 0.62;
+    background-image:
+        radial-gradient(1.1px 1.1px at 50% 50%, rgba(255, 255, 255, 0.92) 45%, transparent 52%),
+        radial-gradient(1.35px 1.35px at 50% 50%, rgba(200, 235, 255, 0.55) 42%, transparent 55%);
+    background-size:
+        72px 96px,
+        128px 148px;
+    background-position:
+        0 0,
+        140px 90px;
+    animation: authStarsScrollDeep 95s linear infinite;
+}
+
+body.page-auth .auth-stars-layer--mid {
+    display: none;
+}
+
+/* Sky lightning: fixed to viewport (not inside .auth-fx) so it isn’t clipped / buried */
+body.page-auth .auth-lightning {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    background:
+        radial-gradient(ellipse 130% 72% at 28% 0%, rgba(255, 255, 255, 0.68) 0%, transparent 56%),
+        radial-gradient(ellipse 95% 50% at 86% 0%, rgba(220, 245, 255, 0.42) 0%, transparent 52%),
+        linear-gradient(180deg, rgba(248, 252, 255, 0.26) 0%, transparent 34%);
+    animation: authLightningFlashA 18s linear infinite;
+}
+
+body.page-auth .auth-lightning--b {
+    display: none;
+}
+
+body.page-auth .auth-fx::before,
+body.page-auth .auth-fx::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(20px);
+    opacity: 0.55;
+    animation: nebulaSlow 24s ease-in-out infinite;
+}
+
+body.page-auth .auth-fx::before {
+    width: min(480px, 90vw);
+    height: min(480px, 90vw);
+    left: -20%;
+    bottom: -15%;
+    background: radial-gradient(circle, rgba(40, 80, 120, 0.45) 0%, transparent 70%);
+}
+
+body.page-auth .auth-fx::after {
+    width: min(360px, 70vw);
+    height: min(360px, 70vw);
+    right: -10%;
+    top: 40%;
+    background: radial-gradient(circle, rgba(80, 40, 100, 0.25) 0%, transparent 68%);
+    animation-delay: -12s;
+}
+
+/* ── Aurora: lighter blur, no blend-mode anim (big FPS win) ── */
+body.page-auth .auth-aurora {
+    position: fixed;
+    bottom: -15%;
+    left: -25%;
+    width: 150%;
+    height: 50vh;
+    height: 50dvh;
+    min-height: 200px;
+    pointer-events: none;
+    z-index: 1;
+    background: linear-gradient(
+        100deg,
+        transparent 0%,
+        rgba(0, 168, 82, 0.12) 25%,
+        rgba(0, 220, 180, 0.1) 45%,
+        rgba(90, 60, 180, 0.08) 62%,
+        rgba(0, 168, 130, 0.1) 78%,
+        transparent 100%
+    );
+    filter: blur(14px) saturate(115%);
+    opacity: 0.5;
+}
+
+body.page-auth .auth-aurora::before {
+    display: none;
+}
+
+/* ── Shooting meteors: long ion tail + bright head (::after) ── */
+body.page-auth .meteor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(220px, 55vw);
+    height: 3px;
+    pointer-events: none;
+    z-index: 4;
+    border-radius: 3px;
+    transform-origin: 100% 50%;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(180, 220, 255, 0.12) 28%,
+        rgba(255, 255, 255, 0.65) 62%,
+        rgba(255, 255, 255, 0.98) 88%,
+        rgba(200, 255, 255, 1) 100%
+    );
+    filter: blur(0.5px) drop-shadow(0 0 10px rgba(200, 255, 255, 0.85));
+    opacity: 0;
+    animation: meteorShoot 6.8s ease-in infinite;
+}
+
+body.page-auth .meteor::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow:
+        0 0 10px 4px rgba(255, 255, 255, 1),
+        0 0 24px 8px rgba(150, 220, 255, 0.85);
+}
+
+body.page-auth .meteor-1 {
+    animation-delay: 0s;
+}
+
+body.page-auth .meteor-2 {
+    animation-delay: 2.1s;
+    animation-name: meteorShootSlow;
+    width: min(180px, 48vw);
+    height: 2.5px;
+    animation-duration: 8s;
+}
+
+body.page-auth .meteor-3 {
+    animation-delay: 4.7s;
+    width: min(200px, 50vw);
+    animation-duration: 7.4s;
+}
+
+/* Star field: layered dots (login wrapper OR home main) */
+body.page-auth .auth-wrapper::before,
+body.page-auth > main::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient(1.5px 1.5px at 10% 15%, rgba(255, 255, 255, 0.95), transparent),
+        radial-gradient(1px 1px at 22% 38%, rgba(255, 255, 255, 0.75), transparent),
+        radial-gradient(1px 1px at 35% 8%, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(1.5px 1px at 48% 52%, rgba(255, 255, 255, 0.85), transparent),
+        radial-gradient(1px 1px at 60% 22%, rgba(255, 255, 255, 0.65), transparent),
+        radial-gradient(1px 1px at 72% 45%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1.5px 1px at 85% 12%, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(1px 1px at 92% 60%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(1px 1px at 15% 65%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1.5px 1px at 28% 78%, rgba(255, 255, 255, 0.85), transparent),
+        radial-gradient(1px 1px at 40% 92%, rgba(255, 255, 255, 0.55), transparent),
+        radial-gradient(1px 1px at 55% 70%, rgba(255, 255, 255, 0.75), transparent),
+        radial-gradient(2px 2px at 68% 88%, rgba(200, 230, 255, 1), transparent),
+        radial-gradient(1px 1px at 80% 72%, rgba(255, 255, 255, 0.65), transparent),
+        radial-gradient(1px 1px at 5% 48%, rgba(255, 255, 255, 0.55), transparent),
+        radial-gradient(1.5px 1.5px at 50% 30%, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(1px 1px at 88% 40%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(1px 1px at 33% 55%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1px 1px at 12% 88%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 77% 8%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(circle, rgba(255, 255, 255, 0.28) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+    background-size:
+        100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%,
+        100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%,
+        100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%,
+        100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%,
+        44px 44px, 72px 72px;
+    background-position:
+        0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0,
+        0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0,
+        12px 20px, 30px 50px;
+    background-repeat: repeat;
+    animation:
+        starsTwinkle 5s ease-in-out infinite,
+        starfieldDrift 96s linear infinite;
+}
+
+@media (max-width: 640px) {
+    body.page-auth::before {
+        inset: max(78px, 10vh) clamp(12px, 4vw, 40px) auto auto;
+        width: min(40px, 11vw);
+        height: min(40px, 11vw);
+        -webkit-mask-image: radial-gradient(
+            circle 46px at -8px 50%,
+            transparent 42px,
+            #fff 43px
+        );
+        mask-image: radial-gradient(
+            circle 46px at -8px 50%,
+            transparent 42px,
+            #fff 43px
+        );
+        transform-origin: 74% 50%;
+    }
+
+    body.page-auth .auth-planet-gas,
+    body.page-auth .auth-orbit {
+        display: none;
+    }
+
+    body.page-auth .auth-earthshine {
+        right: clamp(96px, 26vw, 168px);
+        opacity: 0.85;
+    }
+
+    body.page-auth .auth-star-bloom {
+        right: 12%;
+        transform: scale(0.85);
+    }
+
+    body.page-auth .auth-wrapper::before,
+    body.page-auth > main::before {
+        animation:
+            starsTwinkle 5s ease-in-out infinite,
+            starfieldDrift 100s linear infinite;
+    }
+
+    body.page-auth .auth-stars-layer--deep {
+        opacity: 0.55;
+        animation-duration: 110s;
+    }
+
+    body.page-auth .auth-lightning {
+        animation-duration: 22s;
+    }
+
+    body.page-auth header {
+        padding: 10px 16px;
+    }
+
+    body.page-auth {
+        padding-top: 68px;
+    }
+}
+
+body.page-auth .auth-card-shell {
+    position: relative;
+    z-index: 2;
+    padding: 3px;
+    border-radius: 22px;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    isolation: isolate;
+    animation:
+        cardRise 0.9s var(--ease-out-expo) both,
+        cardGlowBreath 5.5s ease-in-out 0.85s infinite;
+    transition: transform 0.55s var(--ease-out-expo);
+    box-shadow:
+        0 0 0 1px rgba(0, 208, 132, 0.22),
+        0 28px 70px rgba(0, 0, 0, 0.42),
+        0 0 56px rgba(0, 208, 132, 0.18);
+}
+
+body.page-auth .auth-card-shell::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    z-index: 0;
+    background: conic-gradient(
+        from 0deg,
+        var(--fh-green-dark),
+        var(--fh-green-bright),
+        #9dffdf,
+        #3dffc4,
+        var(--fh-green-mid),
+        var(--fh-green-dark)
+    );
+    animation: authRingSpin 5.5s linear infinite;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+body.page-auth .auth-card-shell:hover {
+    transform: rotateX(2deg) rotateY(-3deg) translateY(-8px);
+}
+
+body.page-auth .auth-card {
+    position: relative;
+    z-index: 1;
+    border-radius: 19px;
+    animation: cardInnerReveal 0.95s var(--ease-out-expo) 0.12s both;
+    transform-origin: center center;
+    transition:
+        transform 0.45s var(--ease-out-expo),
+        box-shadow 0.4s ease;
+}
+
+body.page-auth .auth-card:hover {
+    transform: translateZ(8px);
+}
+
+/* Corner sparkles (pure CSS motion demo) */
+body.page-auth .auth-sparkle {
+    position: absolute;
+    z-index: 8;
+    top: 14px;
+    right: 16px;
+    width: 9px;
+    height: 9px;
+    pointer-events: none;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, rgba(255, 255, 255, 0) 72%);
+    box-shadow:
+        0 0 10px rgba(255, 255, 255, 0.95),
+        0 0 22px rgba(0, 255, 210, 0.55);
+    animation: sparkleDrift 4.8s ease-in-out infinite;
+}
+
+body.page-auth .auth-sparkle--b {
+    top: 28%;
+    left: 12px;
+    right: auto;
+    width: 6px;
+    height: 6px;
+    animation-delay: -1.4s;
+}
+
+body.page-auth .auth-sparkle--c {
+    top: auto;
+    bottom: 18%;
+    right: 18%;
+    left: auto;
+    width: 7px;
+    height: 7px;
+    animation-delay: -2.6s;
+}
+
+/* ── Tabs: sliding green glider + smooth labels ── */
+body.page-auth .auth-tabs {
+    display: flex;
+    position: relative;
+    background: linear-gradient(180deg, #e8f5ee 0%, #dceee4 100%);
+    border-bottom: 1px solid rgba(0, 168, 82, 0.12);
+}
+
+body.page-auth .auth-tabs::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--fh-green-dark), var(--fh-green-bright));
+    border-radius: 4px 4px 0 0;
+    transition: transform 0.5s var(--ease-out-expo);
+    animation: tabGliderGlow 3.2s ease-in-out infinite;
+}
+
+body.page-auth .auth-tabs:has(#tab-signup.active)::before {
+    transform: translateX(100%);
+}
+
+body.page-auth .auth-tab {
+    flex: 1;
+    padding: 18px 14px;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    font-weight: 700;
+    color: #6a7a72;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition:
+        color 0.35s var(--ease-out-expo),
+        background 0.35s ease,
+        transform 0.25s var(--ease-out-expo);
+}
+
+body.page-auth .auth-tab:hover:not(.active) {
+    color: #334;
+    background: rgba(255, 255, 255, 0.35);
+    transform: translateY(-1px);
+}
+
+body.page-auth .auth-tab.active {
+    color: var(--fh-green-dark);
+    background: rgba(255, 255, 255, 0.92);
+    text-shadow: 0 0 24px rgba(0, 208, 132, 0.35);
+    animation: tabSelectPop 0.6s var(--ease-out-expo) both, tabActiveBreath 3.5s ease-in-out 0.6s infinite;
+}
+
+@keyframes tabActiveBreath {
+    0%, 100% {
+        text-shadow: 0 0 18px rgba(0, 208, 132, 0.25);
+    }
+    50% {
+        text-shadow: 0 0 28px rgba(0, 255, 200, 0.45);
+    }
+}
+
+/* ── Panel swap: slide + blur reveal ── */
+body.page-auth .form-panel {
+    display: none;
+    opacity: 0;
+}
+
+body.page-auth .form-panel.active {
+    display: block;
+    animation: authPanelIn 0.58s var(--ease-out-expo) both;
+}
+
+body.page-auth .form-panel.active#panel-signup {
+    animation-name: authPanelInAlt;
+}
+
+/* Staggered entrance inside each tab (layers on top of panel animation) */
+body.page-auth .form-panel.active > .auth-title {
+    animation: headlineDrop 0.62s var(--ease-out-expo) both;
+}
+
+body.page-auth .form-panel.active > .auth-subtitle {
+    animation: headlineDrop 0.62s var(--ease-out-expo) 0.07s both;
+}
+
+body.page-auth .form-panel.active > .success-banner.show {
+    animation: authBannerIn 0.52s var(--ease-out-expo) 0.12s both;
+}
+
+body.page-auth .form-panel.active > form {
+    animation: formBlockRise 0.72s var(--ease-out-expo) 0.14s both;
+}
+
+body.page-auth .form-panel.active > .divider {
+    animation: headlineDrop 0.55s var(--ease-out-expo) 0.32s both;
+}
+
+body.page-auth .form-panel.active > .switch-link {
+    animation: headlineDrop 0.55s var(--ease-out-expo) 0.4s both;
+}
+
+/* ── Titles: emoji pop ── */
+body.page-auth .auth-wiggle {
+    display: inline-block;
+    animation: wiggle 2.2s ease-in-out infinite;
+    transform-origin: 70% 70%;
+}
+
+/* ── Fields: lift + green aura on focus ── */
+body.page-auth .form-group input,
+body.page-auth .form-group select,
+body.page-auth .form-group textarea {
+    color: #181818;
+    -webkit-text-fill-color: #181818;
+    caret-color: #111;
+    transition:
+        border-color 0.3s ease,
+        box-shadow 0.4s var(--ease-out-expo),
+        transform 0.35s var(--ease-out-expo),
+        background 0.3s ease;
+}
+
+body.page-auth .form-group input:focus,
+body.page-auth .form-group select:focus,
+body.page-auth .form-group textarea:focus {
+    border-color: var(--fh-green-dark);
+    background: #fff;
+    color: #181818;
+    -webkit-text-fill-color: #181818;
+    caret-color: #111;
+    box-shadow:
+        0 0 0 4px rgba(0, 168, 82, 0.18),
+        0 12px 28px rgba(0, 168, 82, 0.12);
+    transform: translateY(-3px);
+}
+
+/* ── Submit: idle neon pulse + hover takeover ── */
+body.page-auth .btn-submit {
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    transition:
+        transform 0.35s var(--ease-out-expo),
+        box-shadow 0.4s ease,
+        filter 0.3s ease;
+    animation: btnIdlePulse 3.2s ease-in-out infinite;
+}
+
+body.page-auth .btn-submit:hover {
+    animation: none;
+    transform: translateY(-4px) scale(1.02);
+    box-shadow:
+        0 14px 36px rgba(0, 168, 82, 0.5),
+        0 0 24px rgba(0, 208, 132, 0.35);
+    filter: brightness(1.06);
+}
+
+body.page-auth .btn-submit:hover .btn-rocket {
+    animation: rocketLaunch 0.75s ease-in-out infinite;
+}
+
+body.page-auth .btn-submit:active {
+    transform: translateY(-1px) scale(0.99);
+}
+
+/* ── Divider lines animate in ── */
+body.page-auth .divider::before,
+body.page-auth .divider::after {
+    transform-origin: center;
+    animation: dividerGrow 0.8s var(--ease-out-expo) both;
+}
+
+body.page-auth .divider::after {
+    animation-delay: 0.12s;
+}
+
+/* ── Auth card: extra polish (typography, fields, banners, a11y) ── */
+body.page-auth .auth-body {
+    padding-top: 32px;
+    padding-inline: clamp(22px, 5vw, 36px);
+    padding-bottom: clamp(26px, 5vw, 38px);
+    background: linear-gradient(
+        180deg,
+        rgba(240, 253, 247, 0.55) 0%,
+        rgba(255, 255, 255, 0) min(120px, 24%)
+    );
+}
+
+body.page-auth .auth-title {
+    position: relative;
+    padding-bottom: 12px;
+    margin-bottom: 8px;
+    letter-spacing: -0.025em;
+    line-height: 1.3;
+    animation: authTitleGlow 4.5s ease-in-out infinite;
+}
+
+body.page-auth .auth-title::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: min(52px, 14vw);
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(
+        90deg,
+        var(--fh-green-dark),
+        var(--fh-green-bright),
+        #9dffdf,
+        var(--fh-green-dark)
+    );
+    background-size: 200% 100%;
+    animation:
+        titleBarShine 3.5s ease-in-out infinite,
+        titleBarFlow 5s linear infinite;
+    box-shadow: 0 2px 8px rgba(0, 208, 132, 0.35);
+}
+
+@keyframes titleBarFlow {
+    0% {
+        background-position: 0% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+body.page-auth .auth-subtitle {
+    letter-spacing: 0.02em;
+    line-height: 1.55;
+    max-width: 38ch;
+}
+
+body.page-auth .form-group {
+    position: relative;
+}
+
+body.page-auth .form-group:focus-within label {
+    color: var(--fh-green-dark);
+    transition: color 0.25s ease;
+}
+
+body.page-auth .form-group label {
+    transition: color 0.25s ease;
+}
+
+body.page-auth .form-group input,
+body.page-auth .form-group select,
+body.page-auth .form-group textarea {
+    border-radius: 12px;
+    box-shadow:
+        inset 0 1px 3px rgba(0, 0, 0, 0.05),
+        0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+body.page-auth .form-group select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #fafafa;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%2300a852' d='M6 8.5 1.5 4h9z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 12px;
+    padding-right: 40px;
+}
+
+body.page-auth .form-group textarea {
+    line-height: 1.5;
+}
+
+body.page-auth .success-banner.show {
+    animation: authBannerIn 0.48s var(--ease-out-expo) both;
+    border-left: 4px solid var(--fh-green-bright);
+    box-shadow: 0 6px 22px rgba(0, 168, 82, 0.12);
+}
+
+body.page-auth .forgot-link {
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease,
+        opacity 0.2s ease;
+    border-bottom: 1px solid transparent;
+    text-decoration: none;
+}
+
+body.page-auth .forgot-link:hover {
+    border-bottom-color: var(--fh-green-mid);
+    opacity: 0.92;
+}
+
+body.page-auth .divider {
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #9ca3af;
+    animation: dividerLabelPulse 5s ease-in-out infinite;
+}
+
+body.page-auth .divider::before,
+body.page-auth .divider::after {
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 168, 82, 0.2) 20%,
+        rgba(0, 168, 82, 0.35) 50%,
+        rgba(0, 168, 82, 0.2) 80%,
+        transparent
+    );
+}
+
+body.page-auth .auth-tabs {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+body.page-auth .auth-tab:focus-visible {
+    outline: 2px solid var(--fh-green-bright);
+    outline-offset: -2px;
+    z-index: 1;
+}
+
+body.page-auth .switch-link a:hover {
+    animation: switchLinkGlow 1.8s ease-in-out infinite;
+}
+
+body.page-auth .switch-link a:focus-visible {
+    outline: 2px solid var(--fh-green-dark);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+@keyframes authBannerIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ═══ GLOBAL POLISH: header logo micro-float ═══ */
+.logo-section .logo {
+    animation: logoFloat 4.5s ease-in-out infinite;
+}
+
+/* ═══ STAT CARDS: staggered entrance (dashboards) ═══ */
+.stats-grid.animate-on-load .stat-card {
+    opacity: 0;
+    animation: cardRise 0.55s var(--ease-out-expo) forwards;
+}
+
+.stats-grid.animate-on-load .stat-card:nth-child(1) { animation-delay: calc(var(--stagger-step) * 0); }
+.stats-grid.animate-on-load .stat-card:nth-child(2) { animation-delay: calc(var(--stagger-step) * 1); }
+.stats-grid.animate-on-load .stat-card:nth-child(3) { animation-delay: calc(var(--stagger-step) * 2); }
+.stats-grid.animate-on-load .stat-card:nth-child(4) { animation-delay: calc(var(--stagger-step) * 3); }
+.stats-grid.animate-on-load .stat-card:nth-child(5) { animation-delay: calc(var(--stagger-step) * 4); }
+.stats-grid.animate-on-load .stat-card:nth-child(6) { animation-delay: calc(var(--stagger-step) * 5); }
+
+/* ═══ PRIMARY / SAVE BUTTONS: shine sweep on hover ═══ */
+.btn-primary,
+.btn-save,
+.btn-submit {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after,
+.btn-save::after,
+.btn-submit::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 45%;
+    height: 100%;
+    background: linear-gradient(
+        105deg,
+        transparent,
+        rgba(255, 255, 255, 0.35),
+        transparent
+    );
+    transform: translateX(-130%);
+    pointer-events: none;
+}
+
+.btn-primary:hover::after,
+.btn-save:hover::after,
+.btn-submit:hover::after {
+    animation: shimmer 0.75s ease-out;
+}
+
+/* ═══ MODAL: smooth open ═══ */
+.modal-overlay.open .modal-box {
+    animation: modalIn 0.38s var(--ease-out-expo) both;
+}
+
+/* ═══ HEADER NAV: animated gradient underline on hover (top bar links) ═══ */
+header nav a {
+    position: relative;
+    overflow: hidden;
+}
+
+header nav a:not(.active)::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 5px;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--fh-green-bright), white);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.28s var(--ease-out-expo);
+    opacity: 0.9;
+}
+
+header nav a:not(.active):hover::after {
+    transform: scaleX(1);
+}
+
+/* Don’t clash with active pill style */
+header nav a.active::after {
+    display: none;
+}
+
+/* ═══ STAT CARD: soft pulse on hover (accent) ═══ */
+.stat-card {
+    transition:
+        transform 0.35s var(--ease-out-expo),
+        box-shadow 0.35s var(--ease-out-expo);
+}
+
+.stat-card:hover {
+    box-shadow:
+        0 8px 28px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(0, 168, 82, 0.12);
+}
+
+.stat-card:active {
+    animation: pulseRing 0.9s ease-out;
+}
+
+/* ═══ OPTIONAL utility: fade-in when scrolling (class for JS later) ═══ */
+.reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+        opacity 0.55s var(--ease-out-expo),
+        transform 0.55s var(--ease-out-expo);
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
