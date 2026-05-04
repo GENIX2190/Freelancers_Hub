@@ -33,13 +33,19 @@ VALUES (
   NULL, NULL, 'active'
 );
 -- ═══════════════════════════════════════
+<<<<<<< HEAD
 -- Module: Formations (Achref)
 -- Tables: formation, evaluation_formation
+=======
+-- Module: Experience (Yassine)
+-- Tables: post, reponse
+>>>>>>> d5de04e9ab209ea6c5dba55f089ac39e6bc41f9e
 -- Depends on: utilisateur
 -- ═══════════════════════════════════════
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+<<<<<<< HEAD
 DROP TABLE IF EXISTS `evaluation_formation`;
 DROP TABLE IF EXISTS `formation`;
 SET FOREIGN_KEY_CHECKS = 1;
@@ -74,3 +80,38 @@ CREATE TABLE `evaluation_formation` (
     FOREIGN KEY (`user_id`) REFERENCES `utilisateur` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+=======
+DROP TABLE IF EXISTS `reponse`;
+DROP TABLE IF EXISTS `post`;
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE `post` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT UNSIGNED NOT NULL,
+  `titre` VARCHAR(255) NOT NULL,
+  `contenu` TEXT NOT NULL,
+  `categorie` VARCHAR(255) NULL,
+  `tags` VARCHAR(512) NULL,
+  `date_publication` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `statut` VARCHAR(50) NOT NULL DEFAULT 'brouillon',
+  PRIMARY KEY (`id`),
+  KEY `idx_post_user` (`user_id`),
+  CONSTRAINT `fk_post_utilisateur`
+    FOREIGN KEY (`user_id`) REFERENCES `utilisateur` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `reponse` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `post_id` INT UNSIGNED NOT NULL,
+  `nom` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `contenu` TEXT NOT NULL,
+  `date_reponse` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_reponse_post` (`post_id`),
+  CONSTRAINT `fk_reponse_post`
+    FOREIGN KEY (`post_id`) REFERENCES `post` (`id`)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+>>>>>>> d5de04e9ab209ea6c5dba55f089ac39e6bc41f9e
