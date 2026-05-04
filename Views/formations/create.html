@@ -1,0 +1,146 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a Training Course - Freelence Hub</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="css/forms.css">
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+        <a href="../Main.html" class="logo-section">
+            <div class="logo">FH</div>
+            <div class="site-name">Freelence Hub</div>
+        </a>
+        <nav>
+            <a href="../missions/candidature.html">💼 Missions</a>
+            <a href="../formations/create.html">📚 Formations</a>
+            <a href="../experience/view.html">✍️ Experience</a>
+            <a href="../projets/view.html">📁 Projects</a>
+            <a href="../users/login.html" class="nav-right">🔐 Login</a>
+            <a href="../users/login.html?redirect=dashboard.html">📊 Dashboard</a>
+        </nav>
+    </div>
+</header>
+
+<main style="max-width:800px;">
+    <div class="form-container">
+        <h1>📚 Create a Training Course</h1>
+        <p class="subtitle">Share your knowledge and create a course for freelancers</p>
+
+        <div class="success-banner" id="successBanner">
+            ✅ Course created successfully! It is now available on the platform.
+        </div>
+
+        <form id="formationForm" method="POST" action="../../Controllers/FormationController.php" novalidate="">
+            <input type="hidden" name="form_action" value="course_create">
+            <input type="hidden" name="redirect" value="create">
+            <input type="hidden" name="instructor" value="">
+            <input type="hidden" name="status" value="Planned">
+            <input type="hidden" name="hours_done" value="0">
+            <div class="form-row">
+    
+            <input type="hidden" name="start_date" value="">
+
+            <div class="form-row full">
+                <div class="form-group">
+                    <label>Course Title <span class="required-mark">*</span></label>
+                    <input type="text" id="titre" name="title" placeholder="Ex: Advanced React.js">
+                    <div class="form-hint">Between 5 and 150 characters</div>
+                    <span class="field-error"></span>
+                </div>
+            </div>
+
+            <div class="form-row full">
+                <div class="form-group">
+                    <label>Description <span class="required-mark">*</span></label>
+                    <textarea id="description" name="description" placeholder="Describe the content, objectives and prerequisites..." minlength="50"></textarea>
+                    <div class="form-hint">Minimum 50 characters</div>
+                    <span class="field-error"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Duration (hours) <span class="required-mark">*</span></label>
+                    <input type="number" id="duree" name="total_hours" placeholder="Ex: 20">
+                    <div class="form-hint">Must be at least 1 hour</div>
+                    <span class="field-error"></span>
+                </div>
+                <div class="form-group">
+                    <label>Price (€) <span class="required-mark">*</span></label>
+                    <input type="number" id="prix" name="prix" placeholder="Ex: 99.99" step="0.01">
+                    <div class="form-hint">Enter 0 for a free course</div>
+                    <span class="field-error"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Level <span class="required-mark">*</span></label>
+                    <select id="niveau" name="niveau">
+                        <option value="">-- Select a level --</option>
+                        <option value="debutant">Beginner</option>
+                        <option value="intermediaire">Intermediate</option>
+                        <option value="avance">Advanced</option>
+                    </select>
+                    <span class="field-error"></span>
+                </div>
+                <div class="form-group">
+                    <label>Category <span class="required-mark">*</span></label>
+                    <select id="categorie" name="category">
+                        <option value="">-- Select a category --</option>
+                        <option value="developpement-web">Web Development</option>
+                        <option value="design">Design</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="gestion-projet">Project Management</option>
+                        <option value="bureautique">Office Tools</option>
+                        <option value="autre">Other</option>
+                    </select>
+                    <span class="field-error"></span>
+                </div>
+            </div>
+
+            <div class="form-row full">
+                <div class="form-group">
+                    <label>Course Image</label>
+                    <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/jpg">
+                    <div class="form-hint">Accepted: JPG, JPEG, PNG — Maximum 2 MB</div>
+                    <span class="field-error"></span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">📤 Create Course</button>
+                <button type="reset" class="btn-cancel">Cancel</button>
+            </div>
+
+        </form>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-text">
+        <p>© 2026 Freelence Hub - All rights reserved</p>
+        <p class="copyright">Log in and discover your next opportunities</p>
+    </div>
+</footer>
+
+<script src="../assets/js/common.js"></script>
+<script src="js/formation-create.js?v=2"></script>
+<script>
+document.getElementById('formationForm').addEventListener('submit', function(e) {
+    var val = parseInt(document.getElementById('r').value);
+    var err = document.getElementById('rating-error');
+    if (!val || val < 1 || val > 5) {
+        e.preventDefault();
+        err.textContent = '⚠️ Rating must be between 1 and 5.';
+        document.getElementById('r').focus();
+    } else {
+        err.textContent = '';
+    }
+});
+</script>
+
+</body></html>

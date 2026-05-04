@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../xampp/htdocs/PROREJCTWEB1/Controllers"
+		},
+		{
+			"path": "../../../../../xampp/htdocs/PROREJCTWEB1/database"
+		},
+		{
+			"path": "../../../../../xampp/htdocs/PROREJCTWEB1/Models"
+		},
+		{
+			"path": "../../../../../xampp/htdocs/PROREJCTWEB1/Views"
+		}
+	]
+}

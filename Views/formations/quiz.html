@@ -1,0 +1,222 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Freelence Hub</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="css/quiz.css">
+    <style>
+    .badge-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+        animation: badgePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes badgePop {
+        0% { transform: scale(0); opacity: 0; }
+        70% { transform: scale(1.2); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    .badge-icon { font-size: 72px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2)); margin-bottom: 8px; }
+    .badge-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .badge-desc { font-size: 14px; color: #666; }
+    .badge-bronze .badge-title { color: #cd7f32; }
+    .badge-silver .badge-title { color: #9e9e9e; }
+    .badge-gold .badge-title { color: #FFD700; }
+    .badge-bronze { background: linear-gradient(135deg, #fff8f0, #ffe0b2); border: 2px solid #cd7f32; border-radius: 16px; padding: 20px 40px; }
+    .badge-silver { background: linear-gradient(135deg, #f5f5f5, #e0e0e0); border: 2px solid #9e9e9e; border-radius: 16px; padding: 20px 40px; }
+    .badge-gold   { background: linear-gradient(135deg, #fffde7, #fff9c4); border: 2px solid #FFD700; border-radius: 16px; padding: 20px 40px; }
+    .badge-stars  { font-size: 20px; margin-top: 4px; letter-spacing: 4px; }
+    .badge-score-label { font-size: 13px; color: #888; margin-top: 6px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="../Main.html" class="logo-section">
+                <div class="logo">FH</div>
+                <div class="site-name">Freelence Hub</div>
+            </a>
+            <nav>
+                <a href="../missions/candidature.html">💼 Missions</a>
+                <a href="../formations/create.html">📚 Formations</a>
+                <a href="../experience/view.html">✍️ Experience</a>
+                <a href="../projets/view.html">📁 Projects</a>
+                <a href="../users/login.html" class="nav-right">🔐 Login</a>
+                <a href="../users/login.html?redirect=dashboard.html">📊 Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="side-nav"></div>
+
+    <main>
+        <h1 class="page-title">🧠 Knowledge Quiz</h1>
+
+        <!-- STEP 1 · Choose category -->
+        <div id="view-categories" class="panel" style="display: block;">
+            <h2>📂 Choose a Category</h2>
+            <div class="category-grid">
+                <div class="category-card" onclick="selectCategory('developpement-web')">💻 Web Development</div>
+                <div class="category-card" onclick="selectCategory('design')">🎨 Design</div>
+                <div class="category-card" onclick="selectCategory('marketing')">📈 Marketing</div>
+                <div class="category-card" onclick="selectCategory('gestion-projet')">📊 Project Management</div>
+                <div class="category-card" onclick="selectCategory('bureautique')">📄 Office Tools</div>
+            </div>
+        </div>
+
+        <!-- STEP 2 · Choose quiz -->
+        <div id="view-quizlist" class="panel" style="display: none;">
+            <h2 id="quizlist-title">📝 Design — Quizzes</h2>
+            <div id="quiz-list" class="quiz-list"></div>
+            <br>
+            <button class="btn-back" onclick="backToCategories()">← Back to Categories</button>
+        </div>
+
+        <!-- STEP 3 · Take quiz -->
+        <div id="view-taking" class="panel" style="display: none;">
+            <div class="quiz-header">
+                <h2 id="taking-title">📝 UI/UX Design Principles</h2>
+                <span class="q-counter" id="q-counter">0 / 5 answered</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+            </div>
+            <div id="warning-unanswered" class="warning-msg" style="display: none;">
+                ⚠️ Please answer all questions before submitting.
+            </div>
+            <div id="questions-container"></div>
+            <button class="btn-submit" onclick="submitQuiz()">✅ Submit Quiz</button>
+        </div>
+
+        <!-- STEP 4 · Results -->
+        <div id="view-results" class="panel" style="display: none;">
+            <div class="results-top">
+                <div class="score-circle" id="score-circle">
+                    <div class="score-pct" id="score-pct">—</div>
+                    <div class="score-raw" id="score-raw">— / — correct</div>
+                </div>
+
+                <!-- BADGE SYSTEM -->
+                <div id="feedback-badge" class="feedback-badge"></div>
+
+                <p id="feedback-text" style="color:#555; font-size:15px;"></p>
+
+                <div class="results-actions">
+                    <button class="btn-retry" onclick="retryQuiz()">🔄 Try Again</button>
+                    <button class="btn-back" onclick="backToQuizzes()">← Back to Quizzes</button>
+                    <button id="cert-btn" class="btn-certificate" style="display:none;" onclick="showCertificate()">Passer au certif</button>
+                </div>
+            </div>
+
+            <div class="review-title">📋 Answer Review</div>
+            <div class="review-summary">
+                <div class="rs-item rs-correct">
+                    <div class="rs-num" id="rs-correct">0</div>
+                    <div class="rs-lbl">✓ Correct</div>
+                </div>
+                <div class="rs-item rs-wrong">
+                    <div class="rs-num" id="rs-wrong">0</div>
+                    <div class="rs-lbl">✗ Wrong</div>
+                </div>
+                <div class="rs-item rs-skip">
+                    <div class="rs-num" id="rs-skip">0</div>
+                    <div class="rs-lbl">— Skipped</div>
+                </div>
+            </div>
+            <div id="corrections-container"></div>
+            <div class="results-actions bottom-cert-actions">
+                <button id="cert-btn-bottom" class="btn-certificate" style="display:none;" onclick="showCertificate()">Passer au certif</button>
+            </div>
+
+            <div class="certificate-card" id="certificate-card">
+                <div class="cert-badge">🏆</div>
+                <div class="cert-header">Certificate of Achievement</div>
+                <div class="cert-sub">Freelence Hub — Official Quiz Certificate</div>
+                <div class="cert-body" id="cert-body"></div>
+                <div class="cert-score" id="cert-score"></div>
+                <button class="btn-print" onclick="printCertificate()">🖨️ Print Certificate</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-text">
+            <p>© 2026 Freelence Hub - All rights reserved</p>
+            <p class="copyright">Log in and discover your next opportunities</p>
+        </div>
+    </footer>
+
+    <script src="js/quiz.js?v=2"></script>
+    <script>
+    /* ===== BADGE SYSTEM ===== */
+    function showBadge(score) {
+        const badgeEl = document.getElementById('feedback-badge');
+        let badge = {};
+
+        if (score >= 80) {
+            badge = {
+                icon: '🥇',
+                title: 'Gold Badge',
+                desc: 'Excellent ! Maîtrise parfaite du cours.',
+                stars: '⭐⭐⭐',
+                cls: 'badge-gold'
+            };
+        } else if (score >= 50) {
+            badge = {
+                icon: '🥈',
+                title: 'Silver Badge',
+                desc: 'Bien joué ! Continue à progresser.',
+                stars: '⭐⭐',
+                cls: 'badge-silver'
+            };
+        } else {
+            badge = {
+                icon: '🥉',
+                title: 'Bronze Badge',
+                desc: 'Bon début ! Révise et réessaie.',
+                stars: '⭐',
+                cls: 'badge-bronze'
+            };
+        }
+
+        badgeEl.innerHTML = `
+            <div class="badge-container ${badge.cls}">
+                <div class="badge-icon">${badge.icon}</div>
+                <div class="badge-title">${badge.title}</div>
+                <div class="badge-stars">${badge.stars}</div>
+                <div class="badge-desc">${badge.desc}</div>
+                <div class="badge-score-label">Score : ${score}%</div>
+            </div>
+        `;
+    }
+
+    /* Hook dans submitQuiz */
+    const _origSubmit = window.submitQuiz;
+    window.submitQuiz = function() {
+        if (_origSubmit) _origSubmit();
+        setTimeout(function() {
+            const pctEl = document.getElementById('score-pct');
+            if (pctEl) {
+                const score = parseInt(pctEl.textContent);
+                if (!isNaN(score)) showBadge(score);
+            }
+        }, 100);
+    };
+
+    /* ===== NAV TRANSITION ===== */
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('header nav a').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                var href = this.getAttribute('href');
+                if (!href || href === '#' || href.startsWith('javascript:')) return;
+                e.preventDefault();
+                document.body.style.opacity = '0';
+                document.body.style.transform = 'translateY(-10px)';
+                setTimeout(function() { window.location.href = href; }, 300);
+            });
+        });
+    });
+    </script>
+
+</body></html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Management - Freelence Hub</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="css/formations.css">
+    <link rel="stylesheet" href="../assets/css/admin-dashboard.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<!-- ═══ ADMIN SIDEBAR ═══ -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="s-logo">FH</div>
+        <span class="brand">Freelence Hub</span>
+    </div>
+    <div class="sidebar-label">Main</div>
+    <nav class="sidebar-nav">
+        <a href="../dashboard.html"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    </nav>
+    <div class="sidebar-label">Modules</div>
+    <nav class="sidebar-nav">
+        <a href="../users/dashboard.html"><span class="nav-icon">👤</span><span>Users</span></a>
+        <a href="../missions/dashboard.html"><span class="nav-icon">💼</span><span>Missions</span></a>
+        <a href="../formations/dashboard.html" class="active"><span class="nav-icon">📚</span><span>Formations</span></a>
+        <a href="../projets/dashboard.html"><span class="nav-icon">📁</span><span>Projects</span></a>
+        <a href="../experience/dashboard.html"><span class="nav-icon">✍️</span><span>Experience</span></a>
+    </nav>
+    <div class="sidebar-label">User View</div>
+    <nav class="sidebar-nav">
+        <a href="../Main.html"><span class="nav-icon">🏠</span><span>Home</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+        <a href="../Main.html"><span class="nav-icon">🚪</span><span>Logout</span></a>
+    </div>
+</aside>
+
+<div class="content-wrapper">
+<main>
+    <div class="page-header">
+        <h1 class="page-title">📚 Training Management</h1>
+        <button class="btn-primary" id="main-add-btn" onclick="onMainAdd()">＋ Add New Course</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number" id="s-total">0</div><div class="stat-label">Total Courses</div></div>
+        <div class="stat-card"><div class="stat-number" id="s-inprogress">0</div><div class="stat-label">In Progress</div></div>
+        <div class="stat-card"><div class="stat-number" id="s-completed">0</div><div class="stat-label">Completed</div></div>
+        <div class="stat-card"><div class="stat-number" id="s-planned">0</div><div class="stat-label">Planned</div></div>
+        <div class="stat-card"><div class="stat-number" id="s-evals">0</div><div class="stat-label">Evaluations</div></div>
+        <div class="stat-card"><div class="stat-number" id="s-avg-rating">—</div><div class="stat-label">Avg Rating</div></div>
+    </div>
+
+    <div id="rating-donut-section" style="background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:24px;margin-bottom:28px;">
+        <h3 style="margin:0 0 20px 0;font-size:1rem;font-weight:600;color:#111;">Rating Distribution</h3>
+        <div style="display:flex;align-items:center;gap:36px;flex-wrap:wrap;">
+            <div style="position:relative;width:180px;height:180px;flex-shrink:0;">
+                <svg id="donutSvg" viewBox="0 0 180 180" width="180" height="180" style="transform:rotate(-90deg);display:block;"></svg>
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;">
+                    <div id="donutAvg" style="font-size:28px;font-weight:600;color:#111;line-height:1;">â€”</div>
+                    <div id="donutTotal" style="font-size:12px;color:#6b7280;margin-top:2px;">0 reviews</div>
+                </div>
+            </div>
+            <div id="donutLegend" style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+    </div>
+
+    <section class="student-reviews-section">
+        <h2 class="student-reviews-title">&#11088; Student Reviews</h2>
+        <div id="studentReviewsList" class="student-reviews-list"></div>
+        <div class="empty-state" id="studentReviewsEmpty" style="display:none">
+            <div class="icon">&#11088;</div>
+            <p>No student reviews yet.</p>
+        </div>
+    </section>
+
+    <!-- Tabs -->
+    <div class="tabs-bar">
+        <button class="tab-btn active" id="tab-btn-courses"     onclick="switchFormTab('courses',this)">📚 Courses</button>
+        <button class="tab-btn"        id="tab-btn-evaluations" onclick="switchFormTab('evaluations',this)">⭐ Evaluations</button>
+    </div>
+
+    <!-- ── COURSES TAB ── -->
+    <div id="tab-courses" class="tab-section active-tab">
+        <div class="controls-bar">
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search by title, instructor or category..." oninput="applyFilters()">
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-status="all"         onclick="setFilter(this)">All</button>
+                <button class="filter-tab" data-status="In Progress"        onclick="setFilter(this)">🟢 In Progress</button>
+                <button class="filter-tab" data-status="Completed"          onclick="setFilter(this)">🔵 Completed</button>
+                <button class="filter-tab" data-status="Planned"            onclick="setFilter(this)">🟡 Planned</button>
+                <button class="filter-tab" data-status="Cancelled"          onclick="setFilter(this)">🔴 Cancelled</button>
+            </div>
+        </div>
+        <div class="cards-grid" id="cardsGrid"></div>
+    </div>
+
+    <!-- ── EVALUATIONS TAB ── -->
+    <div id="tab-evaluations" class="tab-section">
+
+        <!-- ══ DONUT CHART STATISTIQUES AVIS ══ -->
+        <div class="rating-donut-section-copy" style="display:none">
+            <h3 style="margin:0 0 20px 0;font-size:1rem;font-weight:600;color:#111;">📊 Rating Distribution</h3>
+            <div style="display:flex;align-items:center;gap:36px;flex-wrap:wrap;">
+
+                <!-- SVG Donut -->
+                <div style="position:relative;width:180px;height:180px;flex-shrink:0;">
+                    <svg viewBox="0 0 180 180" width="180" height="180" style="transform:rotate(-90deg);display:block;"></svg>
+                    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;">
+                        <div style="font-size:28px;font-weight:600;color:#111;line-height:1;">—</div>
+                        <div style="font-size:12px;color:#6b7280;margin-top:2px;">0 reviews</div>
+                    </div>
+                </div>
+
+                <!-- Légende + barres -->
+                <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:10px;"></div>
+            </div>
+        </div>
+        <!-- ══ FIN DONUT ══ -->
+
+        <div class="evals-controls">
+            <input type="text" class="search-input" id="search-evals" placeholder="🔍 Search evaluations..." oninput="renderEvals()">
+            <button class="btn-primary" onclick="openAddEval()">＋ Add Evaluation</button>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Course</th>
+                        <th>Student / Client</th>
+                        <th>Rating</th>
+                        <th>Comment</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="evals-tbody"></tbody>
+            </table>
+            <div class="empty-state" id="evals-empty" style="display:none"><div class="icon">⭐</div><p>No evaluations yet.</p></div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-text">
+        <p>&copy; 2026 Freelence Hub - All rights reserved</p>
+        <p class="copyright">Grow your skills and earn more opportunities</p>
+    </div>
+</footer>
+
+<!-- ═══════════════ ADD / EDIT MODAL ═══════════════ -->
+<div class="modal-overlay" id="formModal" onclick="closeOnOverlay(event,'formModal')">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="formModalTitle">Add New Course</h2>
+            <button class="modal-close" onclick="closeModal('formModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="courseForm" method="POST" action="../../Controllers/FormationController.php" onsubmit="return saveCourse(event)" novalidate>
+                <input type="hidden" name="form_action" id="f_action" value="course_create">
+                <input type="hidden" name="course_id" id="editId" value="">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Course Title <span class="required">*</span></label>
+                        <input type="text" id="f_title" name="title" placeholder="e.g. Advanced React.js">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Category <span class="required">*</span></label>
+                        <select id="f_category" name="category">
+                            <option value="">-- Select --</option>
+                            <option>Web Development</option>
+                            <option>Mobile Development</option>
+                            <option>UI/UX Design</option>
+                            <option>Backend / API</option>
+                            <option>Project Management</option>
+                            <option>Data Science</option>
+                            <option>Marketing</option>
+                            <option>Other</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Instructor / Platform <span class="required">*</span></label>
+                        <input type="text" id="f_instructor" name="instructor" placeholder="e.g. Udemy / John Doe">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Total Hours <span class="required">*</span></label>
+                        <input type="number" id="f_total_hours" name="total_hours" placeholder="e.g. 40">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Status <span class="required">*</span></label>
+                        <select id="f_status" name="status" onchange="onStatusChange()">
+                            <option value="">-- Select --</option>
+                            <option>In Progress</option>
+                            <option>Completed</option>
+                            <option>Planned</option>
+                            <option>Cancelled</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Hours Done</label>
+                        <input type="number" id="f_hours_done" name="hours_done" placeholder="0" value="0">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Rating (0–5)</label>
+                        <input type="number" id="f_rating" name="rating" placeholder="e.g. 4.8" step="0.1">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="f_start_date" name="start_date">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="f_description" name="description" placeholder="Describe what this course covers..."></textarea>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('formModal')">Cancel</button>
+            <button class="btn-save" onclick="document.getElementById('courseForm').requestSubmit()">💾 Save Course</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ VIEW DETAIL MODAL ═══════════════ -->
+<div class="modal-overlay" id="viewModal" onclick="closeOnOverlay(event,'viewModal')">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>📖 Course Details</h2>
+            <button class="modal-close" onclick="closeModal('viewModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="detail-grid">
+                <div class="detail-item"><label>Title</label><span id="d_title">—</span></div>
+                <div class="detail-item"><label>Category</label><span id="d_category">—</span></div>
+                <div class="detail-item"><label>Instructor / Platform</label><span id="d_instructor">—</span></div>
+                <div class="detail-item"><label>Status</label><span id="d_status">—</span></div>
+                <div class="detail-item"><label>Hours Done / Total</label><span id="d_hours">—</span></div>
+                <div class="detail-item"><label>Rating</label><span id="d_rating">—</span></div>
+                <div class="detail-item"><label>Start Date</label><span id="d_start_date">—</span></div>
+                <div class="detail-item">
+                    <label>Progress</label>
+                    <span id="d_progress_text">—</span>
+                    <div class="detail-prog-bar"><div class="detail-prog-fill" id="d_prog_fill" style="width:0%"></div></div>
+                </div>
+                <div class="detail-item full"><label>Description</label><div class="detail-desc" id="d_description">—</div></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('viewModal')">Close</button>
+            <button class="btn-save" onclick="openEditFromView()">✏️ Edit</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ EVALUATION ADD / EDIT MODAL ═══════════════ -->
+<div class="modal-overlay" id="evalModal" onclick="closeOnOverlay(event,'evalModal')">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="evalModalTitle">Add Evaluation</h2>
+            <button class="modal-close" onclick="closeModal('evalModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="evalForm" method="POST" action="../../Controllers/FormationController.php" onsubmit="return saveEval(event)" novalidate>
+                <input type="hidden" name="form_action" id="e_action" value="avis_create">
+                <input type="hidden" name="avis_id" id="e_id" value="">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Course <span class="required">*</span></label>
+                        <select id="e_course" name="formation_id">
+                            <option value="">-- Select course --</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Student / Client <span class="required">*</span></label>
+                        <input type="text" id="e_student" name="student" placeholder="e.g. Ahmed B.">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Rating (1–5) <span class="required">*</span></label>
+                        <select id="e_rating" name="rating">
+                            <option value="">-- Select --</option>
+                            <option value="5">⭐⭐⭐⭐⭐ — Excellent (5)</option>
+                            <option value="4">⭐⭐⭐⭐ — Good (4)</option>
+                            <option value="3">⭐⭐⭐ — Average (3)</option>
+                            <option value="2">⭐⭐ — Below average (2)</option>
+                            <option value="1">⭐ — Poor (1)</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Date <span class="required">*</span></label>
+                        <input type="date" id="e_date" name="date">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Comment <span class="required">*</span></label>
+                        <textarea id="e_comment" name="comment" placeholder="Feedback about the course..."></textarea>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('evalModal')">Cancel</button>
+            <button class="btn-save" onclick="document.getElementById('evalForm').requestSubmit()">💾 Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ DELETE CONFIRM ═══════════════ -->
+<div class="modal-overlay" id="deleteModal" onclick="closeOnOverlay(event,'deleteModal')">
+    <div class="modal-box" style="max-width:420px;">
+        <div class="modal-header">
+            <h2>Confirm Delete</h2>
+            <button class="modal-close" onclick="closeModal('deleteModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="confirm-body">
+                <div class="confirm-icon">🗑️</div>
+                <h3>Delete this course?</h3>
+                <p id="deleteMsg">This action cannot be undone.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('deleteModal')">Cancel</button>
+            <button class="btn-confirm-delete" id="confirmDeleteBtn">Yes, Delete</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Hidden delete forms -->
+<form id="delCourseForm" method="POST" action="../../Controllers/FormationController.php" style="display:none">
+    <input type="hidden" name="form_action" value="course_delete">
+    <input type="hidden" name="course_id" id="del_course_id">
+</form>
+<form id="delAvisForm" method="POST" action="../../Controllers/FormationController.php" style="display:none">
+    <input type="hidden" name="form_action" value="avis_delete">
+    <input type="hidden" name="avis_id" id="del_avis_id">
+</form>
+
+</div><!-- /content-wrapper -->
+
+<!-- ═══════════════ DONUT CHART SCRIPT ═══════════════ -->
+<script>
+(function() {
+    const COLORS = { 5:'#1D9E75', 4:'#378ADD', 3:'#EF9F27', 2:'#D85A30', 1:'#E24B4A' };
+    const LABELS = { 5:'5 stars', 4:'4 stars', 3:'3 stars', 2:'2 stars', 1:'1 star' };
+
+    function drawDonut(counts, total) {
+        var svg = document.getElementById('donutSvg');
+        if (!svg) return;
+        var R = 70, CX = 90, CY = 90, strokeW = 28;
+        var circ = 2 * Math.PI * R;
+        var html = '';
+        var offset = 0;
+        var gap = total > 0 ? 2 : 0;
+
+        html = '<circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="none" stroke="#e5e7eb" stroke-width="'+strokeW+'"/>';
+
+        if (total > 0) {
+            [5,4,3,2,1].forEach(function(star) {
+                var cnt = counts[star] || 0;
+                if (cnt === 0) return;
+                var frac = cnt / total;
+                var arcLen = Math.max(0, frac * circ - gap);
+                html += '<circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="none"'
+                    +' stroke="'+COLORS[star]+'"'
+                    +' stroke-width="'+strokeW+'"'
+                    +' stroke-dasharray="'+arcLen+' '+(circ - arcLen)+'"'
+                    +' stroke-dashoffset="'+(circ - offset)+'"'
+                    +' stroke-linecap="butt"/>';
+                offset += frac * circ;
+            });
+        }
+        svg.innerHTML = html;
+
+        var avgEl = document.getElementById('donutAvg');
+        var totEl = document.getElementById('donutTotal');
+        if (avgEl && totEl) {
+            if (total === 0) {
+                avgEl.textContent = '—';
+                totEl.textContent = '0 reviews';
+            } else {
+                var sum = [1,2,3,4,5].reduce(function(s,star){ return s + star*(counts[star]||0); }, 0);
+                avgEl.textContent = (sum/total).toFixed(1);
+                totEl.textContent = total + ' review' + (total > 1 ? 's' : '');
+            }
+        }
+    }
+
+    function drawLegend(counts, total) {
+        var legend = document.getElementById('donutLegend');
+        if (!legend) return;
+        var html = '';
+        [5,4,3,2,1].forEach(function(star) {
+            var cnt = counts[star] || 0;
+            var pct = total > 0 ? Math.round((cnt/total)*100) : 0;
+            html += '<div style="display:flex;align-items:center;gap:10px;padding:5px 8px;border-radius:8px;">'
+                + '<div style="width:12px;height:12px;border-radius:3px;background:'+COLORS[star]+';flex-shrink:0;"></div>'
+                + '<div style="flex:1;">'
+                +   '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">'
+                +     '<span style="font-size:13px;color:#6b7280;flex:1;">'+LABELS[star]+'</span>'
+                +     '<span style="font-size:13px;font-weight:600;color:#111;">'+pct+'%</span>'
+                +     '<span style="font-size:12px;color:#9ca3af;">('+cnt+')</span>'
+                +   '</div>'
+                +   '<div style="height:4px;background:#f3f4f6;border-radius:2px;overflow:hidden;">'
+                +     '<div style="height:100%;width:'+pct+'%;background:'+COLORS[star]+';border-radius:2px;transition:width .5s ease;"></div>'
+                +   '</div>'
+                + '</div>'
+                + '</div>';
+        });
+        legend.innerHTML = html;
+    }
+
+    window.updateRatingDonut = function(reviews) {
+        window.reviewsData = reviews || [];
+        var counts = {1:0, 2:0, 3:0, 4:0, 5:0};
+        window.reviewsData.forEach(function(r) {
+            var v = Math.round(Number(r.note || r.rating || 0));
+            if (v >= 1 && v <= 5) counts[v]++;
+        });
+        var total = window.reviewsData.length;
+        drawDonut(counts, total);
+        drawLegend(counts, total);
+    };
+
+    window.updateRatingDonut(window.reviewsData || []);
+})();
+</script>
+
+<script src="../assets/js/common.js"></script>
+<script src="js/formations.js?v=3"></script>
+</body>
+</html>

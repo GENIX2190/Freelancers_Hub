@@ -1,0 +1,223 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Freelence Hub</title>
+    <link rel="stylesheet" href="assets/css/admin-dashboard.css">
+</head>
+<body>
+<style>
+    .rating-section {
+        margin: 26px 0 6px;
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .rating-title {
+        margin: 0 0 14px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .rating-wrap {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        flex-wrap: wrap;
+    }
+
+    .rating-chart {
+        width: 190px;
+        height: 190px;
+        border-radius: 50%;
+        background: conic-gradient(
+            #ef4444 0% 10%,     /* 1 etoile */
+            #f97316 10% 28%,    /* 2 etoiles */
+            #facc15 28% 52%,    /* 3 etoiles */
+            #22c55e 52% 74%,    /* 4 etoiles */
+            #3b82f6 74% 100%    /* 5 etoiles */
+        );
+        position: relative;
+    }
+
+    .rating-chart::after {
+        content: "Avis";
+        position: absolute;
+        inset: 28px;
+        border-radius: 50%;
+        background: #fff;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        color: #374151;
+    }
+
+    .rating-legend {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 8px;
+    }
+
+    .rating-legend li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #374151;
+        font-size: 14px;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+</style>
+
+<!-- ═══ ADMIN SIDEBAR ═══ -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="s-logo">FH</div>
+        <span class="brand">Freelence Hub</span>
+    </div>
+    <div class="sidebar-label">Main</div>
+    <nav class="sidebar-nav">
+        <a href="dashboard.html" class="active"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    </nav>
+    <div class="sidebar-label">Modules</div>
+    <nav class="sidebar-nav">
+        <a href="users/dashboard.html"><span class="nav-icon">👤</span><span>Users</span></a>
+        <a href="missions/dashboard.html"><span class="nav-icon">💼</span><span>Missions</span></a>
+        <a href="formations/dashboard.html"><span class="nav-icon">📚</span><span>Formations</span></a>
+        <a href="projets/dashboard.html"><span class="nav-icon">📁</span><span>Projects</span></a>
+        <a href="experience/dashboard.html"><span class="nav-icon">✍️</span><span>Experience</span></a>
+    </nav>
+    <div class="sidebar-label">User View</div>
+    <nav class="sidebar-nav">
+        <a href="Main.html"><span class="nav-icon">🏠</span><span>Home</span></a>
+            </nav>
+    <div class="sidebar-bottom">
+        <a href="Main.html"><span class="nav-icon">🚪</span><span>Logout</span></a>
+            </div>
+</aside>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div class="content">
+    <div class="top-bar">
+        <div style="display:flex;align-items:center;gap:12px">
+            <button class="mob-menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('show')">☰</button>
+            <h1>📊 Admin Dashboard</h1>
+        </div>
+        <div class="admin-badge">⚙️ Administrator</div>
+    </div>
+
+    <div class="dashboard-body">
+
+        <!-- STATS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">💼</div>
+                <div class="stat-value">24</div>
+                <div class="stat-label">Active Missions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-value">8</div>
+                <div class="stat-label">Training Courses</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📁</div>
+                <div class="stat-value">12</div>
+                <div class="stat-label">Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✍️</div>
+                <div class="stat-value">36</div>
+                <div class="stat-label">Experience Posts</div>
+            </div>
+        </div>
+
+        <div class="rating-section">
+            <h2 class="rating-title">⭐ Repartition des avis (1 a 5)</h2>
+            <div class="rating-wrap">
+                <div class="rating-chart" aria-label="Statistiques des avis de 1 a 5"></div>
+                <ul class="rating-legend">
+                    <li><span class="dot" style="background:#ef4444"></span>1 etoile - 10%</li>
+                    <li><span class="dot" style="background:#f97316"></span>2 etoiles - 18%</li>
+                    <li><span class="dot" style="background:#facc15"></span>3 etoiles - 24%</li>
+                    <li><span class="dot" style="background:#22c55e"></span>4 etoiles - 22%</li>
+                    <li><span class="dot" style="background:#3b82f6"></span>5 etoiles - 26%</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MODULES -->
+        <div class="section-title">🎯 Management Modules</div>
+        <div class="modules-grid">
+
+            <a href="missions/dashboard.html" class="module-card">
+                <div class="module-top">
+                    <div class="module-icon-box blue">💼</div>
+                    <div class="module-info">
+                        <h3>Mission Management</h3>
+                        <p>Missions, Categories, Candidatures</p>
+                    </div>
+                </div>
+                <div class="module-bottom">
+                    <span class="module-member">— Mariem</span>
+                    <button class="module-go">Open →</button>
+                </div>
+            </a>
+
+            <a href="formations/dashboard.html" class="module-card">
+                <div class="module-top">
+                    <div class="module-icon-box green">📚</div>
+                    <div class="module-info">
+                        <h3>Formation Management</h3>
+                        <p>Courses, Evaluations</p>
+                    </div>
+                </div>
+                <div class="module-bottom">
+                    <span class="module-member">— Achref</span>
+                    <button class="module-go">Open →</button>
+                </div>
+            </a>
+
+            <a href="projets/dashboard.html" class="module-card">
+                <div class="module-top">
+                    <div class="module-icon-box orange">📁</div>
+                    <div class="module-info">
+                        <h3>Project Management</h3>
+                        <p>Projects, Tasks, Evaluations</p>
+                    </div>
+                </div>
+                <div class="module-bottom">
+                    <span class="module-member">— Ilyes</span>
+                    <button class="module-go">Open →</button>
+                </div>
+            </a>
+
+            <a href="experience/dashboard.html" class="module-card">
+                <div class="module-top">
+                    <div class="module-icon-box purple">✍️</div>
+                    <div class="module-info">
+                        <h3>Experience Management</h3>
+                        <p>Posts, Replies</p>
+                    </div>
+                </div>
+                <div class="module-bottom">
+                    <span class="module-member">— Yassine</span>
+                    <button class="module-go">Open →</button>
+                </div>
+            </a>
+
+        </div>
+    </div>
+        </div>
+
+
+
+</body></html>
