@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Sign Up - Freelence Hub</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <style>
+        body { background: linear-gradient(135deg, #00a852 0%, #00d084 100%); min-height: 100vh; }
+        
+        /* ── HEADER override for auth page ── */
+        header { background: rgba(0,0,0,.15); box-shadow: none; }
+
+        /* ── AUTH CARD ── */
+        .auth-wrapper {
+            display: flex; align-items: center; justify-content: center;
+            min-height: calc(100vh - 80px); padding: 30px 16px;
+        }
+        .auth-card {
+            background: white; border-radius: 20px;
+            box-shadow: 0 24px 80px rgba(0,0,0,.25);
+            width: 100%; max-width: 480px;
+            overflow: hidden;
+        }
+
+        /* ── TABS ── */
+        .auth-tabs {
+            display: flex;
+        }
+        .auth-tab {
+            flex: 1; padding: 18px; border: none; background: #f8f9fa;
+            font-size: 15px; font-weight: 700; color: #888;
+            cursor: pointer; transition: all .25s; letter-spacing: .3px;
+        }
+        .auth-tab.active {
+            background: white; color: #00a852;
+            border-bottom: 3px solid #00a852;
+        }
+        .auth-tab:hover:not(.active) { background: #f0f0f0; color: #555; }
+
+        /* ── FORM BODY ── */
+        .auth-body { padding: 32px; }
+        .auth-title { font-size: 22px; font-weight: 800; color: #222; margin-bottom: 6px; }
+        .auth-subtitle { font-size: 14px; color: #888; margin-bottom: 28px; }
+
+        .form-panel { display: none; }
+        .form-panel.active { display: block; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block; font-size: 13px; font-weight: 600;
+            color: #555; margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%; padding: 11px 14px;
+            border: 2px solid #e0e0e0; border-radius: 10px;
+            font-size: 14px; outline: none; transition: border-color .25s;
+            font-family: inherit; background: #fafafa;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus { border-color: #00a852; background: white; }
+        .form-group input.error,
+        .form-group select.error,
+        .form-group textarea.error { border-color: #e53e3e; }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        .field-error { font-size: 12px; color: #e53e3e; min-height: 16px; display: none; margin-top: 3px; }
+        .field-error.visible { display: block; }
+        .required-mark { color: #e53e3e; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media(max-width: 500px){ .form-row { grid-template-columns: 1fr; } }
+
+        /* ── BUTTONS ── */
+        .btn-submit {
+            width: 100%; padding: 13px;
+            background: linear-gradient(135deg, #00a852, #00d084);
+            color: white; border: none; border-radius: 10px;
+            font-size: 16px; font-weight: 700; cursor: pointer;
+            transition: all .3s; margin-top: 8px; letter-spacing: .3px;
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,168,82,.4); }
+
+        .divider { text-align: center; color: #bbb; font-size: 13px; margin: 20px 0; position: relative; }
+        .divider::before, .divider::after {
+            content: ''; position: absolute; top: 50%;
+            width: 42%; height: 1px; background: #e0e0e0;
+        }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .switch-link { text-align: center; font-size: 13px; color: #888; margin-top: 16px; }
+        .switch-link a { color: #00a852; font-weight: 700; text-decoration: none; }
+        .switch-link a:hover { text-decoration: underline; }
+
+        /* ── SUCCESS ── */
+        .success-banner {
+            background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0;
+            border-radius: 10px; padding: 12px 16px; font-size: 14px;
+            font-weight: 600; margin-bottom: 20px; display: none; text-align: center;
+        }
+        .success-banner.show { display: block; }
+
+        /* ── FORGOT ── */
+        .forgot-link { font-size: 12px; color: #00a852; text-decoration: none; float: right; margin-top: -2px; }
+        .forgot-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+        <a href="../Main.html" class="logo-section">
+            <div class="logo">FH</div>
+            <div class="site-name">Freelence Hub</div>
+        </a>
+        <nav>
+            <a href="../missions/candidature.html">💼 Missions</a>
+            <a href="../formations/create.html">📚 Formations</a>
+            <a href="../experience/view.html">✍️ Experience</a>
+            <a href="../projets/view.html">📁 Projects</a>
+            <a href="login.html" class="nav-right">🔐 Login</a>
+            <a href="login.html?redirect=Views/dashboard.html">📊 Dashboard</a>
+        </nav>
+    </div>
+</header>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+
+        <!-- ── TABS ── -->
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">🔐 Login</button>
+            <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">✍️ Sign Up</button>
+        </div>
+
+        <div class="auth-body">
+
+            <!-- ══ LOGIN PANEL ══ -->
+            <div class="form-panel active" id="panel-login">
+                <div class="auth-title">Welcome back 👋</div>
+                <div class="auth-subtitle">Sign in to your Freelence Hub account</div>
+
+                <div class="success-banner" id="loginSuccess">✅ Login successful! Redirecting...</div>
+                <div class="success-banner" id="loginErrorBanner" style="background:#fee2e2;color:#991b1b;border-color:#fecaca;"></div>
+
+                <!-- POST → UtilisateurController.php → MySQL (PDO). No JSON/API. -->
+                <form id="loginForm" action="../../Controllers/UtilisateurController.php" method="post" onsubmit="return validateLogin();" novalidate>
+                    <input type="hidden" name="form_action" value="login">
+                    <input type="hidden" name="redirect" id="login_redirect" value="Views/Main.html">
+                    <div class="form-group">
+                        <label>Email <span class="required-mark">*</span></label>
+                        <input type="text" name="email" id="l_email" placeholder="your@email.com" autocomplete="username">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Password <span class="required-mark">*</span>
+                            <a href="#" class="forgot-link">Forgot password?</a>
+                        </label>
+                        <input type="password" name="password" id="l_password" placeholder="Your password" autocomplete="current-password">
+                        <span class="field-error"></span>
+                    </div>
+                    <button type="submit" name="submit" value="login" class="btn-submit">🚀 Login</button>
+                </form>
+
+                <div class="divider">or</div>
+                <div class="switch-link">
+                    Don't have an account? <a href="#" onclick="switchTab('signup')">Sign Up here</a>
+                </div>
+            </div>
+
+            <!-- ══ SIGN UP PANEL ══ -->
+            <div class="form-panel" id="panel-signup">
+                <div class="auth-title">Create an account 🎉</div>
+                <div class="auth-subtitle">Join Freelence Hub and grow your career</div>
+
+                <div class="success-banner" id="signupSuccess">✅ Registration successful! You can now login.</div>
+
+                <form id="signupForm" action="../../Controllers/UtilisateurController.php" method="post" onsubmit="return validateSignup();" novalidate>
+                    <input type="hidden" name="form_action" value="register">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ID Number <span class="required-mark">*</span></label>
+                            <input type="text" name="cin" id="cin" placeholder="Ex: 12345678">
+                            <span class="field-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Email <span class="required-mark">*</span></label>
+                            <input type="text" name="email" id="email" placeholder="your@email.com">
+                            <span class="field-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Password <span class="required-mark">*</span></label>
+                            <input type="password" name="password" id="password" placeholder="Min. 6 characters">
+                            <span class="field-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Role <span class="required-mark">*</span></label>
+                            <select name="role" id="role">
+                                <option value="">-- Select --</option>
+                                <option value="freelance">Freelancer</option>
+                                <option value="client">Client</option>
+                            </select>
+                            <span class="field-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Registration Date <span class="required-mark">*</span></label>
+                            <input type="date" name="date_inscription" id="date_ins" data-up-to-today>
+                            <span class="field-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" name="localisation" id="localisation" placeholder="Ex: Tunis, Tunisia">
+                            <span class="field-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Biography</label>
+                        <textarea name="bio" id="bio" placeholder="Tell us about yourself..."></textarea>
+                        <span class="field-error"></span>
+                    </div>
+                    <button type="submit" name="submit" value="register" class="btn-submit">🚀 Register</button>
+                </form>
+
+                <div class="divider">or</div>
+                <div class="switch-link">
+                    Already have an account? <a href="#" onclick="switchTab('login')">Login here</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="../assets/js/common.js"></script>
+<script>
+var qs = new URLSearchParams(window.location.search);
+var isAdminRedirect = qs.has('redirect');
+
+(function initRedirectHidden() {
+    var r = qs.get('redirect');
+    var hid = document.getElementById('login_redirect');
+    if (hid && r) {
+        if (r.indexOf('Views/') === 0) hid.value = r;
+        else hid.value = 'Views/' + r.replace(/^\/+/, '');
+    }
+})();
+
+(function initQueryMessages() {
+    if (qs.get('registered') === '1') {
+        switchTab('login');
+        var s = document.getElementById('loginSuccess');
+        if (s) { s.textContent = '✅ Registration successful! You can now login.'; s.classList.add('show'); }
+    }
+    var err = qs.get('error');
+    var map = {
+        invalid: 'Email or password is incorrect.',
+        inactive: 'This account is not active.',
+        missing: 'Please fill email and password.',
+        missing_fields: 'Please fill all required fields.',
+        role: 'Please select a valid role.',
+        exists: 'This email or ID number is already registered.',
+        server: 'Server error. Try again later.',
+        admin_only: 'Only admin@admiin.com can open the admin dashboard. Use another account or go to Home.',
+        reserved: 'This email is reserved for the administrator.',
+        forbidden: 'Access denied.'
+    };
+    if (err && map[err]) {
+        var b = document.getElementById('loginErrorBanner');
+        if (b) { b.textContent = map[err]; b.classList.add('show'); }
+    }
+})();
+
+(function initMode() {
+    if (isAdminRedirect) {
+        document.getElementById('tab-signup').style.display = 'none';
+        var t = document.querySelector('#panel-login .auth-title');
+        var st = document.querySelector('#panel-login .auth-subtitle');
+        if (t) t.textContent = 'Admin Login 🔒';
+        if (st) st.textContent = 'Sign in to access the admin dashboard';
+        var sw = document.querySelector('#panel-login .switch-link');
+        if (sw) sw.style.display = 'none';
+        var dv = document.querySelector('#panel-login .divider');
+        if (dv) dv.style.display = 'none';
+    }
+})();
+
+/* ── TAB SWITCH ── */
+function switchTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('.form-panel').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+    if (tab === 'signup' && typeof initDateInputsUpToToday === 'function') {
+        initDateInputsUpToToday(document.getElementById('panel-signup') || document);
+    }
+}
+
+/* ── VALIDATION HELPER ── */
+function vld(id, rules) {
+    var el = document.getElementById(id);
+    var v  = el.value.trim();
+    var err = el.parentElement.querySelector('.field-error');
+    function showErr(msg){ el.classList.add('error'); if(err){ err.textContent=msg; err.classList.add('visible'); } return false; }
+    function clearErr()  { el.classList.remove('error'); if(err){ err.textContent=''; err.classList.remove('visible'); } return true; }
+    if (!v) return showErr('This field is required.');
+    if (el.type === 'date') {
+        var dmin = el.getAttribute('min');
+        var dmax = el.getAttribute('max');
+        if (dmin && v < dmin) return showErr('This date has expired. Choose today or a future date.');
+        if (dmax && v > dmax) return showErr(typeof DATE_FUTURE_MSG !== 'undefined' ? DATE_FUTURE_MSG : 'This date cannot be in the future.');
+    }
+    if (rules && rules.minLen && v.length < rules.minLen) return showErr('Minimum ' + rules.minLen + ' characters.');
+    if (rules && rules.pattern && !rules.pattern.test(v))  return showErr(rules.msg || 'Invalid format.');
+    return clearErr();
+}
+
+/* ── LOGIN: client-side check then POST to UtilisateurController.php ── */
+function validateLogin() {
+    var ok = true;
+    ok = vld('l_email',    { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, msg: 'Enter a valid email.' }) && ok;
+    ok = vld('l_password', { minLen: 6 }) && ok;
+    return ok;
+}
+
+/* ── SIGN UP ── */
+function validateSignup() {
+    var ok = true;
+    ok = vld('cin',      { minLen: 5, pattern: /^[A-Za-z0-9]+$/, msg: 'Letters and numbers only.' }) && ok;
+    ok = vld('email',    { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, msg: 'Enter a valid email.' }) && ok;
+    ok = vld('password', { minLen: 6 }) && ok;
+    ok = vld('role',     {}) && ok;
+    ok = vld('date_ins', {}) && ok;
+    return ok;
+}
+</script>
+</body>
+</html>
