@@ -63,6 +63,7 @@ yarn.lock
 # Database
 /database/
 *.sql
+!formation_tables.sql
 *.sqlite
 *.db
 

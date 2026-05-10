@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificat - Freelance Hub</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            font-family: "Georgia", "Times New Roman", serif;
+            background: #eef3ef;
+            color: #1f2933;
+            padding: 36px 18px;
+        }
+
+        .page {
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 22px;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        .toolbar button,
+        .toolbar a {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .download-btn {
+            background: #00a852;
+            color: white;
+            box-shadow: 0 8px 18px rgba(0, 168, 82, 0.22);
+        }
+
+        .back-link {
+            background: white;
+            color: #374151;
+            border: 1px solid #d7ded9;
+        }
+
+        .certificate {
+            position: relative;
+            width: 100%;
+            min-height: 720px;
+            background:
+                linear-gradient(135deg, rgba(0,168,82,0.08), transparent 30%),
+                linear-gradient(315deg, rgba(247,147,30,0.10), transparent 28%),
+                #fffdf8;
+            border: 10px solid #0f8f4b;
+            padding: 34px;
+            box-shadow: 0 18px 45px rgba(31, 41, 51, 0.16);
+        }
+
+        .certificate::before {
+            content: "";
+            position: absolute;
+            inset: 18px;
+            border: 2px solid #d6aa45;
+            pointer-events: none;
+        }
+
+        .certificate-inner {
+            position: relative;
+            min-height: 632px;
+            border: 1px solid rgba(15, 143, 75, 0.25);
+            padding: 46px 52px;
+            text-align: center;
+        }
+
+        .brand {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 34px;
+            font-weight: 900;
+            letter-spacing: 0;
+            color: #0f8f4b;
+            margin-bottom: 26px;
+        }
+
+        .cert-title {
+            font-size: 46px;
+            color: #1f2933;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 15px;
+            color: #6b7280;
+            margin-bottom: 42px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .presented {
+            font-size: 20px;
+            color: #4b5563;
+            margin-bottom: 16px;
+        }
+
+        .recipient {
+            display: inline-block;
+            min-width: 58%;
+            font-size: 42px;
+            font-weight: 700;
+            color: #111827;
+            padding: 8px 22px 14px;
+            border-bottom: 2px solid #d6aa45;
+            margin-bottom: 28px;
+        }
+
+        .details {
+            max-width: 740px;
+            margin: 0 auto 32px;
+            font-size: 19px;
+            line-height: 1.8;
+            color: #374151;
+        }
+
+        .category-name {
+            color: #0f8f4b;
+            font-weight: 700;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 34px auto 42px;
+            max-width: 780px;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        .meta-box {
+            border: 1px solid #d7ded9;
+            background: rgba(255, 255, 255, 0.72);
+            padding: 15px 12px;
+            border-radius: 8px;
+        }
+
+        .meta-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #6b7280;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .meta-value {
+            font-size: 19px;
+            color: #111827;
+            font-weight: 800;
+        }
+
+        .level-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 178px;
+            padding: 12px 24px;
+            border-radius: 999px;
+            background: #0f8f4b;
+            color: #fff;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 26px;
+        }
+
+        .badge-card {
+            max-width: 320px;
+            margin: 0 auto 28px;
+            border-radius: 14px;
+            padding: 18px 26px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            text-align: center;
+        }
+
+        .badge-icon { font-size: 54px; line-height: 1; margin-bottom: 8px; }
+        .badge-title { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+        .badge-stars { font-size: 18px; letter-spacing: 4px; margin-bottom: 6px; }
+        .badge-desc { font-size: 13px; color: #4b5563; }
+
+        .badge-gold {
+            background: linear-gradient(135deg, #fffde7, #fff9c4);
+            border: 2px solid #ffd700;
+        }
+
+        .badge-gold .badge-title { color: #f5c400; }
+
+        .badge-silver {
+            background: linear-gradient(135deg, #f8fafc, #e5e7eb);
+            border: 2px solid #9ca3af;
+        }
+
+        .badge-silver .badge-title { color: #6b7280; }
+
+        .badge-bronze {
+            background: linear-gradient(135deg, #fff8f0, #ffe0b2);
+            border: 2px solid #cd7f32;
+        }
+
+        .badge-bronze .badge-title { color: #cd7f32; }
+
+        .signature-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 30px;
+            margin-top: 20px;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        .signature {
+            flex: 1;
+            text-align: center;
+            color: #374151;
+        }
+
+        .signature-line {
+            border-top: 1px solid #1f2933;
+            padding-top: 8px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .seal {
+            width: 118px;
+            height: 118px;
+            border-radius: 50%;
+            border: 4px double #d6aa45;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0f8f4b;
+            font-size: 14px;
+            font-weight: 900;
+            text-transform: uppercase;
+            background: #fff8df;
+        }
+
+        .empty-state {
+            max-width: 720px;
+            margin: 80px auto;
+            background: white;
+            border: 1px solid #d7ded9;
+            border-radius: 12px;
+            padding: 28px;
+            text-align: center;
+            font-family: "Segoe UI", Arial, sans-serif;
+            display: none;
+        }
+
+        @media (max-width: 760px) {
+            body { padding: 18px 10px; }
+            .certificate { padding: 20px; border-width: 6px; }
+            .certificate-inner { padding: 36px 20px; }
+            .cert-title { font-size: 34px; }
+            .recipient { font-size: 30px; min-width: 80%; }
+            .meta-grid { grid-template-columns: 1fr; }
+            .signature-row { flex-direction: column; align-items: stretch; }
+            .seal { margin: 0 auto; }
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .toolbar { display: none; }
+            .certificate { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page" id="certificate-page">
+        <div class="toolbar">
+            <button class="back-link" id="back-btn" type="button" onclick="goBackToQuiz()">Retour au quiz</button>
+            <button class="download-btn" id="download-btn" type="button" onclick="window.print()">Telecharger en PDF</button>
+        </div>
+
+        <div class="certificate" id="certificate">
+            <div class="certificate-inner">
+                <div class="brand">Freelance Hub</div>
+                <h1 class="cert-title">Certificat de Réussite</h1>
+                <p class="subtitle">Formation et validation des compétences</p>
+
+                <p class="presented">Ce certificat est décerné à</p>
+                <div class="recipient" id="cert-name">Nom Prénom</div>
+
+                <p class="details">
+                    Pour avoir terminé le quiz dans la catégorie
+                    <span class="category-name" id="cert-category">Catégorie</span>
+                    avec le niveau obtenu suivant :
+                </p>
+
+                <div class="level-badge" id="cert-level">Débutant</div>
+
+                <div class="badge-card badge-gold" id="cert-badge">
+                    <div class="badge-icon" id="badge-icon">🥇</div>
+                    <div class="badge-title" id="badge-title">Gold Badge</div>
+                    <div class="badge-stars" id="badge-stars">⭐⭐⭐</div>
+                    <div class="badge-desc" id="badge-desc">Excellent ! Maîtrise parfaite du cours.</div>
+                </div>
+
+                <div class="meta-grid">
+                    <div class="meta-box">
+                        <div class="meta-label">Score</div>
+                        <div class="meta-value" id="cert-score">0%</div>
+                    </div>
+                    <div class="meta-box">
+                        <div class="meta-label">Quiz</div>
+                        <div class="meta-value" id="cert-quiz">Quiz</div>
+                    </div>
+                    <div class="meta-box">
+                        <div class="meta-label">Date</div>
+                        <div class="meta-value" id="cert-date">--/--/----</div>
+                    </div>
+                </div>
+
+                <div class="signature-row">
+                    <div class="signature">
+                        <div class="signature-line">Responsable Freelance Hub</div>
+                    </div>
+                    <div class="seal">Validé<br>FH</div>
+                    <div class="signature">
+                        <div class="signature-line">Certification Digitale</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="empty-state" id="empty-state">
+            Aucune donnée de certificat trouvée. Terminez d'abord un quiz puis cliquez sur "Passer au certif".
+        </div>
+    </div>
+
+    <script>
+        function getFallbackData() {
+            var params = new URLSearchParams(window.location.search);
+            return {
+                fullName: params.get('name') || 'Utilisateur Freelance Hub',
+                category: params.get('category') || 'Formation',
+                quizTitle: params.get('quiz') || 'Quiz',
+                score: Number(params.get('score') || 0),
+                scoreText: (params.get('score') || '0') + '%',
+                level: params.get('level') || getLevel(Number(params.get('score') || 0)),
+                badge: getBadge(Number(params.get('score') || 0)),
+                date: params.get('date') || new Date().toISOString()
+            };
+        }
+
+        function getLevel(score) {
+            if (score >= 80) return 'Expert';
+            if (score >= 50) return 'Intermédiaire';
+            return 'Débutant';
+        }
+
+        function getBadge(score) {
+            if (score >= 80) {
+                return {
+                    icon: '🥇',
+                    title: 'Gold Badge',
+                    desc: 'Excellent ! Maîtrise parfaite du cours.',
+                    stars: '⭐⭐⭐',
+                    cls: 'badge-gold'
+                };
+            }
+            if (score >= 50) {
+                return {
+                    icon: '🥈',
+                    title: 'Silver Badge',
+                    desc: 'Bien joué ! Continue à progresser.',
+                    stars: '⭐⭐',
+                    cls: 'badge-silver'
+                };
+            }
+            return {
+                icon: '🥉',
+                title: 'Bronze Badge',
+                desc: 'Bon début ! Révise et réessaie.',
+                stars: '⭐',
+                cls: 'badge-bronze'
+            };
+        }
+
+        function loadCertificate() {
+            var raw = sessionStorage.getItem('certificateData');
+            var data;
+
+            if (raw) {
+                try {
+                    data = JSON.parse(raw);
+                } catch (e) {
+                    sessionStorage.removeItem('certificateData');
+                    data = getFallbackData();
+                }
+            } else {
+                data = getFallbackData();
+            }
+
+            if (!raw && !window.location.search) {
+                document.getElementById('certificate').style.display = 'none';
+                document.querySelector('.toolbar').style.display = 'none';
+                document.getElementById('empty-state').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('cert-name').textContent = data.fullName || 'Utilisateur Freelance Hub';
+            document.getElementById('cert-category').textContent = data.category || 'Formation';
+            document.getElementById('cert-level').textContent = data.level || getLevel(Number(data.score || 0));
+            document.getElementById('cert-score').textContent = data.scoreText || ((data.score || 0) + '%');
+            document.getElementById('cert-quiz').textContent = data.quizTitle || 'Quiz';
+            document.getElementById('cert-date').textContent = new Date(data.date || Date.now()).toLocaleDateString('fr-FR');
+            renderBadge(data.badge || getBadge(Number(data.score || 0)));
+            document.title = 'Certificat - ' + (data.fullName || 'Freelance Hub');
+        }
+
+        function renderBadge(badge) {
+            var badgeEl = document.getElementById('cert-badge');
+            badgeEl.className = 'badge-card ' + (badge.cls || 'badge-bronze');
+            document.getElementById('badge-icon').textContent = badge.icon || '🥉';
+            document.getElementById('badge-title').textContent = badge.title || 'Bronze Badge';
+            document.getElementById('badge-stars').textContent = badge.stars || '⭐';
+            document.getElementById('badge-desc').textContent = badge.desc || 'Bon début ! Révise et réessaie.';
+        }
+
+        function downloadPDF() {
+            var certificate = document.getElementById('certificate');
+            var name = document.getElementById('cert-name').textContent.trim().replace(/\s+/g, '-').toLowerCase();
+            var options = {
+                margin: 0.2,
+                filename: 'certificat-' + name + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#fffdf8' },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+            };
+
+            if (typeof html2pdf === 'function') {
+                html2pdf().set(options).from(certificate).save();
+                return;
+            }
+
+            alert("La librairie PDF n'est pas chargée. La fenêtre d'impression va s'ouvrir, choisissez 'Enregistrer au format PDF'.");
+            openPrintableCertificate();
+        }
+
+        function openPrintableCertificate() {
+            var certificate = document.getElementById('certificate').outerHTML;
+            var styles = Array.prototype.map.call(document.querySelectorAll('style'), function(style) {
+                return style.innerHTML;
+            }).join('\n');
+
+            var win = window.open('', '_blank', 'width=1200,height=850');
+            if (!win) {
+                alert("Le navigateur a bloque l'ouverture. Autorisez les popups puis cliquez encore sur Telecharger en PDF.");
+                return;
+            }
+
+            win.document.open();
+            win.document.write('<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Certificat PDF</title><style>' +
+                styles +
+                '@page{size:A4 landscape;margin:10mm;}body{background:white;padding:0;} .toolbar{display:none!important;} .certificate{box-shadow:none;width:100%;min-height:680px;}</style></head><body>' +
+                certificate +
+                '<script>window.onload=function(){setTimeout(function(){window.print();},300);};<\/script>' +
+                '</body></html>');
+            win.document.close();
+        }
+
+        function goBackToQuiz() {
+            window.location.href = 'quiz.html';
+        }
+
+        loadCertificate();
+    </script>
+</body>
+</html>
