@@ -138,6 +138,34 @@ body {
     color: #ff6b6b;
 }
 
+.sidebar-bottom form.sidebar-logout-form {
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-bottom .sidebar-logout-form button {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 16px;
+    width: 100%;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255,255,255,.7);
+    transition: all .25s;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+}
+
+.sidebar-bottom .sidebar-logout-form button:hover {
+    background: rgba(255,80,80,.15);
+    color: #ff6b6b;
+}
+
 /* ── MAIN CONTENT ── */
 .content {
     margin-left: 260px;
@@ -345,7 +373,8 @@ body {
     .sidebar-logo .brand,
     .sidebar-label,
     .sidebar-nav a span:not(.nav-icon),
-    .sidebar-bottom a span:not(.nav-icon) {
+    .sidebar-bottom a span:not(.nav-icon),
+    .sidebar-bottom .sidebar-logout-form button span:not(.nav-icon) {
         display: none;
     }
     .sidebar-nav a {
@@ -355,7 +384,8 @@ body {
     .sidebar-nav a .nav-icon {
         width: auto;
     }
-    .sidebar-bottom a {
+    .sidebar-bottom a,
+    .sidebar-bottom .sidebar-logout-form button {
         justify-content: center;
         padding: 14px 8px;
     }

@@ -50,13 +50,16 @@
         .sidebar-bottom{margin-top:auto;padding:20px 12px;border-top:1px solid rgba(255,255,255,.08)}
         .sidebar-bottom a{display:flex;align-items:center;gap:14px;padding:13px 16px;text-decoration:none;border-radius:10px;font-size:14px;font-weight:500;color:rgba(255,255,255,.7);transition:all .25s}
         .sidebar-bottom a:hover{background:rgba(255,80,80,.15);color:#ff6b6b}
+        .sidebar-bottom form.sidebar-logout-form{margin:0;padding:0}
+        .sidebar-bottom .sidebar-logout-form button{display:flex;align-items:center;gap:14px;padding:13px 16px;width:100%;border-radius:10px;font-size:14px;font-weight:500;color:rgba(255,255,255,.7);transition:all .25s;border:none;background:none;cursor:pointer;font-family:inherit;text-align:left}
+        .sidebar-bottom .sidebar-logout-form button:hover{background:rgba(255,80,80,.15);color:#ff6b6b}
         body{display:flex;min-height:100vh}
         .content-wrapper{margin-left:260px;flex:1}
         @media(max-width:768px){
             .sidebar{width:70px}
-            .sidebar-logo .brand,.sidebar-label,.sidebar-nav a span:not(.nav-icon),.sidebar-bottom a span:not(.nav-icon){display:none}
+            .sidebar-logo .brand,.sidebar-label,.sidebar-nav a span:not(.nav-icon),.sidebar-bottom a span:not(.nav-icon),.sidebar-bottom .sidebar-logout-form button span:not(.nav-icon){display:none}
             .sidebar-nav a{justify-content:center;padding:14px 8px}
-            .sidebar-bottom a{justify-content:center;padding:14px 8px}
+            .sidebar-bottom a,.sidebar-bottom .sidebar-logout-form button{justify-content:center;padding:14px 8px}
             .content-wrapper{margin-left:70px}
         }
         @media(max-width:480px){.sidebar{display:none}.content-wrapper{margin-left:0}}
@@ -87,7 +90,10 @@
         <a href="../Main.html"><span class="nav-icon">🏠</span><span>Home</span></a>
     </nav>
     <div class="sidebar-bottom">
-        <a href="../Main.html"><span class="nav-icon">🚪</span><span>Logout</span></a>
+        <form action="../../Controllers/UtilisateurController.php" method="post" class="sidebar-logout-form">
+            <input type="hidden" name="form_action" value="logout">
+            <button type="submit"><span class="nav-icon">🚪</span><span>Logout</span></button>
+        </form>
     </div>
 </aside>
 

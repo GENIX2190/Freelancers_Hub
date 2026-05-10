@@ -29,7 +29,10 @@
         <a href="Main.html"><span class="nav-icon">🏠</span><span>Home</span></a>
             </nav>
     <div class="sidebar-bottom">
-        <a href="Main.html"><span class="nav-icon">🚪</span><span>Logout</span></a>
+        <form action="../Controllers/UtilisateurController.php" method="post" class="sidebar-logout-form">
+            <input type="hidden" name="form_action" value="logout">
+            <button type="submit"><span class="nav-icon">🚪</span><span>Logout</span></button>
+        </form>
             </div>
 </aside>
 
