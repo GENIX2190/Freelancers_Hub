@@ -2,6 +2,35 @@
 require_once dirname(__DIR__) . '/config.php';
 require_once dirname(__DIR__) . '/Models/Utilisateur.php';
 
+/**
+ * @return bool True when Google accepts the token (reCAPTCHA v2).
+ */
+function verify_recaptcha_v2(?string $response): bool {
+    $secret = defined('RECAPTCHA_SECRET_KEY') ? RECAPTCHA_SECRET_KEY : '';
+    if ($secret === '' || $response === null || $response === '') {
+        return false;
+    }
+    $payload = http_build_query([
+        'secret' => $secret,
+        'response' => $response,
+        'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+    ]);
+    $ctx = stream_context_create([
+        'http' => [
+            'method' => 'POST',
+            'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+            'content' => $payload,
+            'timeout' => 8,
+        ],
+    ]);
+    $raw = @file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $ctx);
+    if ($raw === false) {
+        return false;
+    }
+    $data = json_decode($raw, true);
+    return is_array($data) && !empty($data['success']);
+}
+
 class UtilisateurController {
 
     private $pdo;
@@ -406,6 +435,11 @@ if (isset($_SERVER['SCRIPT_FILENAME']) && basename(__FILE__) === basename((strin
 
     if ($fa === 'login') {
         session_start();
+        $captcha = trim((string) ($_POST['g-recaptcha-response'] ?? ''));
+        if (!verify_recaptcha_v2($captcha)) {
+            header('Location: ' . $viewsLogin . '?error=captcha', true, 302);
+            exit;
+        }
         $email = trim((string) ($_POST['email'] ?? ''));
         $password = (string) ($_POST['password'] ?? '');
         if ($email === '' || $password === '') {
@@ -439,6 +473,11 @@ if (isset($_SERVER['SCRIPT_FILENAME']) && basename(__FILE__) === basename((strin
     }
 
     if ($fa === 'register') {
+        $captcha = trim((string) ($_POST['g-recaptcha-response'] ?? ''));
+        if (!verify_recaptcha_v2($captcha)) {
+            header('Location: ' . $viewsLogin . '?error=captcha', true, 302);
+            exit;
+        }
         $cin = trim((string) ($_POST['cin'] ?? ''));
         $email = trim((string) ($_POST['email'] ?? ''));
         $password = (string) ($_POST['password'] ?? '');

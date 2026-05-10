@@ -47,3 +47,11 @@ if (!defined('OPENAI_CHAT_MODEL')) {
 if (!defined('OPENAI_API_BASE')) {
     define('OPENAI_API_BASE', 'https://api.openai.com/v1');
 }
+
+/** Google reCAPTCHA v2 (checkbox) — login / register. Override via getenv or Controllers/config.local.php */
+if (!defined('RECAPTCHA_SITE_KEY')) {
+    define('RECAPTCHA_SITE_KEY', (string) (getenv('RECAPTCHA_SITE_KEY') ?: '6LffMGcUAAAAABRJmPd1mUqhxUg7w5iktOIsbgMI'));
+}
+if (!defined('RECAPTCHA_SECRET_KEY')) {
+    define('RECAPTCHA_SECRET_KEY', (string) (getenv('RECAPTCHA_SECRET_KEY') ?: '6LffMGcUAAAAACw-0oBJ13czW1dsl_0HbXbxEVUY'));
+}

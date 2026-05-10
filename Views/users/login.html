@@ -131,7 +131,14 @@
         /* ── FORGOT ── */
         .forgot-link { font-size: 12px; color: #00a852; text-decoration: none; float: right; margin-top: -2px; }
         .forgot-link:hover { text-decoration: underline; }
+
+        .recaptcha-wrap { margin: 14px 0 4px; display: flex; justify-content: center; }
+        .recaptcha-wrap .g-recaptcha { transform-origin: top center; }
+        @media (max-width: 380px) {
+            .recaptcha-wrap .g-recaptcha { transform: scale(0.9); }
+        }
     </style>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" async defer></script>
 </head>
 <body class="page-auth">
 
@@ -213,6 +220,7 @@
                         <input type="password" name="password" id="l_password" placeholder="Your password" autocomplete="current-password">
                         <span class="field-error"></span>
                     </div>
+                    <div class="recaptcha-wrap"><div id="recaptcha-login"></div></div>
                     <button type="submit" name="submit" value="login" class="btn-submit"><span class="btn-rocket" aria-hidden="true">🚀</span> Login</button>
                 </form>
 
@@ -276,6 +284,7 @@
                         <textarea name="bio" id="bio" placeholder="Tell us about yourself..."></textarea>
                         <span class="field-error"></span>
                     </div>
+                    <div class="recaptcha-wrap"><div id="recaptcha-signup"></div></div>
                     <button type="submit" name="submit" value="register" class="btn-submit"><span class="btn-rocket" aria-hidden="true">🚀</span> Register</button>
                 </form>
 
@@ -292,6 +301,19 @@
 
 <script src="../assets/js/common.js"></script>
 <script>
+/** Must match RECAPTCHA_SITE_KEY in project config.php */
+var RECAPTCHA_SITE_KEY = '6LffMGcUAAAAABRJmPd1mUqhxUg7w5iktOIsbgMI';
+var recaptchaLoginId = null;
+var recaptchaSignupId = null;
+
+function onRecaptchaLoad() {
+    if (typeof grecaptcha === 'undefined' || !RECAPTCHA_SITE_KEY) return;
+    var elL = document.getElementById('recaptcha-login');
+    var elS = document.getElementById('recaptcha-signup');
+    if (elL) recaptchaLoginId = grecaptcha.render(elL, { sitekey: RECAPTCHA_SITE_KEY, theme: 'light' });
+    if (elS) recaptchaSignupId = grecaptcha.render(elS, { sitekey: RECAPTCHA_SITE_KEY, theme: 'light' });
+}
+
 var qs = new URLSearchParams(window.location.search);
 var isAdminRedirect = qs.has('redirect');
 
@@ -321,7 +343,8 @@ var isAdminRedirect = qs.has('redirect');
         server: 'Server error. Try again later.',
         admin_only: 'Only admin@admiin.com can open the admin dashboard. Use another account or go to Home.',
         reserved: 'This email is reserved for the administrator.',
-        forbidden: 'Access denied.'
+        forbidden: 'Access denied.',
+        captcha: 'Please complete the « I\'m not a robot » verification and try again.'
     };
     if (err && map[err]) {
         var b = document.getElementById('loginErrorBanner');
@@ -349,6 +372,16 @@ function switchTab(tab) {
     document.querySelectorAll('.form-panel').forEach(function(p){ p.classList.remove('active'); });
     document.getElementById('tab-' + tab).classList.add('active');
     document.getElementById('panel-' + tab).classList.add('active');
+    if (typeof grecaptcha !== 'undefined') {
+        if (tab === 'login' && recaptchaSignupId !== null) grecaptcha.reset(recaptchaSignupId);
+        if (tab === 'signup' && recaptchaLoginId !== null) grecaptcha.reset(recaptchaLoginId);
+    }
+}
+
+function captchaFilled(widgetId) {
+    if (typeof grecaptcha === 'undefined') return false;
+    if (widgetId === null) return false;
+    return (grecaptcha.getResponse(widgetId) || '').length > 0;
 }
 
 /* ── VALIDATION HELPER ── */
@@ -369,6 +402,10 @@ function validateLogin() {
     var ok = true;
     ok = vld('l_email',    { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, msg: 'Enter a valid email.' }) && ok;
     ok = vld('l_password', { minLen: 6 }) && ok;
+    if (!captchaFilled(recaptchaLoginId)) {
+        alert('Please complete the Google reCAPTCHA check before logging in.');
+        return false;
+    }
     return ok;
 }
 
@@ -380,6 +417,10 @@ function validateSignup() {
     ok = vld('password', { minLen: 6 }) && ok;
     ok = vld('role',     {}) && ok;
     ok = vld('date_ins', {}) && ok;
+    if (!captchaFilled(recaptchaSignupId)) {
+        alert('Please complete the Google reCAPTCHA check before registering.');
+        return false;
+    }
     return ok;
 }
 </script>
