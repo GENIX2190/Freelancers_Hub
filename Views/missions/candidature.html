@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Missions & Applications - Freelence Hub</title>
     <link rel="stylesheet" href="../assets/css/common.css">
-    <link rel="stylesheet" href="css/candidature.css?v=8">
+    <link rel="stylesheet" href="css/candidature.css?v=9">
 </head>
-<body>
+<body class="page-auth page-missions">
 
 <header>
     <div class="header-container">
@@ -26,17 +26,38 @@
     </div>
 </header>
 
-<div class="side-nav"></div>
+<div class="auth-fx" aria-hidden="true">
+    <div class="auth-stars-layer auth-stars-layer--deep"></div>
+    <div class="auth-stars-layer auth-stars-layer--mid"></div>
+    <div class="auth-celestial">
+        <div class="auth-earthshine"></div>
+        <span class="auth-planet auth-planet-gas"></span>
+        <span class="auth-planet auth-planet-rock"></span>
+        <div class="auth-orbit">
+            <span class="auth-orbit-dot"></span>
+        </div>
+        <div class="auth-star-bloom"></div>
+    </div>
+    <div class="auth-aurora"></div>
+    <span class="meteor meteor-1"></span>
+    <span class="meteor meteor-2"></span>
+    <span class="meteor meteor-3"></span>
+</div>
 
-<main>
-    <div class="page-header page-header-row">
+<div class="auth-lightning" aria-hidden="true"></div>
+<div class="auth-lightning auth-lightning--b" aria-hidden="true"></div>
+
+<div class="hero">
+    <div class="page-header page-header-row missions-hero-inner">
         <div class="page-header-text">
             <h1>Available Missions</h1>
             <p>Browse job offers and apply directly by filling out the application form.</p>
         </div>
         <button type="button" class="btn-primary btn-add-mission" onclick="openAddMissionIframe()" title="Open admin mission form">＋ Post a mission</button>
     </div>
+</div>
 
+<main>
     <div class="filters">
         <div class="filters-toolbar">
             <span>Category:</span>
@@ -54,10 +75,7 @@
 </main>
 
 <footer>
-    <div class="footer-text">
-        <p>© 2026 Freelence Hub - All rights reserved</p>
-        <p class="copyright">Log in and discover your next opportunities</p>
-    </div>
+    <p>© 2026 Freelence Hub — All rights reserved</p>
 </footer>
 
 <div class="modal-overlay modal-iframe-overlay" id="missionEmbedOverlay" onclick="closeMissionEmbedOnOverlay(event)">
@@ -164,6 +182,21 @@
 <script src="../assets/js/common.js"></script>
 <script src="js/notification.js?v=1"></script>
 <script src="js/candidature.js?v=7"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('header nav a, .sidebar-nav a, .side-nav a').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            var href = this.getAttribute('href');
+            if (!href || href === '#' || href.startsWith('javascript:')) return;
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'translateY(-10px)';
+            setTimeout(function() { window.location.href = href; }, 300);
+        });
+    });
+});
+</script>
 
 </body>
 </html>
