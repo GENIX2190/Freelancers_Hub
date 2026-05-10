@@ -36,7 +36,108 @@ function showToast(msg, isError) {
     setTimeout(function() { t.classList.remove('show'); }, 3200);
 }
 
+/* ── DATE INPUTS: minimum = today (local date, YYYY-MM-DD) ── */
+function dateInputTodayISO() {
+    var t = new Date();
+    return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+}
+
+/**
+ * Sets min=today on all date inputs.
+ * Use data-allow-past on a field to skip (e.g. historical registration / application dates in admin edit).
+ */
+function initDateInputsMinToday(root) {
+    var r = root || document;
+    var iso = dateInputTodayISO();
+    r.querySelectorAll('input[type="date"]:not([data-allow-past]):not([data-up-to-today])').forEach(function(el) {
+        el.min = iso;
+    });
+}
+
+/** Registration-style dates: any day up to today (no min), max=today, default today if empty. */
+function initDateInputsUpToToday(root) {
+    var r = root || document;
+    var iso = dateInputTodayISO();
+    r.querySelectorAll('input[type="date"][data-up-to-today]').forEach(function(el) {
+        el.removeAttribute('min');
+        el.max = iso;
+        if (!el.value.trim()) el.value = iso;
+    });
+}
+
+function runAllDateInputInits() {
+    initDateInputsMinToday();
+    initDateInputsUpToToday();
+}
+
+function scheduleInitDateInputsMinToday() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', runAllDateInputInits);
+    } else {
+        runAllDateInputInits();
+    }
+}
+scheduleInitDateInputsMinToday();
+
+window.dateInputTodayISO = dateInputTodayISO;
+window.initDateInputsMinToday = initDateInputsMinToday;
+window.initDateInputsUpToToday = initDateInputsUpToToday;
+
 /* ── CUSTOM FORM VALIDATION (no HTML5 required) ── */
+
+/** Shown when value &lt; input.min (same styling as other field errors). */
+var DATE_EXPIRED_MSG = 'This date has expired. Choose today or a future date.';
+/** Shown when value &gt; input.max (e.g. registration date in the future). */
+var DATE_FUTURE_MSG = 'This date cannot be in the future.';
+
+/**
+ * Live check for date inputs (change/blur). Uses .error + .field-error like validateField.
+ */
+function validateDateInputLive(input) {
+    if (!input || input.type !== 'date') return;
+    var v = input.value.trim();
+    var dmin = input.getAttribute('min');
+    var dmax = input.getAttribute('max');
+    var errorEl = input.parentElement && input.parentElement.querySelector('.field-error');
+    if (!dmin && !dmax) return;
+    if (!v) {
+        if (errorEl && (errorEl.textContent === DATE_EXPIRED_MSG || errorEl.textContent === DATE_FUTURE_MSG)) {
+            errorEl.textContent = '';
+            errorEl.classList.remove('visible');
+            input.classList.remove('error');
+        }
+        return;
+    }
+    var msg = '';
+    if (dmin && v < dmin) msg = DATE_EXPIRED_MSG;
+    else if (dmax && v > dmax) msg = DATE_FUTURE_MSG;
+    if (msg) {
+        input.classList.add('error');
+        if (errorEl) {
+            errorEl.textContent = msg;
+            errorEl.classList.add('visible');
+        }
+    } else {
+        if (errorEl && (errorEl.textContent === DATE_EXPIRED_MSG || errorEl.textContent === DATE_FUTURE_MSG)) {
+            errorEl.textContent = '';
+            errorEl.classList.remove('visible');
+        }
+        input.classList.remove('error');
+    }
+}
+
+document.addEventListener('change', function(e) {
+    var t = e.target;
+    if (t && t.matches && t.matches('input[type="date"]')) validateDateInputLive(t);
+});
+document.addEventListener('blur', function(e) {
+    var t = e.target;
+    if (t && t.matches && t.matches('input[type="date"]')) validateDateInputLive(t);
+}, true);
+
+window.DATE_EXPIRED_MSG = DATE_EXPIRED_MSG;
+window.DATE_FUTURE_MSG = DATE_FUTURE_MSG;
+window.validateDateInputLive = validateDateInputLive;
 
 /**
  * Validate a single field.
@@ -63,6 +164,11 @@ function validateField(input, rules) {
         msg = 'Maximum value is ' + rules.max + '.';
     } else if (rules.match && value !== rules.match) {
         msg = rules.matchLabel || 'Fields do not match.';
+    } else if (value && input.type === 'date') {
+        var dmin = input.getAttribute('min');
+        var dmax = input.getAttribute('max');
+        if (dmin && value < dmin) msg = DATE_EXPIRED_MSG;
+        else if (dmax && value > dmax) msg = DATE_FUTURE_MSG;
     }
 
     if (msg) {
