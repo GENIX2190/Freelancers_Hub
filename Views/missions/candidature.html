@@ -5,39 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Missions & Applications - Freelence Hub</title>
     <link rel="stylesheet" href="../assets/css/common.css">
-    <link rel="stylesheet" href="css/missions.css">
-    <link rel="stylesheet" href="../assets/css/admin-dashboard.css">
-    <link rel="stylesheet" href="css/candidature.css?v=7">
+    <link rel="stylesheet" href="css/candidature.css?v=8">
 </head>
 <body>
 
-<aside class="sidebar">
-    <div class="sidebar-logo">
-        <div class="s-logo">FH</div>
-        <span class="brand">Freelence Hub</span>
+<header>
+    <div class="header-container">
+        <a href="../Main.html" class="logo-section">
+            <div class="logo">FH</div>
+            <div class="site-name">Freelence Hub</div>
+        </a>
+        <nav>
+            <a href="candidature.html" class="active">💼 Missions</a>
+            <a href="../formations/create.html">📚 Formations</a>
+            <a href="../experience/view.html">✍️ Experience</a>
+            <a href="../projets/view.html">📁 Projects</a>
+            <a href="../users/login.html" class="nav-right">🔐 Login</a>
+            <a href="../users/login.html?redirect=dashboard.html">📊 Dashboard</a>
+        </nav>
     </div>
-    <div class="sidebar-label">Main</div>
-    <nav class="sidebar-nav">
-        <a href="../dashboard.html"><span class="nav-icon">📊</span><span>Dashboard</span></a>
-    </nav>
-    <div class="sidebar-label">Modules</div>
-    <nav class="sidebar-nav">
-        <a href="../users/dashboard.html"><span class="nav-icon">👤</span><span>Users</span></a>
-        <a href="candidature.html" class="active"><span class="nav-icon">💼</span><span>Missions</span></a>
-        <a href="../formations/dashboard.html"><span class="nav-icon">📚</span><span>Formations</span></a>
-        <a href="../projets/dashboard.html"><span class="nav-icon">📁</span><span>Projects</span></a>
-        <a href="../experience/dashboard.html"><span class="nav-icon">✍️</span><span>Experience</span></a>
-    </nav>
-    <div class="sidebar-label">User View</div>
-    <nav class="sidebar-nav">
-        <a href="../Main.html"><span class="nav-icon">🏠</span><span>Home</span></a>
-    </nav>
-    <div class="sidebar-bottom">
-        <a href="../Main.html"><span class="nav-icon">🚪</span><span>Logout</span></a>
-    </div>
-</aside>
+</header>
 
-<div class="content-wrapper">
+<div class="side-nav"></div>
+
 <main>
     <div class="page-header page-header-row">
         <div class="page-header-text">
@@ -65,7 +55,7 @@
 
 <footer>
     <div class="footer-text">
-        <p>&copy; 2026 Freelence Hub - All rights reserved</p>
+        <p>© 2026 Freelence Hub - All rights reserved</p>
         <p class="copyright">Log in and discover your next opportunities</p>
     </div>
 </footer>
@@ -174,6 +164,6 @@
 <script src="../assets/js/common.js"></script>
 <script src="js/notification.js?v=1"></script>
 <script src="js/candidature.js?v=7"></script>
-</div>
+
 </body>
 </html>
