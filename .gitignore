@@ -61,10 +61,10 @@ yarn.lock
 .phpunit.result.cache
 
 # Database
+/database/
 *.sql
 *.sqlite
 *.db
-/database/*.sql
 
 # Backup Files
 *.bak
