@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificat - Freelance Hub</title>
+    <title>Certificat - Freelence Hub</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="css/formations-cosmic.css?v=1">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        .cert-shell * { box-sizing: border-box; }
 
-        body {
+        body.page-cert .cert-shell {
             min-height: 100vh;
-            font-family: "Georgia", "Times New Roman", serif;
-            background: #eef3ef;
-            color: #1f2933;
-            padding: 36px 18px;
+            padding: 28px 18px 48px;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
-        .page {
+        body.page-cert .cert-shell-inner {
             max-width: 1050px;
             margin: 0 auto;
         }
@@ -277,13 +280,55 @@
         }
 
         @media print {
-            body { background: white; padding: 0; }
+            body.page-cert { background: white !important; padding-top: 0 !important; }
+            .fh-cosmic-header,
+            .auth-fx,
+            .auth-lightning { display: none !important; }
             .toolbar { display: none; }
             .certificate { box-shadow: none; }
         }
     </style>
 </head>
-<body>
+<body class="page-auth page-formations page-cert">
+
+<header class="fh-cosmic-header">
+    <div class="header-container">
+        <a href="../Main.html" class="logo-section">
+            <div class="logo">FH</div>
+            <div class="site-name">Freelence Hub</div>
+        </a>
+        <nav>
+            <a href="../missions/candidature.html">💼 Missions</a>
+            <a href="learn.html">📚 Formations</a>
+            <a href="../experience/view.html">✍️ Experience</a>
+            <a href="../projets/view.html">📁 Projects</a>
+            <a href="../users/login.html" class="nav-right">🔐 Login</a>
+            <a href="../users/login.html?redirect=dashboard.html">📊 Dashboard</a>
+        </nav>
+    </div>
+</header>
+
+<div class="auth-fx" aria-hidden="true">
+    <div class="auth-stars-layer auth-stars-layer--deep"></div>
+    <div class="auth-stars-layer auth-stars-layer--mid"></div>
+    <div class="auth-celestial">
+        <div class="auth-earthshine"></div>
+        <span class="auth-planet auth-planet-gas"></span>
+        <span class="auth-planet auth-planet-rock"></span>
+        <div class="auth-orbit"><span class="auth-orbit-dot"></span></div>
+        <div class="auth-star-bloom"></div>
+    </div>
+    <div class="auth-aurora"></div>
+    <span class="meteor meteor-1"></span>
+    <span class="meteor meteor-2"></span>
+    <span class="meteor meteor-3"></span>
+</div>
+<div class="auth-lightning" aria-hidden="true"></div>
+<div class="auth-lightning auth-lightning--b" aria-hidden="true"></div>
+
+<div class="cert-shell">
+<div class="cert-shell-inner">
+
     <div class="page" id="certificate-page">
         <div class="toolbar">
             <button class="back-link" id="back-btn" type="button" onclick="goBackToQuiz()">Retour au quiz</button>
@@ -345,6 +390,9 @@
             Aucune donnée de certificat trouvée. Terminez d'abord un quiz puis cliquez sur "Passer au certif".
         </div>
     </div>
+
+</div>
+</div>
 
     <script>
         function getFallbackData() {

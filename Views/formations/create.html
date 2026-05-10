@@ -1,13 +1,16 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create a Training Course - Freelence Hub</title>
     <link rel="stylesheet" href="../assets/css/common.css">
     <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/formations-cosmic.css?v=1">
 </head>
-<body>
+<body class="page-auth page-formations formations-create">
 
-<header>
+<header class="fh-cosmic-header">
     <div class="header-container">
         <a href="../Main.html" class="logo-section">
             <div class="logo">FH</div>
@@ -24,11 +27,34 @@
     </div>
 </header>
 
-<main style="max-width:800px;">
-    <div class="form-container">
-        <h1>📚 Create a Training Course</h1>
-        <p class="subtitle">Share your knowledge and create a course for freelancers</p>
+<div class="auth-fx" aria-hidden="true">
+    <div class="auth-stars-layer auth-stars-layer--deep"></div>
+    <div class="auth-stars-layer auth-stars-layer--mid"></div>
+    <div class="auth-celestial">
+        <div class="auth-earthshine"></div>
+        <span class="auth-planet auth-planet-gas"></span>
+        <span class="auth-planet auth-planet-rock"></span>
+        <div class="auth-orbit">
+            <span class="auth-orbit-dot"></span>
+        </div>
+        <div class="auth-star-bloom"></div>
+    </div>
+    <div class="auth-aurora"></div>
+    <span class="meteor meteor-1"></span>
+    <span class="meteor meteor-2"></span>
+    <span class="meteor meteor-3"></span>
+</div>
 
+<div class="auth-lightning" aria-hidden="true"></div>
+<div class="auth-lightning auth-lightning--b" aria-hidden="true"></div>
+
+<div class="hero">
+    <h1>📚 Create a Training Course</h1>
+    <p>Share your knowledge and create a course for freelancers.</p>
+</div>
+
+<main>
+    <div class="form-container">
         <div class="success-banner" id="successBanner">
             ✅ Course created successfully! It is now available on the platform.
         </div>
@@ -39,8 +65,6 @@
             <input type="hidden" name="instructor" value="">
             <input type="hidden" name="status" value="Planned">
             <input type="hidden" name="hours_done" value="0">
-            <div class="form-row">
-    
             <input type="hidden" name="start_date" value="">
 
             <div class="form-row full">
@@ -122,25 +146,27 @@
 
 <footer>
     <div class="footer-text">
-        <p>© 2026 Freelence Hub - All rights reserved</p>
-        <p class="copyright">Log in and discover your next opportunities</p>
+        <p>© 2026 Freelence Hub — All rights reserved</p>
+        <p class="copyright">Train, learn, grow with the Hub</p>
     </div>
 </footer>
 
 <script src="../assets/js/common.js"></script>
-<script src="js/formation-create.js?v=2"></script>
+<script src="js/formation-create.js?v=3"></script>
 <script>
-document.getElementById('formationForm').addEventListener('submit', function(e) {
-    var val = parseInt(document.getElementById('r').value);
-    var err = document.getElementById('rating-error');
-    if (!val || val < 1 || val > 5) {
-        e.preventDefault();
-        err.textContent = '⚠️ Rating must be between 1 and 5.';
-        document.getElementById('r').focus();
-    } else {
-        err.textContent = '';
-    }
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('header nav a, .sidebar-nav a, .side-nav a').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            var href = this.getAttribute('href');
+            if (!href || href === '#' || href.startsWith('javascript:')) return;
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            document.body.style.transform = 'translateY(-10px)';
+            setTimeout(function() { window.location.href = href; }, 300);
+        });
+    });
 });
 </script>
 
-</body></html>
+</body>
+</html>
