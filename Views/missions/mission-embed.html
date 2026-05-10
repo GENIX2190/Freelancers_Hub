@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add mission — Freelence Hub</title>
+    <!-- Resolve CSS from this document’s folder (works in iframe + any base path) -->
+    <script>
+    (function () {
+        var dir = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+        document.write(
+            '<link rel="stylesheet" href="' + dir + '../assets/css/common.css">' +
+            '<link rel="stylesheet" href="' + dir + 'css/mission-embed.css">'
+        );
+    })();
+    </script>
+</head>
+<body class="mission-embed-body">
+
+<div id="embedSuccess" class="embed-banner embed-success" style="display:none" role="status">
+    <strong>Mission published.</strong> You can add another below or close this window.
+</div>
+<div id="embedError" class="embed-banner embed-error" style="display:none" role="alert">
+    Could not save the mission. Please check your data and try again.
+</div>
+
+<div class="embed-wrap">
+    <h1 class="embed-title">➕ New mission</h1>
+    <p class="embed-sub">Same form as the mission dashboard — submissions are saved to your database.</p>
+
+    <form id="missionEmbedForm" method="POST" action="../../Controllers/MissionController.php" onsubmit="return saveEmbedMission(event)" novalidate>
+        <input type="hidden" name="form_action" value="mission_create">
+        <input type="hidden" name="redirect" value="mission_embed">
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Title <span class="required">*</span></label>
+                <input type="text" name="title" id="f_title" placeholder="Mission title">
+                <span class="field-error"></span>
+            </div>
+            <div class="form-group">
+                <label>Category <span class="required">*</span></label>
+                <select name="categorie_id" id="f_category">
+                    <option value="">-- Loading… --</option>
+                </select>
+                <span class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Client name <span class="required">*</span></label>
+                <input type="text" name="client" id="f_client" placeholder="Client or company">
+                <span class="field-error"></span>
+            </div>
+            <div class="form-group">
+                <label>Budget (€) <span class="required">*</span></label>
+                <input type="number" name="budget" id="f_budget" placeholder="e.g. 2500">
+                <span class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="form-row full">
+            <div class="form-group">
+                <label>Contact email <span class="required">*</span></label>
+                <input type="email" name="contact_email" id="f_contact_email" placeholder="Owner email — receives application alerts" autocomplete="email">
+                <span class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Status <span class="required">*</span></label>
+                <select name="status" id="f_status" onchange="toggleEmbedProgress()">
+                    <option value="">-- Select --</option>
+                    <option>Active</option>
+                    <option>Pending</option>
+                    <option>Completed</option>
+                    <option>Cancelled</option>
+                </select>
+                <span class="field-error"></span>
+            </div>
+            <div class="form-group">
+                <label>Deadline <span class="required">*</span></label>
+                <input type="date" name="deadline" id="f_deadline">
+                <span class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Progress (%)</label>
+                <input type="number" name="progress" id="f_progress" placeholder="0–100" value="0">
+                <span class="field-error"></span>
+            </div>
+            <div class="form-group">
+                <label>Priority</label>
+                <select name="priority" id="f_priority">
+                    <option>Normal</option>
+                    <option>Urgent</option>
+                    <option>Low</option>
+                </select>
+                <span class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="form-row full">
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" id="f_description" placeholder="Mission objectives…"></textarea>
+                <span class="field-error"></span>
+            </div>
+        </div>
+
+        <div class="embed-actions">
+            <button type="submit" class="btn-save">💾 Publish mission</button>
+        </div>
+    </form>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+(function () {
+    var dir = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    function loadScript(src, onload) {
+        var s = document.createElement('script');
+        s.src = src;
+        if (onload) s.onload = onload;
+        document.body.appendChild(s);
+    }
+    loadScript(dir + '../assets/js/common.js', function () {
+        loadScript(dir + 'js/mission-embed.js?v=2');
+    });
+})();
+</script>
+</body>
+</html>

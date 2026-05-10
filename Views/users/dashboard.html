@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Admin page: list, add, edit, ban/unban and delete users (UtilisateurController + JSON API). -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -35,9 +36,9 @@
         .user-cell{display:flex;align-items:center;gap:10px}
         .user-cell .name{font-weight:600;color:#222}
         .user-cell .email{font-size:12px;color:#888}
-        @media(max-width:700px){table th,table td{padding:9px 8px;font-size:12px}}
+        @media(max-width:700px){table th,table td{padding:9px 8px;font-size:12px}}/* tighter cells on small screens */
 
-        /* ── ADMIN SIDEBAR ── */
+        /* ── ADMIN SIDEBAR (fixed left nav; links to other modules) ── */
         .sidebar{width:260px;background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);color:white;position:fixed;top:0;left:0;bottom:0;z-index:300;display:flex;flex-direction:column;overflow-y:auto}
         .sidebar-logo{padding:28px 24px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.08)}
         .sidebar-logo .s-logo{width:42px;height:42px;background:#00a852;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:20px;color:white}
@@ -55,7 +56,7 @@
         .sidebar-bottom .sidebar-logout-form button{display:flex;align-items:center;gap:14px;padding:13px 16px;width:100%;border-radius:10px;font-size:14px;font-weight:500;color:rgba(255,255,255,.7);transition:all .25s;border:none;background:none;cursor:pointer;font-family:inherit;text-align:left}
         .sidebar-bottom .sidebar-logout-form button:hover{background:rgba(255,80,80,.15);color:#ff6b6b}
         body{display:flex;min-height:100vh}
-        .content-wrapper{margin-left:260px;flex:1}
+        .content-wrapper{margin-left:260px;flex:1}/* main column sits to the right of the 260px sidebar */
         @media(max-width:768px){
             .sidebar{width:70px}
             .sidebar-logo .brand,.sidebar-label,.sidebar-nav a span:not(.nav-icon),.sidebar-bottom a span:not(.nav-icon),.sidebar-bottom .sidebar-logout-form button span:not(.nav-icon){display:none}
@@ -63,24 +64,24 @@
             .sidebar-bottom a,.sidebar-bottom .sidebar-logout-form button{justify-content:center;padding:14px 8px}
             .content-wrapper{margin-left:70px}
         }
-        @media(max-width:480px){.sidebar{display:none}.content-wrapper{margin-left:0}}
+        @media(max-width:480px){.sidebar{display:none}.content-wrapper{margin-left:0}}/* phone: hide sidebar, full-width content */
     </style>
 </head>
 <body>
 
-<!-- ═══ ADMIN SIDEBAR ═══ -->
+<!-- ═══ ADMIN SIDEBAR ═══ (navigation only; not the user CRUD form) -->
 <aside class="sidebar">
     <div class="sidebar-logo">
         <div class="s-logo">FH</div>
         <span class="brand">Freelence Hub</span>
     </div>
-    <div class="sidebar-label">Main</div>
+    <div class="sidebar-label">Main</div><!-- section label in sidebar -->
     <nav class="sidebar-nav">
-        <a href="../dashboard.html"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+        <a href="../dashboard.html"><span class="nav-icon">📊</span><span>Dashboard</span></a><!-- global admin home -->
     </nav>
     <div class="sidebar-label">Modules</div>
     <nav class="sidebar-nav">
-        <a href="../users/dashboard.html" class="active"><span class="nav-icon">👤</span><span>Users</span></a>
+        <a href="../users/dashboard.html" class="active"><span class="nav-icon">👤</span><span>Users</span></a><!-- current page -->
         <a href="../missions/dashboard.html"><span class="nav-icon">💼</span><span>Missions</span></a>
         <a href="../formations/dashboard.html"><span class="nav-icon">📚</span><span>Formations</span></a>
         <a href="../projets/dashboard.html"><span class="nav-icon">📁</span><span>Projects</span></a>
@@ -88,7 +89,7 @@
     </nav>
     <div class="sidebar-label">User View</div>
     <nav class="sidebar-nav">
-        <a href="../Main.html"><span class="nav-icon">🏠</span><span>Home</span></a>
+        <a href="../Main.html"><span class="nav-icon">🏠</span><span>Home</span></a><!-- public site -->
     </nav>
     <div class="sidebar-bottom">
         <form action="../../Controllers/UtilisateurController.php" method="post" class="sidebar-logout-form">
@@ -98,11 +99,11 @@
     </div>
 </aside>
 
-<div class="content-wrapper">
+<div class="content-wrapper"><!-- shifts right of fixed sidebar -->
 <main>
-    <div class="page-header">
+    <div class="page-header"><!-- title + primary action -->
         <h1 class="page-title">👤 User Management</h1>
-        <button class="btn-primary" onclick="openAddUser()">＋ Add New User</button>
+        <button class="btn-primary" onclick="openAddUser()">＋ Add New User</button><!-- opens #formModal in create mode -->
     </div>
 
     <!-- Stats -->
@@ -115,19 +116,19 @@
         <div class="stat-card"><div class="stat-number" id="s-admins">0</div><div class="stat-label">Admins</div></div>
     </div>
 
-    <!-- Controls -->
+    <!-- Controls: search narrows rows; filter tabs set currentFilter then re-render. -->
     <div class="controls-bar">
         <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search by name, email or role..." oninput="renderUsers()">
         <button class="btn-export" onclick="exportUsersPDF()">📄 Export PDF</button>
         <div class="filter-tabs">
-            <button class="filter-tab active" data-f="all" onclick="setFilter(this)">All</button>
+            <button class="filter-tab active" data-f="all" onclick="setFilter(this)">All</button><!-- data-f stored in currentFilter -->
             <button class="filter-tab" data-f="Active" onclick="setFilter(this)">🟢 Active</button>
             <button class="filter-tab" data-f="Banned" onclick="setFilter(this)">🔴 Banned</button>
             <button class="filter-tab" data-f="Inactive" onclick="setFilter(this)">⚪ Inactive</button>
         </div>
     </div>
 
-    <!-- Table -->
+    <!-- Table body filled by renderUsers(); empty-state div when no rows match. -->
     <div class="table-wrapper">
         <table>
             <thead>
@@ -141,20 +142,20 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody id="users-tbody"></tbody>
+            <tbody id="users-tbody"></tbody><!-- rows injected here -->
         </table>
-        <div class="empty-state" id="empty" style="display:none"><div class="empty-icon">👤</div><p>No users found.</p></div>
+        <div class="empty-state" id="empty" style="display:none"><div class="empty-icon">👤</div><p>No users found.</p></div><!-- shown when filter/search yields zero users -->
     </div>
 </main>
 
-<footer>
+<footer><!-- site footer copy -->
     <div class="footer-text">
         <p>&copy; 2026 Freelence Hub - All rights reserved</p>
         <p class="copyright">Manage your platform users</p>
     </div>
 </footer>
 
-<!-- ═══ ADD / EDIT MODAL ═══ -->
+<!-- ═══ ADD / EDIT MODAL ═══ same form: hidden f_action user_create vs user_update; POST to UtilisateurController -->
 <div class="modal-overlay" id="formModal" onclick="closeOnBg(event,'formModal')">
     <div class="modal-box">
         <div class="modal-header">
@@ -162,9 +163,9 @@
             <button class="modal-close" onclick="closeModal('formModal')">✕</button>
         </div>
         <div class="modal-body">
-            <form id="userForm" method="POST" action="../../Controllers/UtilisateurController.php" onsubmit="return saveUser(event)" novalidate>
-                <input type="hidden" name="form_action" id="f_action" value="user_create">
-                <input type="hidden" name="user_id" id="f_id">
+            <form id="userForm" method="POST" action="../../Controllers/UtilisateurController.php" onsubmit="return saveUser(event)" novalidate><!-- novalidate: we validate in saveUser() -->
+                <input type="hidden" name="form_action" id="f_action" value="user_create"><!-- server switches on user_create / user_update -->
+                <input type="hidden" name="user_id" id="f_id"><!-- empty on create; set on edit -->
                 <div class="form-row">
                     <div class="form-group">
                         <label>CIN / ID <span class="required">*</span></label>
@@ -207,7 +208,7 @@
                     </div>
                     <div class="form-group">
                         <label>Registration Date <span class="required">*</span></label>
-                        <input type="date" name="date_inscription" id="f_date">
+                        <input type="date" name="date_inscription" id="f_date" data-up-to-today><!-- common.js: max=today for new users; min/max cleared on edit for old dates -->
                         <span class="field-error"></span>
                     </div>
                 </div>
@@ -231,12 +232,12 @@
         </div>
         <div class="modal-footer">
             <button class="btn-cancel-form" onclick="closeModal('formModal')">Cancel</button>
-            <button class="btn-save" onclick="document.getElementById('userForm').requestSubmit()">💾 Save User</button>
+            <button class="btn-save" onclick="document.getElementById('userForm').requestSubmit()">💾 Save User</button><!-- triggers submit → saveUser() then POST -->
         </div>
     </div>
 </div>
 
-<!-- ═══ VIEW MODAL ═══ -->
+<!-- ═══ VIEW MODAL ═══ read-only details; Edit jumps to form modal with same user -->
 <div class="modal-overlay" id="viewModal" onclick="closeOnBg(event,'viewModal')">
     <div class="modal-box">
         <div class="modal-header">
@@ -262,7 +263,7 @@
     </div>
 </div>
 
-<!-- ═══ DELETE MODAL ═══ -->
+<!-- ═══ DELETE MODAL ═══ confirms then POSTs hidden deleteForm with user_id -->
 <div class="modal-overlay" id="deleteModal" onclick="closeOnBg(event,'deleteModal')">
     <div class="modal-box" style="max-width:420px">
         <div class="modal-header">
@@ -283,13 +284,13 @@
     </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div><!-- transient messages (success / error) -->
 
-<form id="deleteForm" method="POST" action="../../Controllers/UtilisateurController.php" style="display:none">
+<form id="deleteForm" method="POST" action="../../Controllers/UtilisateurController.php" style="display:none"><!-- submitted from delete modal -->
     <input type="hidden" name="form_action" value="user_delete">
-    <input type="hidden" name="user_id" id="del_user_id">
+    <input type="hidden" name="user_id" id="del_user_id"><!-- set in JS before submit -->
 </form>
-<form id="banForm" method="POST" action="../../Controllers/UtilisateurController.php" style="display:none">
+<form id="banForm" method="POST" action="../../Controllers/UtilisateurController.php" style="display:none"><!-- ban/unban without full edit form -->
     <input type="hidden" name="form_action" value="user_toggle_ban">
     <input type="hidden" name="user_id" id="ban_user_id">
 </form>
@@ -300,15 +301,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <script>
+// In-memory copy of all users returned from the API (refreshed on load only unless you add reload).
 var users = [];
+// Status filter from the pill buttons: 'all' | 'Active' | 'Banned' | 'Inactive'
 var currentFilter = 'all';
+// Last user id opened in the view modal (used when clicking Edit from view).
 var viewingId = null;
 
+// GET list_users JSON → fills `users`, then stats + table.
 function loadUsers() {
     fetch('../../Controllers/UtilisateurController.php?action=list_users')
         .then(fhJsonFromResponse)
         .then(function(data) {
-            if (data.error) { showToast('Access denied', true); return; }
+            if (data.error) { showToast('Access denied', true); return; }// not admin session
             users = data;
             updateStats();
             renderUsers();
@@ -316,12 +321,13 @@ function loadUsers() {
         .catch(function() { showToast('Failed to load users', true); });
 }
 
-function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
-function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
-function closeOnBg(e,id){if(e.target===document.getElementById(id))closeModal(id);}
-function showToast(msg,err){var t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(err?' error':'');t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
-function fmtDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});}catch(e){return d;}}
+function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}// show overlay + lock scroll
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}// hide overlay
+function closeOnBg(e,id){if(e.target===document.getElementById(id))closeModal(id);}// click on dimmed backdrop closes modal
+function showToast(msg,err){var t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(err?' error':'');t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}// bottom-right notice
+function fmtDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});}catch(e){return d;}}// ISO date string → readable label
 
+// Generic required check for a field id (uses .field-error under .form-group).
 function vld(id){
     var el=document.getElementById(id),v=el.value.trim(),err=el.parentElement.querySelector('.field-error');
     if(!v){el.classList.add('error');if(err){err.textContent='Required.';err.classList.add('visible');}return false;}
@@ -343,8 +349,10 @@ function vldMin(id,n){
         if(err){err.textContent='Min '+n+' chars.';err.classList.add('visible');}return false;
     }return true;
 }
+// Clear inline error styling as soon as the user types again.
 document.addEventListener('input',function(e){if(e.target.classList.contains('error')){e.target.classList.remove('error');var er=e.target.parentElement.querySelector('.field-error');if(er){er.textContent='';er.classList.remove('visible');}}});
 
+// Recompute the six stat cards from `users`.
 function updateStats(){
     document.getElementById('s-total').textContent=users.length;
     document.getElementById('s-active').textContent=users.filter(function(u){return u.status==='Active';}).length;
@@ -357,28 +365,31 @@ function updateStats(){
 function setFilter(btn){
     document.querySelectorAll('.filter-tab').forEach(function(b){b.classList.remove('active');});
     btn.classList.add('active');
-    currentFilter=btn.getAttribute('data-f');
+    currentFilter=btn.getAttribute('data-f');// drives filter inside renderUsers
     renderUsers();
 }
 
+// CSS class map for role / status chips in the table.
 var roleCls={'Admin':'role-admin','Freelancer':'role-freelance','Client':'role-client'};
 var stCls={'Active':'st-active','Banned':'st-banned','Inactive':'st-inactive'};
 
+// Filter by currentFilter + search box, then rebuild tbody rows (and empty state).
 function renderUsers(){
     var q=(document.getElementById('searchInput').value||'').toLowerCase();
     var data=users.filter(function(u){
-        if(currentFilter!=='all'&&u.status!==currentFilter)return false;
-        if(q&&u.email.toLowerCase().indexOf(q)===-1&&u.cin.toLowerCase().indexOf(q)===-1&&u.role.toLowerCase().indexOf(q)===-1&&(u.location||'').toLowerCase().indexOf(q)===-1)return false;
+        if(currentFilter!=='all'&&u.status!==currentFilter)return false;// status tab
+        if(q&&u.email.toLowerCase().indexOf(q)===-1&&u.cin.toLowerCase().indexOf(q)===-1&&u.role.toLowerCase().indexOf(q)===-1&&(u.location||'').toLowerCase().indexOf(q)===-1)return false;// search must match at least one field
         return true;
     });
     var tbody=document.getElementById('users-tbody');
     tbody.innerHTML='';
     document.getElementById('empty').style.display=data.length?'none':'block';
     data.forEach(function(u,i){
-        var initials=u.email.charAt(0).toUpperCase();
-        var isSeed=u.is_seed;
+        var initials=u.email.charAt(0).toUpperCase();// avatar letter
+        var isSeed=u.is_seed;// built-in admin row: no delete / ban toggles
         var row=document.createElement('tr');
         row.innerHTML=
+            /* row # is index within the filtered list (not global user id) */
             '<td style="color:#aaa;font-size:12px">'+(i+1)+'</td>'+
             '<td><div class="user-cell"><div class="user-avatar">'+initials+'</div><div><div class="name">'+u.cin+'</div><div class="email">'+u.email+'</div></div></div></td>'+
             '<td><span class="badge-role '+(roleCls[u.role]||'')+'">'+u.role+'</span></td>'+
@@ -391,12 +402,13 @@ function renderUsers(){
                 (isSeed?'':
                     (u.status==='Banned'?'<button class="btn-act btn-unban" onclick="toggleBan('+u.id+')">✅</button>':'<button class="btn-act btn-ban" onclick="toggleBan('+u.id+')">🚫</button>')+
                     '<button class="btn-act btn-d" onclick="confirmDel('+u.id+')">🗑</button>'
-                )+
+                )+/* isSeed: hide ban/delete for built-in admin */
             '</div></td>';
         tbody.appendChild(row);
     });
 }
 
+// Reset form for a new user; set server action user_create; registration date defaults to today (max today).
 function openAddUser(){
     document.getElementById('formTitle').textContent='➕ Add New User';
     document.getElementById('userForm').reset();
@@ -405,9 +417,16 @@ function openAddUser(){
     document.getElementById('f_password').placeholder='Min 6 characters';
     document.querySelectorAll('#userForm .error').forEach(function(e){e.classList.remove('error');});
     document.querySelectorAll('#userForm .field-error').forEach(function(e){e.textContent='';e.classList.remove('visible');});
+    var fd = document.getElementById('f_date');
+    if (fd && typeof dateInputTodayISO === 'function') {
+        fd.removeAttribute('min');
+        fd.max = dateInputTodayISO();// cannot pick future registration
+        fd.value = dateInputTodayISO();// prefill today
+    }
     openModal('formModal');
 }
 
+// Load one user into the form; user_update + hidden id; password optional (blank = keep hash).
 function editUser(id){
     var u=users.find(function(x){return x.id===id;});if(!u)return;
     document.getElementById('formTitle').textContent='✏️ Edit User';
@@ -425,18 +444,25 @@ function editUser(id){
     document.getElementById('f_bio').value=u.bio||'';
     document.querySelectorAll('#userForm .error').forEach(function(e){e.classList.remove('error');});
     document.querySelectorAll('#userForm .field-error').forEach(function(e){e.textContent='';e.classList.remove('visible');});
+    var fdEd = document.getElementById('f_date');
+    if (fdEd) {
+        fdEd.removeAttribute('min');
+        fdEd.removeAttribute('max');// allow any historical registration date from DB
+    }
     openModal('formModal');
 }
 
+// Runs on form submit: if false, prevent POST and show toast.
 function saveUser(e){
     var isEdit=document.getElementById('f_id').value!=='';
-    var ok=vldMin('f_cin',5)&vldEmail('f_email')&vld('f_role')&vld('f_status')&vld('f_date');
-    if(!isEdit){ok=ok&vldMin('f_password',6);}
-    else{var pw=document.getElementById('f_password').value.trim();if(pw!==''&&pw.length<6){ok=0;var el=document.getElementById('f_password');el.classList.add('error');var er=el.parentElement.querySelector('.field-error');if(er){er.textContent='Min 6 chars or leave blank.';er.classList.add('visible');}}}
+    var ok=vldMin('f_cin',5)&vldEmail('f_email')&vld('f_role')&vld('f_status')&validateField(document.getElementById('f_date'),{});// validateField from common.js (required + date max)
+    if(!isEdit){ok=ok&vldMin('f_password',6);}// new user must set password
+    else{var pw=document.getElementById('f_password').value.trim();if(pw!==''&&pw.length<6){ok=0;var el=document.getElementById('f_password');el.classList.add('error');var er=el.parentElement.querySelector('.field-error');if(er){er.textContent='Min 6 chars or leave blank.';er.classList.add('visible');}}}// edit: password optional but min 6 if filled
     if(!ok){e.preventDefault();showToast('Please fix the errors.',true);return false;}
-    return true;
+    return true;// allow normal POST to UtilisateurController
 }
 
+// Read-only modal populated from `users` array.
 function viewUser(id){
     var u=users.find(function(x){return x.id===id;});if(!u)return;
     viewingId=id;
@@ -450,11 +476,11 @@ function viewUser(id){
     document.getElementById('d_bio').textContent=u.bio||'—';
     openModal('viewModal');
 }
-function editFromView(){closeModal('viewModal');if(viewingId)editUser(viewingId);}
+function editFromView(){closeModal('viewModal');if(viewingId)editUser(viewingId);}// bridge view → edit modal
 
 function toggleBan(id){
     document.getElementById('ban_user_id').value=id;
-    document.getElementById('banForm').submit();
+    document.getElementById('banForm').submit();// server toggles ban state
 }
 
 function confirmDel(id){
@@ -467,8 +493,9 @@ function confirmDel(id){
     openModal('deleteModal');
 }
 
-document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(function(m){m.classList.remove('open');document.body.style.overflow='';});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.modal-overlay.open').forEach(function(m){m.classList.remove('open');document.body.style.overflow='';});});// Esc closes any open modal
 
+// After redirect from POST, ?msg=… shows a toast then cleans the URL.
 (function(){
     var params=new URLSearchParams(window.location.search);
     var msg=params.get('msg');

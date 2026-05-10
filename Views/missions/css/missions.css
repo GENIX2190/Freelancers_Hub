@@ -1,0 +1,47 @@
+/* =============================================
+   MISSIONS.CSS — Mission Management Dashboard
+   ============================================= */
+
+/* ── TABLE WRAPPER ── */
+.table-wrapper {
+    background: white; border-radius: 12px;
+    overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,.07);
+    overflow-x: auto;
+}
+table { width: 100%; border-collapse: collapse; min-width: 820px; }
+thead { background: #f8faf8; border-bottom: 2px solid #e0e0e0; }
+th {
+    padding: 14px 16px; text-align: left;
+    font-size: 13px; font-weight: 700; color: #555;
+    text-transform: uppercase; letter-spacing: .5px;
+}
+td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+tbody tr { transition: background .2s; }
+tbody tr:hover { background: #f9fcf9; }
+tbody tr:last-child td { border-bottom: none; }
+
+.td-title { font-weight: 700; color: #00a852; max-width: 200px; }
+
+/* ── ACTION BUTTONS ── */
+.action-btns { display: flex; gap: 6px; }
+.btn-act {
+    padding: 5px 10px; border: none; border-radius: 5px;
+    font-size: 12px; font-weight: 600; cursor: pointer; transition: all .2s;
+}
+.btn-act-view   { background: #e7f3ff; color: #0066cc; }
+.btn-act-view:hover   { background: #0066cc; color: white; }
+.btn-act-edit   { background: #fff3e0; color: #e65100; }
+.btn-act-edit:hover   { background: #e65100; color: white; }
+.btn-act-delete { background: #ffe7e7; color: #cc0000; }
+.btn-act-delete:hover { background: #cc0000; color: white; }
+
+/* ── CATEGORY CHIP ── */
+.category-chip {
+    font-size: 12px; background: #f0f0f0;
+    padding: 3px 9px; border-radius: 12px; white-space: nowrap;
+}
+
+/* ── RESPONSIVE TABLE ── */
+@media (max-width: 768px) {
+    th, td { padding: 10px 10px; font-size: 12px; }
+}

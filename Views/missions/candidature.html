@@ -1,0 +1,178 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missions &amp; Applications - Freelence Hub</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="css/candidature.css?v=6">
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+        <a href="../Main.html" class="logo-section">
+            <div class="logo">FH</div>
+            <div class="site-name">Freelence Hub</div>
+        </a>
+        <nav>
+            <a href="../missions/candidature.html">💼 Missions</a>
+            <a href="../formations/create.html">📚 Formations</a>
+            <a href="../experience/view.html">✍️ Experience</a>
+            <a href="../projets/view.html">📁 Projects</a>
+            <a href="../users/login.html" class="nav-right">🔐 Login</a>
+            <a href="../users/login.html?redirect=dashboard.html">📊 Dashboard</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Side Nav -->
+<div class="side-nav">
+    
+    
+    
+</div>
+
+<main>
+    <div class="page-header page-header-row">
+        <div class="page-header-text">
+            <h1>Available Missions</h1>
+            <p>Browse job offers and apply directly by filling out the application form.</p>
+        </div>
+        <button type="button" class="btn-primary btn-add-mission" onclick="openAddMissionIframe()" title="Open admin mission form">＋ Post a mission</button>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters">
+        <div class="filters-toolbar">
+            <span>Category:</span>
+            <button type="button" class="filter-btn active" onclick="filterMissions('tous', this)">All</button>
+            <div id="categoryFilterBtns" class="category-filter-btns"></div>
+        </div>
+        <input type="text" class="search-input" placeholder="🔍 Search for a mission..." oninput="searchMissions(this.value)">
+    </div>
+
+    <!-- MISSIONS GRID (loaded from DB) -->
+    <div class="missions-grid" id="missionsGrid">
+        <div class="empty-state" id="noMissions" style="display:none;width:100%;text-align:center;padding:40px">
+            <p>No missions available right now.</p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-text">
+        <p>© 2026 Freelence Hub - All rights reserved</p>
+        <p class="copyright">Log in and discover your next opportunities</p>
+    </div>
+</footer>
+
+<!-- ADD MISSION (iframe — same backend form as dashboard) -->
+<div class="modal-overlay modal-iframe-overlay" id="missionEmbedOverlay" onclick="closeMissionEmbedOnOverlay(event)">
+    <div class="modal modal-iframe-panel" onclick="event.stopPropagation()">
+        <button type="button" class="modal-close" onclick="closeAddMissionIframe()" aria-label="Close">✕</button>
+        <iframe id="missionEmbedFrame" class="mission-embed-frame" title="Add a new mission" src="about:blank"></iframe>
+    </div>
+</div>
+
+<!-- APPLICATION MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+
+        <!-- FORM VIEW -->
+        <div id="formView">
+            <h2>Submit an Application</h2>
+            <p class="modal-mission-title" id="modalMissionTitle">Mission: —</p>
+
+            <form id="candidatureForm" method="POST" action="../../Controllers/MissionController.php" onsubmit="return submitCandidature(event)" novalidate="">
+                <input type="hidden" name="form_action" value="cand_create">
+                <input type="hidden" name="redirect" value="candidature">
+                <input type="hidden" name="mission_id" id="h_mission_id" value="">
+                <input type="hidden" name="user_id" value="0">
+                <input type="hidden" name="status" value="Pending">
+                <input type="hidden" name="name" id="h_name" value="">
+                <input type="hidden" name="email" id="h_email" value="">
+                <input type="hidden" name="phone" value="">
+                <input type="hidden" name="experience" id="h_experience" value="">
+                <input type="hidden" name="rate" id="h_rate" value="">
+                <input type="hidden" name="cand_message" id="h_message" value="">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name <span>*</span></label>
+                        <input type="text" id="prenom" name="prenom" placeholder="Your first name">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name <span>*</span></label>
+                        <input type="text" id="nom" name="nom" placeholder="Your last name">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email <span>*</span></label>
+                    <input type="text" id="email" name="email" placeholder="your@email.com">
+                    <span class="field-error"></span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Proposed Rate (TND) <span>*</span></label>
+                        <input type="number" id="tarif" name="tarif" placeholder="Ex: 1200">
+                        <p class="form-hint">Net budget in Tunisian dinars</p>
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Proposed Deadline (days) <span>*</span></label>
+                        <input type="number" id="delai" name="delai" placeholder="Ex: 14">
+                        <p class="form-hint">Number of days to deliver</p>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Experience Level <span>*</span></label>
+                    <select id="experience" name="experience">
+                        <option value="">-- Select --</option>
+                        <option value="debutant">Beginner (0–1 years)</option>
+                        <option value="intermediaire">Intermediate (2–4 years)</option>
+                        <option value="confirme">Confirmed (5+ years)</option>
+                        <option value="expert">Expert / Senior</option>
+                    </select>
+                    <span class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Portfolio / GitHub Link</label>
+                    <input type="text" id="portfolio" name="portfolio" placeholder="https://myportfolio.com">
+                    <span class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Cover Letter <span>*</span></label>
+                    <textarea id="lettre" name="lettre" placeholder="Introduce yourself and explain why you are the best candidate for this mission..." maxlength="800" oninput="updateCharCount(this)"></textarea>
+                    <div class="char-count"><span id="charCount">0</span> / 800 characters</div>
+                    <span class="field-error"></span>
+                </div>
+
+                <button type="submit" class="btn-submit-form">Send my application →</button>
+            </form>
+        </div>
+
+        <!-- SUCCESS VIEW -->
+        <div class="success-msg" id="successView">
+            <div class="check-icon">✅</div>
+            <h3>Application sent!</h3>
+            <p>Your application has been submitted successfully.<br>The client will contact you within 48h.</p>
+            <button class="btn-close-success" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="../assets/js/common.js"></script>
+<script src="js/notification.js?v=1"></script>
+<script src="js/candidature.js?v=7"></script>
+
+
+</body></html>

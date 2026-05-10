@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Management - Freelence Hub</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="css/missions.css">
+    <link rel="stylesheet" href="../assets/css/admin-dashboard.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<!-- ═══ ADMIN SIDEBAR ═══ -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="s-logo">FH</div>
+        <span class="brand">Freelence Hub</span>
+    </div>
+    <div class="sidebar-label">Main</div>
+    <nav class="sidebar-nav">
+        <a href="../dashboard.html"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    </nav>
+    <div class="sidebar-label">Modules</div>
+    <nav class="sidebar-nav">
+        <a href="../users/dashboard.html"><span class="nav-icon">👤</span><span>Users</span></a>
+        <a href="../missions/dashboard.html" class="active"><span class="nav-icon">💼</span><span>Missions</span></a>
+        <a href="../formations/dashboard.html"><span class="nav-icon">📚</span><span>Formations</span></a>
+        <a href="../projets/dashboard.html"><span class="nav-icon">📁</span><span>Projects</span></a>
+        <a href="../experience/dashboard.html"><span class="nav-icon">✍️</span><span>Experience</span></a>
+    </nav>
+    <div class="sidebar-label">User View</div>
+    <nav class="sidebar-nav">
+        <a href="../Main.html"><span class="nav-icon">🏠</span><span>Home</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+        <a href="../Main.html"><span class="nav-icon">🚪</span><span>Logout</span></a>
+    </div>
+</aside>
+
+<div class="content-wrapper">
+<main>
+    <div class="page-header">
+        <h1 class="page-title">💼 Mission Management</h1>
+        <div class="page-header-btns">
+            <button type="button" class="btn-primary" onclick="exportMissionsFullPdf()" title="Download missions, categories and applications as PDF">📄 Export PDF</button>
+            <button type="button" class="btn-primary" id="main-add-btn" onclick="onMainAdd()">＋ Add New Mission</button>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number" id="stat-total">0</div><div class="stat-label">Total Missions</div></div>
+        <div class="stat-card"><div class="stat-number" id="stat-active">0</div><div class="stat-label">Active</div></div>
+        <div class="stat-card"><div class="stat-number" id="stat-pending">0</div><div class="stat-label">Pending</div></div>
+        <div class="stat-card"><div class="stat-number" id="stat-completed">0</div><div class="stat-label">Completed</div></div>
+        <div class="stat-card"><div class="stat-number" id="stat-revenue">0€</div><div class="stat-label">Total Budget</div></div>
+        <div class="stat-card"><div class="stat-number" id="stat-categories">0</div><div class="stat-label">Categories</div></div>
+        <div class="stat-card"><div class="stat-number" id="stat-applications">0</div><div class="stat-label">Applications</div></div>
+    </div>
+
+    <!-- ── SECTION TABS ── -->
+    <div class="tabs-bar">
+        <button class="tab-btn active" onclick="switchMissionTab('missions',this)">💼 Missions</button>
+        <button class="tab-btn"        onclick="switchMissionTab('categories',this)">🏷️ Categories</button>
+        <button class="tab-btn"        onclick="switchMissionTab('candidatures',this)">📩 Candidatures</button>
+    </div>
+
+    <!-- ══ MISSIONS TAB ══ -->
+    <div id="tab-missions" class="tab-section active-tab">
+        <div class="controls-bar">
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Search by title, client or category..." oninput="applyFilters()">
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-status="all"   onclick="setFilter(this)">All</button>
+                <button class="filter-tab" data-status="Active"       onclick="setFilter(this)">🟢 Active</button>
+                <button class="filter-tab" data-status="Pending"      onclick="setFilter(this)">🟡 Pending</button>
+                <button class="filter-tab" data-status="Completed"    onclick="setFilter(this)">🔵 Completed</button>
+                <button class="filter-tab" data-status="Cancelled"    onclick="setFilter(this)">🔴 Cancelled</button>
+            </div>
+        </div>
+        <div class="table-wrapper">
+            <table id="missionsTable">
+                <thead>
+                    <tr>
+                        <th>#</th><th>Title</th><th>Category</th><th>Client</th>
+                        <th>Budget (€)</th><th>Status</th><th>Progress</th><th>Deadline</th><th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <div class="empty-icon">🔍</div><p>No missions found.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ CATEGORIES TAB ══ -->
+    <div id="tab-categories" class="tab-section">
+        <div class="sec-controls">
+            <input type="text" class="search-input" id="search-cats" placeholder="🔍 Search categories..." oninput="renderCategories()">
+            <button class="btn-primary" onclick="openAddCategory()">＋ Add Category</button>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th><th>Icon</th><th>Name</th><th>Description</th><th>Missions</th><th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="cats-tbody"></tbody>
+            </table>
+            <div class="empty-state" id="cats-empty" style="display:none">
+                <div class="empty-icon">🏷️</div><p>No categories yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ CANDIDATURES TAB ══ -->
+    <div id="tab-candidatures" class="tab-section">
+        <div class="sec-controls">
+            <input type="text" class="search-input" id="search-apps" placeholder="🔍 Search applications..." oninput="renderCandidatures()">
+            <button class="btn-primary" onclick="openAddCandidature()">＋ Add Application</button>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th><th>Mission</th><th>Freelancer</th><th>Email</th>
+                        <th>Experience</th><th>Status</th><th>Date</th><th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="apps-tbody"></tbody>
+            </table>
+            <div class="empty-state" id="apps-empty" style="display:none">
+                <div class="empty-icon">📩</div><p>No applications yet.</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-text">
+        <p>&copy; 2026 Freelence Hub - All rights reserved</p>
+        <p class="copyright">Manage your missions efficiently in one place</p>
+    </div>
+</footer>
+
+<!-- ═══════════════ ADD / EDIT MODAL ═══════════════ -->
+<div class="modal-overlay" id="formModal" onclick="closeOnOverlay(event,'formModal')">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="formModalTitle">Add New Mission</h2>
+            <button class="modal-close" onclick="closeModal('formModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="missionForm" method="POST" action="../../Controllers/MissionController.php" onsubmit="return saveMission(event)" novalidate>
+                <input type="hidden" name="form_action" id="f_action" value="mission_create">
+                <input type="hidden" name="item_id" id="editId" value="">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Title <span class="required">*</span></label>
+                        <input type="text" name="title" id="f_title" placeholder="Mission title">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Category <span class="required">*</span></label>
+                        <select name="categorie_id" id="f_category">
+                            <option value="">-- Select --</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Client Name <span class="required">*</span></label>
+                        <input type="text" name="client" id="f_client" placeholder="Client or company name">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Budget (€) <span class="required">*</span></label>
+                        <input type="number" name="budget" id="f_budget" placeholder="e.g. 2500">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Contact email <span class="required">*</span></label>
+                        <input type="email" name="contact_email" id="f_contact_email" placeholder="Mission owner inbox — applicant notifications go here" autocomplete="email">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Status <span class="required">*</span></label>
+                        <select name="status" id="f_status" onchange="toggleProgress()">
+                            <option value="">-- Select --</option>
+                            <option>Active</option>
+                            <option>Pending</option>
+                            <option>Completed</option>
+                            <option>Cancelled</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Deadline <span class="required">*</span></label>
+                        <input type="date" name="deadline" id="f_deadline">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Progress (%)</label>
+                        <input type="number" name="progress" id="f_progress" placeholder="0–100" value="0">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select name="priority" id="f_priority">
+                            <option>Normal</option>
+                            <option>Urgent</option>
+                            <option>Low</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" id="f_description" placeholder="Describe the mission objectives..."></textarea>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('formModal')">Cancel</button>
+            <button class="btn-save" onclick="document.getElementById('missionForm').requestSubmit()">💾 Save Mission</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ VIEW DETAIL MODAL ═══════════════ -->
+<div class="modal-overlay" id="viewModal" onclick="closeOnOverlay(event,'viewModal')">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2>📋 Mission Details</h2>
+            <button class="modal-close" onclick="closeModal('viewModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="detail-grid">
+                <div class="detail-item"><label>Title</label><span id="d_title">—</span></div>
+                <div class="detail-item"><label>Category</label><span id="d_category">—</span></div>
+                <div class="detail-item"><label>Client</label><span id="d_client">—</span></div>
+                <div class="detail-item"><label>Contact email</label><span id="d_contact_email">—</span></div>
+                <div class="detail-item"><label>Budget</label><span id="d_budget">—</span></div>
+                <div class="detail-item"><label>Status</label><span id="d_status">—</span></div>
+                <div class="detail-item"><label>Priority</label><span id="d_priority">—</span></div>
+                <div class="detail-item"><label>Deadline</label><span id="d_deadline">—</span></div>
+                <div class="detail-item">
+                    <label>Progress</label>
+                    <span id="d_progress">0%</span>
+                    <div class="detail-prog-bar"><div class="detail-prog-fill" id="d_prog_fill" style="width:0%"></div></div>
+                </div>
+                <div class="detail-item full"><label>Description</label><div class="detail-desc" id="d_description">—</div></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('viewModal')">Close</button>
+            <button class="btn-save" onclick="openEditFromView()">✏️ Edit</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ CATEGORY ADD / EDIT MODAL ═══════════════ -->
+<div class="modal-overlay" id="catModal" onclick="closeOnOverlay(event,'catModal')">
+    <div class="modal-box" style="max-width:520px">
+        <div class="modal-header">
+            <h2 id="catModalTitle">Add Category</h2>
+            <button class="modal-close" onclick="closeModal('catModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="catForm" method="POST" action="../../Controllers/MissionController.php" onsubmit="return saveCategory(event)" novalidate>
+                <input type="hidden" name="form_action" id="cat_action" value="cat_create">
+                <input type="hidden" name="item_id" id="cat_id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category Name <span class="required">*</span></label>
+                        <input type="text" name="name" id="cat_name" placeholder="e.g. Web Development">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Icon (emoji)</label>
+                        <input type="text" name="icon" id="cat_icon" placeholder="e.g. 💻" maxlength="4">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="cat_description" id="cat_desc" placeholder="Short description of this category..."></textarea>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('catModal')">Cancel</button>
+            <button class="btn-save" onclick="document.getElementById('catForm').requestSubmit()">💾 Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ CANDIDATURE ADD / EDIT MODAL ═══════════════ -->
+<div class="modal-overlay" id="appModal" onclick="closeOnOverlay(event,'appModal')">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="appModalTitle">Add Application</h2>
+            <button class="modal-close" onclick="closeModal('appModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="appForm" method="POST" action="../../Controllers/MissionController.php" onsubmit="return saveCandidature(event)" novalidate>
+                <input type="hidden" name="form_action" id="app_action" value="cand_create">
+                <input type="hidden" name="item_id" id="app_id">
+                <input type="hidden" name="user_id" id="app_user_id" value="0">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Mission <span class="required">*</span></label>
+                        <select name="mission_id" id="app_mission">
+                            <option value="">-- Select mission --</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Freelancer Name <span class="required">*</span></label>
+                        <input type="text" name="name" id="app_name" placeholder="Full name">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="text" name="email" id="app_email" placeholder="email@example.com">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" name="phone" id="app_phone" placeholder="+213 ...">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Experience <span class="required">*</span></label>
+                        <select name="experience" id="app_experience">
+                            <option value="">-- Select --</option>
+                            <option>Junior (0-2 yrs)</option>
+                            <option>Mid-level (2-5 yrs)</option>
+                            <option>Senior (5+ yrs)</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Status <span class="required">*</span></label>
+                        <select name="status" id="app_status">
+                            <option value="">-- Select --</option>
+                            <option>Pending</option>
+                            <option>Reviewing</option>
+                            <option>Accepted</option>
+                            <option>Rejected</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Application Date <span class="required">*</span></label>
+                        <input type="date" name="date" id="app_date" data-allow-past>
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Proposed Rate (€)</label>
+                        <input type="number" name="rate" id="app_rate" placeholder="e.g. 1800">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Cover Letter / Message</label>
+                        <textarea name="cand_message" id="app_message" placeholder="Why are you the right person for this mission?"></textarea>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('appModal')">Cancel</button>
+            <button class="btn-save" onclick="document.getElementById('appForm').requestSubmit()">💾 Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ DELETE CONFIRM ═══════════════ -->
+<div class="modal-overlay" id="deleteModal" onclick="closeOnOverlay(event,'deleteModal')">
+    <div class="modal-box" style="max-width:420px;">
+        <div class="modal-header">
+            <h2>Confirm Delete</h2>
+            <button class="modal-close" onclick="closeModal('deleteModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="confirm-body">
+                <div class="confirm-icon">🗑️</div>
+                <h3>Delete this mission?</h3>
+                <p id="deleteMsg">This action cannot be undone.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('deleteModal')">Cancel</button>
+            <button class="btn-confirm-delete" id="confirmDeleteBtn">Yes, Delete</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<form id="delMissionForm" method="POST" action="../../Controllers/MissionController.php" style="display:none">
+    <input type="hidden" name="form_action" value="mission_delete">
+    <input type="hidden" name="item_id" id="del_mission_id">
+</form>
+<form id="delCatForm" method="POST" action="../../Controllers/MissionController.php" style="display:none">
+    <input type="hidden" name="form_action" value="cat_delete">
+    <input type="hidden" name="item_id" id="del_cat_id">
+</form>
+<form id="delCandForm" method="POST" action="../../Controllers/MissionController.php" style="display:none">
+    <input type="hidden" name="form_action" value="cand_delete">
+    <input type="hidden" name="item_id" id="del_cand_id">
+</form>
+
+</div><!-- /content-wrapper -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js"></script>
+<script src="../assets/js/common.js"></script>
+<script src="js/missions.js?v=5"></script>
+</body>
+</html>

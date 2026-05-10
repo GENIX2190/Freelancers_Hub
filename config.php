@@ -54,6 +54,41 @@ function session_enforce_idle_timeout(bool $jsonResponse = false): void {
     $_SESSION['last_activity'] = $now;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   MAIL — Gmail SMTP only (PHPMailer: Controllers/notification-e/vendor/)
+   Flow: freelancer applies → client (`contact_email`) + freelancer confirmation.
+
+   Also writes each application to APPLICATION_ALERTS_JSONL (backup if SMTP fails).
+═══════════════════════════════════════════════════════════════════════════ */
+
+define('APPLICATION_MAIL_ENABLED', true);
+
+/**
+ * Display name + From mailbox. The mailbox must be the same as MAIL_SMTP_USER
+ * (Gmail requires the authenticated account to own the From address).
+ */
+define('APPLICATION_MAIL_FROM', 'Freelence Hub <your@gmail.com>');
+
+define('MAIL_SMTP_HOST', 'smtp.gmail.com');
+define('MAIL_SMTP_PORT', 587);
+define('MAIL_SMTP_USER', 'mohamedothmenbentlili@gmail.com');
+define('MAIL_SMTP_PASS', 'rcrv ajrf merh umrg');
+define('MAIL_SMTP_ENCRYPTION', 'tls');
+define('MAIL_RELAX_TLS_VERIFY', true);
+
+/** SMTP debug / errors */
+define('MAIL_LOG_FILE', dirname(__FILE__) . '/logs/application-mail.log');
+
+/**
+ * One JSON object per line — every application is recorded here (read with any editor
+ * or `tail -f logs/application-alerts.jsonl`) even if Gmail fails.
+ */
+define('APPLICATION_ALERTS_JSONL', dirname(__FILE__) . '/logs/application-alerts.jsonl');
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DATABASE
+═══════════════════════════════════════════════════════════════════════════ */
+
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'freelence_hub');
 define('DB_USER', 'root');
@@ -72,7 +107,7 @@ function getConnection() {
         try {
             $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage(), (int)$e->getCode());
+            throw new PDOException($e->getMessage(), (int) $e->getCode());
         }
     }
     return $pdo;
