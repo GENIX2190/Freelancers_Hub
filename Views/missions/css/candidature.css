@@ -273,8 +273,14 @@ button.filter-btn {
 
 /* ═══ Cosmic front (body.page-auth.page-missions — Projects / Experience parity) ═══ */
 body.page-auth.page-missions > .hero {
-    background: rgba(255, 255, 255, 0.96);
-    color: #00a852;
+    background: linear-gradient(
+        180deg,
+        rgba(6, 8, 14, 0.92) 0%,
+        rgba(10, 14, 22, 0.88) 100%
+    );
+    backdrop-filter: saturate(120%) blur(14px);
+    -webkit-backdrop-filter: saturate(120%) blur(14px);
+    color: #fff;
     border-top: none;
     border-radius: 16px;
     max-width: 900px;
@@ -282,8 +288,8 @@ body.page-auth.page-missions > .hero {
     padding: 28px 24px 26px;
     box-shadow:
         0 12px 40px rgba(0, 0, 0, 0.35),
-        0 0 0 1px rgba(0, 208, 132, 0.12);
-    border: 1px solid rgba(0, 208, 132, 0.18);
+        0 0 0 1px rgba(0, 208, 132, 0.22);
+    border: 1px solid rgba(0, 208, 132, 0.35);
     text-align: left;
 }
 
@@ -292,12 +298,15 @@ body.page-auth.page-missions .missions-hero-inner {
 }
 
 body.page-auth.page-missions .hero .page-header h1 {
-    color: #00a852;
+    color: #fff;
+    font-weight: 800;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
 }
 
 body.page-auth.page-missions .hero .page-header p {
-    color: #555;
+    color: rgba(255, 255, 255, 0.92);
     opacity: 1;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
 }
 
 body.page-auth.page-missions main {
@@ -319,6 +328,7 @@ body.page-auth.page-missions footer p {
 }
 
 body.page-auth.page-missions .filters {
+    color-scheme: light;
     box-shadow:
         0 4px 22px rgba(0, 0, 0, 0.22),
         0 0 0 1px rgba(255, 255, 255, 0.08);
@@ -326,9 +336,25 @@ body.page-auth.page-missions .filters {
 }
 
 body.page-auth.page-missions .search-input {
-    background: rgba(255, 255, 255, 0.97);
-    border-color: rgba(0, 208, 132, 0.3);
-    color: #222;
+    color-scheme: light;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    border: 2px solid rgba(0, 208, 132, 0.35);
+    color: #1a1a1a !important;
+    -webkit-text-fill-color: #1a1a1a !important;
+    caret-color: #111;
+}
+
+body.page-auth.page-missions .search-input::placeholder {
+    color: #6b7280;
+    opacity: 1;
+}
+
+body.page-auth.page-missions .search-input:focus {
+    outline: none;
+    border-color: #00a852;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(0, 168, 82, 0.18);
 }
 
 body.page-auth.page-missions .mission-card {
