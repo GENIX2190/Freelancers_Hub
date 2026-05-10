@@ -1,36 +1,43 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Missions &amp; Applications - Freelence Hub</title>
+    <title>Missions & Applications - Freelence Hub</title>
     <link rel="stylesheet" href="../assets/css/common.css">
-    <link rel="stylesheet" href="css/candidature.css?v=6">
+    <link rel="stylesheet" href="css/missions.css">
+    <link rel="stylesheet" href="../assets/css/admin-dashboard.css">
+    <link rel="stylesheet" href="css/candidature.css?v=7">
 </head>
 <body>
 
-<header>
-    <div class="header-container">
-        <a href="../Main.html" class="logo-section">
-            <div class="logo">FH</div>
-            <div class="site-name">Freelence Hub</div>
-        </a>
-        <nav>
-            <a href="../missions/candidature.html">💼 Missions</a>
-            <a href="../formations/create.html">📚 Formations</a>
-            <a href="../experience/view.html">✍️ Experience</a>
-            <a href="../projets/view.html">📁 Projects</a>
-            <a href="../users/login.html" class="nav-right">🔐 Login</a>
-            <a href="../users/login.html?redirect=dashboard.html">📊 Dashboard</a>
-        </nav>
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="s-logo">FH</div>
+        <span class="brand">Freelence Hub</span>
     </div>
-</header>
+    <div class="sidebar-label">Main</div>
+    <nav class="sidebar-nav">
+        <a href="../dashboard.html"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    </nav>
+    <div class="sidebar-label">Modules</div>
+    <nav class="sidebar-nav">
+        <a href="../users/dashboard.html"><span class="nav-icon">👤</span><span>Users</span></a>
+        <a href="candidature.html" class="active"><span class="nav-icon">💼</span><span>Missions</span></a>
+        <a href="../formations/dashboard.html"><span class="nav-icon">📚</span><span>Formations</span></a>
+        <a href="../projets/dashboard.html"><span class="nav-icon">📁</span><span>Projects</span></a>
+        <a href="../experience/dashboard.html"><span class="nav-icon">✍️</span><span>Experience</span></a>
+    </nav>
+    <div class="sidebar-label">User View</div>
+    <nav class="sidebar-nav">
+        <a href="../Main.html"><span class="nav-icon">🏠</span><span>Home</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+        <a href="../Main.html"><span class="nav-icon">🚪</span><span>Logout</span></a>
+    </div>
+</aside>
 
-<!-- Side Nav -->
-<div class="side-nav">
-    
-    
-    
-</div>
-
+<div class="content-wrapper">
 <main>
     <div class="page-header page-header-row">
         <div class="page-header-text">
@@ -40,7 +47,6 @@
         <button type="button" class="btn-primary btn-add-mission" onclick="openAddMissionIframe()" title="Open admin mission form">＋ Post a mission</button>
     </div>
 
-    <!-- FILTERS -->
     <div class="filters">
         <div class="filters-toolbar">
             <span>Category:</span>
@@ -50,7 +56,6 @@
         <input type="text" class="search-input" placeholder="🔍 Search for a mission..." oninput="searchMissions(this.value)">
     </div>
 
-    <!-- MISSIONS GRID (loaded from DB) -->
     <div class="missions-grid" id="missionsGrid">
         <div class="empty-state" id="noMissions" style="display:none;width:100%;text-align:center;padding:40px">
             <p>No missions available right now.</p>
@@ -60,12 +65,11 @@
 
 <footer>
     <div class="footer-text">
-        <p>© 2026 Freelence Hub - All rights reserved</p>
+        <p>&copy; 2026 Freelence Hub - All rights reserved</p>
         <p class="copyright">Log in and discover your next opportunities</p>
     </div>
 </footer>
 
-<!-- ADD MISSION (iframe — same backend form as dashboard) -->
 <div class="modal-overlay modal-iframe-overlay" id="missionEmbedOverlay" onclick="closeMissionEmbedOnOverlay(event)">
     <div class="modal modal-iframe-panel" onclick="event.stopPropagation()">
         <button type="button" class="modal-close" onclick="closeAddMissionIframe()" aria-label="Close">✕</button>
@@ -73,12 +77,10 @@
     </div>
 </div>
 
-<!-- APPLICATION MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
     <div class="modal">
         <button class="modal-close" onclick="closeModal()">✕</button>
 
-        <!-- FORM VIEW -->
         <div id="formView">
             <h2>Submit an Application</h2>
             <p class="modal-mission-title" id="modalMissionTitle">Mission: —</p>
@@ -159,7 +161,6 @@
             </form>
         </div>
 
-        <!-- SUCCESS VIEW -->
         <div class="success-msg" id="successView">
             <div class="check-icon">✅</div>
             <h3>Application sent!</h3>
@@ -173,6 +174,6 @@
 <script src="../assets/js/common.js"></script>
 <script src="js/notification.js?v=1"></script>
 <script src="js/candidature.js?v=7"></script>
-
-
-</body></html>
+</div>
+</body>
+</html>

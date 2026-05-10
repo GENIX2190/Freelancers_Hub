@@ -72,6 +72,9 @@ yarn.lock
 *_backup
 *.old
 
+# macOS / archive junk
+__MACOSX/
+
 # OS Generated
 ehthumbs.db
 Icon?

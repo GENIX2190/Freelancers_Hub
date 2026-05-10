@@ -1,43 +1,51 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="fh-session-expired" content="../users/session_expired.html">
     <title>Projects - Freelence Hub</title>
     <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/admin-dashboard.css">
     <link rel="stylesheet" href="css/view.css">
 </head>
 <body>
 
-<header>
-    <div class="header-container">
-        <a href="../Main.html" class="logo-section">
-            <div class="logo">FH</div>
-            <div class="site-name">Freelence Hub</div>
-        </a>
-        <nav>
-            <a href="../missions/candidature.html">💼 Missions</a>
-            <a href="../formations/create.html">📚 Formations</a>
-            <a href="../experience/view.html">✍️ Experience</a>
-            <a href="view.html">📁 Projects</a>
-            <a href="../users/login.html" class="nav-right">🔐 Login</a>
-            <a href="../users/login.html?redirect=dashboard.html">📊 Dashboard</a>
-        </nav>
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="s-logo">FH</div>
+        <span class="brand">Freelence Hub</span>
     </div>
-</header>
+    <div class="sidebar-label">Main</div>
+    <nav class="sidebar-nav">
+        <a href="../dashboard.html"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    </nav>
+    <div class="sidebar-label">Modules</div>
+    <nav class="sidebar-nav">
+        <a href="../users/dashboard.html"><span class="nav-icon">👤</span><span>Users</span></a>
+        <a href="../missions/dashboard.html"><span class="nav-icon">💼</span><span>Missions</span></a>
+        <a href="../formations/dashboard.html"><span class="nav-icon">📚</span><span>Formations</span></a>
+        <a href="view.html" class="active"><span class="nav-icon">📁</span><span>Projects</span></a>
+        <a href="../experience/dashboard.html"><span class="nav-icon">✍️</span><span>Experience</span></a>
+    </nav>
+    <div class="sidebar-label">User View</div>
+    <nav class="sidebar-nav">
+        <a href="../Main.html"><span class="nav-icon">🏠</span><span>Home</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+        <a href="../Main.html"><span class="nav-icon">🚪</span><span>Logout</span></a>
+    </div>
+</aside>
 
-<!-- Side Nav -->
-<div class="side-nav">
-    
-    
-    
-</div>
-
-<section class="hero">
-    <h1>📁 Projects</h1>
-    <p>Browse ongoing projects and discover collaboration opportunities.</p>
-</section>
-
+<div class="content-wrapper">
 <main>
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">📁 Projects</h1>
+            <p class="page-header-lead">Browse ongoing projects and discover collaboration opportunities.</p>
+        </div>
+    </div>
+
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="🔍 Search projects..." oninput="filterProjects()">
     </div>
@@ -45,31 +53,15 @@
     <div class="projects-grid" id="projectsGrid"></div>
 </main>
 
-<footer style="background:#2c2c2c;color:white;text-align:center;padding:30px 20px;margin-top:40px">
-    <p>© 2026 Freelence Hub - All rights reserved</p>
+<footer>
+    <div class="footer-text">
+        <p>&copy; 2026 Freelence Hub - All rights reserved</p>
+        <p class="copyright">Explore projects aligned with our dashboard experience</p>
+    </div>
 </footer>
 
 <script src="../assets/js/common.js"></script>
 <script src="js/view.js?v=2"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('header nav a, .side-nav a').forEach(function(link) {
-        link.addEventListener('click', function(e) {
-            var href = this.getAttribute('href');
-            if (!href || href === '#' || href.startsWith('javascript:')) return;
-            
-            e.preventDefault();
-            document.body.style.opacity = '0';
-            document.body.style.transform = 'translateY(-10px)';
-            
-            setTimeout(function() {
-                window.location.href = href;
-            }, 300);
-        });
-    });
-});
-</script>
-
-
-</body></html>
+</div>
+</body>
+</html>
