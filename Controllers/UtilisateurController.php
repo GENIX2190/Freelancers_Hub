@@ -185,7 +185,7 @@ if (isset($_SERVER['SCRIPT_FILENAME']) && basename(__FILE__) === basename((strin
     $fa = trim((string) ($_POST['form_action'] ?? $_POST['submit'] ?? ''));
 
     if ($fa === 'logout') {
-        session_start();
+        session_ensure_started();
         $_SESSION = [];
         session_destroy();
         header('Location: ' . $viewsLogin, true, 302);
@@ -193,7 +193,8 @@ if (isset($_SERVER['SCRIPT_FILENAME']) && basename(__FILE__) === basename((strin
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['action'] ?? '') === 'list_users') {
-        session_start();
+        session_ensure_started();
+        session_enforce_idle_timeout(true);
         $role = $_SESSION['role'] ?? '';
         $em   = $_SESSION['email'] ?? '';
         if (!(($role === 'admin') || Utilisateur::isAdminEmail($em))) {
@@ -234,7 +235,8 @@ if (isset($_SERVER['SCRIPT_FILENAME']) && basename(__FILE__) === basename((strin
     $dashUsers = '../Views/users/dashboard.html';
 
     $requireUserAdmin = static function () use ($viewsLogin): void {
-        session_start();
+        session_ensure_started();
+        session_enforce_idle_timeout(false);
         $role = $_SESSION['role'] ?? '';
         $em = $_SESSION['email'] ?? '';
         if (!(($role === 'admin') || Utilisateur::isAdminEmail($em))) {
@@ -405,7 +407,7 @@ if (isset($_SERVER['SCRIPT_FILENAME']) && basename(__FILE__) === basename((strin
     }
 
     if ($fa === 'login') {
-        session_start();
+        session_ensure_started();
         $email = trim((string) ($_POST['email'] ?? ''));
         $password = (string) ($_POST['password'] ?? '');
         if ($email === '' || $password === '') {
@@ -425,6 +427,7 @@ if (isset($_SERVER['SCRIPT_FILENAME']) && basename(__FILE__) === basename((strin
         $_SESSION['email'] = $user['email'];
         $_SESSION['role'] = $user['role'];
         $_SESSION['cin'] = $user['cin'];
+        $_SESSION['last_activity'] = time();
 
         $redirectRaw = trim((string) ($_POST['redirect'] ?? ''));
         $wantsAdminArea = ($redirectRaw !== '' && stripos($redirectRaw, 'dashboard') !== false);

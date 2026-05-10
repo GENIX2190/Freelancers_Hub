@@ -142,6 +142,27 @@ document.addEventListener('change', function(e) {
     }
 });
 
+/* ── Session idle timeout (server): JSON API helper ── */
+function fhSessionExpiredUrl() {
+    var m = document.querySelector('meta[name="fh-session-expired"]');
+    if (m && m.content) return m.content;
+    return '../users/session_expired.html';
+}
+
+/** Use with fetch(): returns parsed JSON, or redirects to session-expired page on 401. */
+function fhJsonFromResponse(r) {
+    if (r.status === 401) {
+        return r.json().catch(function () { return {}; }).then(function () {
+            window.location.href = fhSessionExpiredUrl();
+            return Promise.reject(new Error('session_expired'));
+        });
+    }
+    if (!r.ok) {
+        return Promise.reject(new Error('http_' + r.status));
+    }
+    return r.json();
+}
+
 /* ── SMOOTH PAGE TRANSITIONS ── */
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('header nav a, .sidebar-nav a, .side-nav a').forEach(function(link) {

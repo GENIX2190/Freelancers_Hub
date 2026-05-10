@@ -33,43 +33,42 @@ VALUES (
   NULL, NULL, 'active'
 );
 -- ═══════════════════════════════════════
--- Module: Experience (Yassine)
--- Tables: post, reponse
+-- Module: Projets (Ilyes)
+-- Tables: projet, tache
 -- Depends on: utilisateur
 -- ═══════════════════════════════════════
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS `reponse`;
-DROP TABLE IF EXISTS `post`;
+DROP TABLE IF EXISTS `tache`;
+DROP TABLE IF EXISTS `projet`;
 SET FOREIGN_KEY_CHECKS = 1;
 
-CREATE TABLE `post` (
+CREATE TABLE `projet` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` INT UNSIGNED NOT NULL,
   `titre` VARCHAR(255) NOT NULL,
-  `contenu` TEXT NOT NULL,
-  `categorie` VARCHAR(255) NULL,
-  `tags` VARCHAR(512) NULL,
-  `date_publication` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `statut` VARCHAR(50) NOT NULL DEFAULT 'brouillon',
+  `description` TEXT NULL,
+  `date_creation` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `statut` VARCHAR(64) NOT NULL DEFAULT 'en_cours',
+  `user_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_post_user` (`user_id`),
-  CONSTRAINT `fk_post_utilisateur`
+  KEY `idx_projet_user` (`user_id`),
+  CONSTRAINT `fk_projet_utilisateur`
     FOREIGN KEY (`user_id`) REFERENCES `utilisateur` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `reponse` (
+CREATE TABLE `tache` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `post_id` INT UNSIGNED NOT NULL,
-  `nom` VARCHAR(255) NOT NULL,
-  `email` VARCHAR(255) NOT NULL,
-  `contenu` TEXT NOT NULL,
-  `date_reponse` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `projet_id` INT UNSIGNED NOT NULL,
+  `titre` VARCHAR(255) NOT NULL,
+  `description` TEXT NULL,
+  `statut` VARCHAR(64) NOT NULL DEFAULT 'a_faire',
+  `priorite` VARCHAR(64) NOT NULL DEFAULT 'normale',
+  `date_echeance` DATE NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_reponse_post` (`post_id`),
-  CONSTRAINT `fk_reponse_post`
-    FOREIGN KEY (`post_id`) REFERENCES `post` (`id`)
+  KEY `idx_tache_projet` (`projet_id`),
+  CONSTRAINT `fk_tache_projet`
+    FOREIGN KEY (`projet_id`) REFERENCES `projet` (`id`)
     ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

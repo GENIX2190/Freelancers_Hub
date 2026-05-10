@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session expired - Freelence Hub</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #00a852 0%, #00d084 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+        header { background: rgba(0,0,0,.15); box-shadow: none; }
+        .wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 80px);
+            padding: 30px 16px;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 24px 80px rgba(0,0,0,.25);
+            width: 100%;
+            max-width: 440px;
+            padding: 40px 36px;
+            text-align: center;
+        }
+        .card h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #222;
+            margin: 0 0 10px;
+        }
+        .card p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.55;
+            margin: 0 0 28px;
+        }
+        .hint {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 22px;
+        }
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00a852, #00d084);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        .btn:hover { opacity: 0.95; }
+        .ico { font-size: 48px; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+        <a href="../Main.html" class="logo-section">
+            <div class="logo">FH</div>
+            <div class="site-name">Freelence Hub</div>
+        </a>
+        <nav>
+            <a href="../Main.html">🏠 Home</a>
+        </nav>
+    </div>
+</header>
+
+<div class="wrap">
+    <div class="card">
+        <div class="ico" aria-hidden="true">⏱️</div>
+        <h1>Session expired</h1>
+        <p>For your security, you were signed out after <strong>10 minutes</strong> of inactivity.</p>
+        <p class="hint">Sign in again to continue managing projects and tasks.</p>
+        <a class="btn" href="login.html?info=session_expired">Sign in again</a>
+    </div>
+</div>
+
+</body>
+</html>

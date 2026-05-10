@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="fh-session-expired" content="../users/session_expired.html">
+    <title>Project Management - Freelence Hub</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/admin-dashboard.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<!-- ═══ ADMIN SIDEBAR ═══ -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <div class="s-logo">FH</div>
+        <span class="brand">Freelence Hub</span>
+    </div>
+    <div class="sidebar-label">Main</div>
+    <nav class="sidebar-nav">
+        <a href="../dashboard.html"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    </nav>
+    <div class="sidebar-label">Modules</div>
+    <nav class="sidebar-nav">
+        <a href="../users/dashboard.html"><span class="nav-icon">👤</span><span>Users</span></a>
+        <a href="../missions/dashboard.html"><span class="nav-icon">💼</span><span>Missions</span></a>
+        <a href="../formations/dashboard.html"><span class="nav-icon">📚</span><span>Formations</span></a>
+        <a href="../projets/dashboard.html" class="active"><span class="nav-icon">📁</span><span>Projects</span></a>
+        <a href="../experience/dashboard.html"><span class="nav-icon">✍️</span><span>Experience</span></a>
+    </nav>
+    <div class="sidebar-label">User View</div>
+    <nav class="sidebar-nav">
+        <a href="../Main.html"><span class="nav-icon">🏠</span><span>Home</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+        <a href="../Main.html"><span class="nav-icon">🚪</span><span>Logout</span></a>
+    </div>
+</aside>
+
+<div class="content-wrapper">
+<main>
+    <div class="page-header">
+        <h1 class="page-title">📁 Project Management</h1>
+        <button class="btn-primary" onclick="if(document.getElementById('tab-tasks').style.display==='block')openAddTask();else openAddProject();">＋ Add New</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number" id="s-projects">0</div><div class="stat-label">Total Projects</div></div>
+        <div class="stat-card"><div class="stat-number" id="s-tasks">0</div><div class="stat-label">Total Tasks</div></div>
+        <div class="stat-card"><div class="stat-number" id="s-tasks-done">0</div><div class="stat-label">Tasks Done</div></div>
+        <div class="stat-card"><div class="stat-number" id="s-tasks-pending">0</div><div class="stat-label">Tasks Pending</div></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-bar">
+        <button class="tab-btn active" onclick="switchTab('projects', this)">📁 Projects</button>
+        <button class="tab-btn" onclick="switchTab('tasks', this)">✅ Tasks</button>
+    </div>
+
+    <!-- ═══════════ PROJECTS TAB ═══════════ -->
+    <div id="tab-projects">
+        <div class="controls-bar">
+            <input type="text" class="search-input" id="search-projects" placeholder="🔍 Search projects..." oninput="renderProjects()">
+            <button class="btn-primary" onclick="openAddProject()">＋ Add Project</button>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Client</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Priority</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="projects-tbody"></tbody>
+            </table>
+            <div class="empty-state" id="projects-empty" style="display:none"><div class="icon">📂</div><p>No projects found.</p></div>
+        </div>
+    </div>
+
+    <!-- ═══════════ TASKS TAB ═══════════ -->
+    <div id="tab-tasks" style="display:none">
+        <div class="controls-bar">
+            <input type="text" class="search-input" id="search-tasks" placeholder="🔍 Search tasks..." oninput="renderTasks()">
+            <button class="btn-primary" onclick="openAddTask()">＋ Add Task</button>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Task Name</th>
+                        <th>Project</th>
+                        <th>Assigned To</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Due Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tasks-tbody"></tbody>
+            </table>
+            <div class="empty-state" id="tasks-empty" style="display:none"><div class="icon">📋</div><p>No tasks found.</p></div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-text">
+        <p>&copy; 2026 Freelence Hub - All rights reserved</p>
+        <p class="copyright">Manage your projects and tasks in one place</p>
+    </div>
+</footer>
+
+<!-- ═══════════ PROJECT ADD/EDIT MODAL ═══════════ -->
+<div class="modal-overlay" id="projectModal" onclick="closeOnBg(event,'projectModal')">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="projectModalTitle">Add Project</h2>
+            <button class="modal-close" onclick="closeModal('projectModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="projectForm" method="POST" action="../../Controllers/ProjetController.php" onsubmit="return saveProject(event)" novalidate>
+                <input type="hidden" name="form_action" id="p_action" value="project_create">
+                <input type="hidden" name="project_id" id="p_id" value="">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Title <span class="required">*</span></label>
+                        <input type="text" id="p_title" name="title" placeholder="Project title">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Category <span class="required">*</span></label>
+                        <select id="p_category" name="category">
+                            <option value="">-- Select --</option>
+                            <option>Web Development</option>
+                            <option>Mobile Development</option>
+                            <option>UI/UX Design</option>
+                            <option>Backend / API</option>
+                            <option>Data Science</option>
+                            <option>Enterprise Software</option>
+                            <option>Other</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Client <span class="required">*</span></label>
+                        <input type="text" id="p_client" name="client" placeholder="Client name">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select id="p_priority" name="priority">
+                            <option>Normal</option><option>High</option><option>Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Status <span class="required">*</span></label>
+                        <select id="p_status" name="status" onchange="if(this.value==='Completed')document.getElementById('p_progress').value=100">
+                            <option value="">-- Select --</option>
+                            <option>Planning</option><option>In Progress</option>
+                            <option>Review</option><option>Completed</option><option>Cancelled</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Progress (%)</label>
+                        <input type="number" id="p_progress" name="progress" value="0" min="0" max="100">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Date <span class="required">*</span></label>
+                        <input type="date" id="p_start" name="start">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>End Date <span class="required">*</span></label>
+                        <input type="date" id="p_end" name="end">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="p_desc" name="description" placeholder="Describe the project..."></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('projectModal')">Cancel</button>
+            <button class="btn-save" onclick="document.getElementById('projectForm').requestSubmit()">💾 Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ TASK ADD/EDIT MODAL ═══════════ -->
+<div class="modal-overlay" id="taskModal" onclick="closeOnBg(event,'taskModal')">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="taskModalTitle">Add Task</h2>
+            <button class="modal-close" onclick="closeModal('taskModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <form id="taskForm" method="POST" action="../../Controllers/ProjetController.php" onsubmit="return saveTask(event)" novalidate>
+                <input type="hidden" name="form_action" id="t_action" value="task_create">
+                <input type="hidden" name="task_id" id="t_id" value="">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Task Name <span class="required">*</span></label>
+                        <input type="text" id="t_name" name="name" placeholder="e.g. Design homepage">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Project <span class="required">*</span></label>
+                        <select id="t_project" name="project_id">
+                            <option value="">-- Select project --</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Assigned To <span class="required">*</span></label>
+                        <input type="text" id="t_assigned" name="assigned" placeholder="Team member name">
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select id="t_priority" name="priority">
+                            <option>Medium</option><option>High</option><option>Low</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Status <span class="required">*</span></label>
+                        <select id="t_status" name="status">
+                            <option value="">-- Select --</option>
+                            <option>Pending</option><option>In Progress</option>
+                            <option>Review</option><option>Completed</option><option>Blocked</option>
+                        </select>
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Due Date <span class="required">*</span></label>
+                        <input type="date" id="t_due" name="due">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="t_notes" name="notes" placeholder="Additional notes..."></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('taskModal')">Cancel</button>
+            <button class="btn-save" onclick="document.getElementById('taskForm').requestSubmit()">💾 Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- DELETE CONFIRM -->
+<div class="modal-overlay" id="deleteModal" onclick="closeOnBg(event,'deleteModal')">
+    <div class="modal-box" style="max-width:400px">
+        <div class="modal-header">
+            <h2>Confirm Delete</h2>
+            <button class="modal-close" onclick="closeModal('deleteModal')">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="confirm-body">
+                <div class="ci">🗑️</div>
+                <h3>Delete this record?</h3>
+                <p id="del-msg">This action cannot be undone.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel-form" onclick="closeModal('deleteModal')">Cancel</button>
+            <button class="btn-confirm-delete" id="del-confirm-btn">Yes, Delete</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<form id="delProjectForm" method="POST" action="../../Controllers/ProjetController.php" style="display:none">
+    <input type="hidden" name="form_action" value="project_delete">
+    <input type="hidden" name="project_id" id="del_project_id">
+</form>
+<form id="delTaskForm" method="POST" action="../../Controllers/ProjetController.php" style="display:none">
+    <input type="hidden" name="form_action" value="task_delete">
+    <input type="hidden" name="task_id" id="del_task_id">
+</form>
+
+<script src="../assets/js/common.js"></script>
+<script src="js/dashboard.js?v=2"></script>
+</div><!-- /content-wrapper -->
+</body>
+</html>

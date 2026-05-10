@@ -254,6 +254,17 @@ var isAdminRedirect = qs.has('redirect');
 })();
 
 (function initQueryMessages() {
+    if (qs.get('info') === 'session_expired') {
+        switchTab('login');
+        var si = document.getElementById('loginSuccess');
+        if (si) {
+            si.style.background = '#fef3c7';
+            si.style.color = '#92400e';
+            si.style.borderColor = '#fcd34d';
+            si.textContent = '⏱️ Your session timed out after 10 minutes of inactivity. Please sign in again.';
+            si.classList.add('show');
+        }
+    }
     if (qs.get('registered') === '1') {
         switchTab('login');
         var s = document.getElementById('loginSuccess');
