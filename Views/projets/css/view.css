@@ -1,0 +1,166 @@
+/* ── PROJECTS VIEW (User-facing) - SPECIFIC STYLES ── */
+
+.hero {
+    background: linear-gradient(135deg, #008a45, #00b86e);
+    color: white;
+    text-align: center;
+    padding: 40px 24px 32px;
+    border-top: 2px solid rgba(255,255,255,.15);
+}
+
+.hero h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 16px;
+    opacity: .9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 24px 60px;
+}
+
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 32px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 12px 18px;
+    border: 2px solid #e0e0e0;
+    border-radius: 30px;
+    font-size: 14px;
+    outline: none;
+    transition: border .25s;
+}
+
+.search-bar input:focus {
+    border-color: #00a852;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.project-card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    overflow: hidden;
+    transition: transform .3s, box-shadow .3s;
+}
+
+.project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,168,82,.12);
+}
+
+.card-top {
+    padding: 24px 24px 16px;
+}
+
+.card-top h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #222;
+}
+
+.card-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.card-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.card-desc {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.progress-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #e8e8e8;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00a852, #00d084);
+    border-radius: 10px;
+    transition: width .5s;
+}
+
+.progress-pct {
+    font-size: 13px;
+    font-weight: 700;
+    color: #00a852;
+    min-width: 36px;
+}
+
+.card-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 0 24px 20px;
+}
+
+.tag {
+    background: #e8faf0;
+    color: #00a852;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.badge-active { background: #d1fae5; color: #065f46; }
+.badge-completed { background: #dbeafe; color: #1e40af; }
+.badge-planning { background: #fff3cd; color: #856404; }
+
+@media(max-width:768px) {
+    body {
+        padding-bottom: 70px;
+    }
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,146 @@
+/* ── PROJECTS DASHBOARD - SPECIFIC STYLES ── */
+
+/* ── TABS ── */
+.tabs-bar {
+    display: flex;
+    gap: 0;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,.07);
+    margin-bottom: 22px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 14px 10px;
+    border: none;
+    background: white;
+    font-size: 14px;
+    font-weight: 600;
+    color: #777;
+    cursor: pointer;
+    transition: all .25s;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-btn:hover:not(.active) {
+    background: #f9f9f9;
+    color: #444;
+}
+
+.tab-btn.active {
+    color: #00a852;
+    border-bottom-color: #00a852;
+    background: #f8fffe;
+}
+
+/* ── EXTRA BADGES ── */
+.badge-planning { background: #fff3cd; color: #856404; }
+.badge-blocked { background: #f8d7da; color: #721c24; }
+.badge-review { background: #e2d9f3; color: #5a189a; }
+.badge-high { background: #f8d7da; color: #842029; }
+.badge-medium { background: #fff3cd; color: #856404; }
+.badge-low { background: #d4edda; color: #155724; }
+
+/* ── TABLE EXTRAS ── */
+.table-wrapper {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,.07);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+thead {
+    background: #f8faf8;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+th {
+    padding: 13px 14px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+td {
+    padding: 13px 14px;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+}
+
+tbody tr:hover {
+    background: #f9fcf9;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ── ACTION BTNS ── */
+.action-btns {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-view {
+    background: #e7f3ff;
+    color: #0066cc;
+}
+
+.btn-view:hover {
+    background: #0066cc;
+    color: white;
+}
+
+.btn-edit {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.btn-edit:hover {
+    background: #e65100;
+    color: white;
+}
+
+.btn-del {
+    background: #ffe7e7;
+    color: #cc0000;
+}
+
+.btn-del:hover {
+    background: #cc0000;
+    color: white;
+}
+
+.tab-section {
+    display: none;
+}
+
+.tab-section.active-tab {
+    display: block;
+}
+
+.confirm-body .ci {
+    font-size: 50px;
+    margin-bottom: 12px;
+}
+
+@media(max-width:700px) {
+    table th,
+    table td {
+        padding: 9px 8px;
+        font-size: 12px;
+    }
+}
