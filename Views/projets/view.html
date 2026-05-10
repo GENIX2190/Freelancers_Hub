@@ -6,9 +6,9 @@
     <meta name="fh-session-expired" content="../users/session_expired.html">
     <title>Projects - Freelence Hub</title>
     <link rel="stylesheet" href="../assets/css/common.css">
-    <link rel="stylesheet" href="css/view.css">
+    <link rel="stylesheet" href="css/view.css?v=3">
 </head>
-<body>
+<body class="page-auth page-projects">
 
 <header>
     <div class="header-container">
@@ -27,12 +27,31 @@
     </div>
 </header>
 
-<div class="side-nav"></div>
+<div class="auth-fx" aria-hidden="true">
+    <div class="auth-stars-layer auth-stars-layer--deep"></div>
+    <div class="auth-stars-layer auth-stars-layer--mid"></div>
+    <div class="auth-celestial">
+        <div class="auth-earthshine"></div>
+        <span class="auth-planet auth-planet-gas"></span>
+        <span class="auth-planet auth-planet-rock"></span>
+        <div class="auth-orbit">
+            <span class="auth-orbit-dot"></span>
+        </div>
+        <div class="auth-star-bloom"></div>
+    </div>
+    <div class="auth-aurora"></div>
+    <span class="meteor meteor-1"></span>
+    <span class="meteor meteor-2"></span>
+    <span class="meteor meteor-3"></span>
+</div>
 
-<section class="hero">
+<div class="auth-lightning" aria-hidden="true"></div>
+<div class="auth-lightning auth-lightning--b" aria-hidden="true"></div>
+
+<div class="hero">
     <h1>📁 Projects</h1>
     <p>Browse ongoing projects and discover collaboration opportunities.</p>
-</section>
+</div>
 
 <main>
     <div class="search-bar">
@@ -42,8 +61,8 @@
     <div class="projects-grid" id="projectsGrid"></div>
 </main>
 
-<footer style="background:#2c2c2c;color:white;text-align:center;padding:30px 20px;margin-top:40px">
-    <p>© 2026 Freelence Hub - All rights reserved</p>
+<footer>
+    <p>© 2026 Freelence Hub — All rights reserved</p>
 </footer>
 
 <script src="../assets/js/common.js"></script>
@@ -51,7 +70,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('header nav a, .side-nav a').forEach(function(link) {
+    document.querySelectorAll('header nav a, .sidebar-nav a, .side-nav a').forEach(function(link) {
         link.addEventListener('click', function(e) {
             var href = this.getAttribute('href');
             if (!href || href === '#' || href.startsWith('javascript:')) return;

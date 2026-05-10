@@ -156,11 +156,91 @@ main {
 .badge-completed { background: #dbeafe; color: #1e40af; }
 .badge-planning { background: #fff3cd; color: #856404; }
 
+/* ═══ Cosmic theme (animations.css + body.page-auth.page-projects; aligns with Experience view) ═══ */
+body.page-auth.page-projects > .hero {
+    background: rgba(255, 255, 255, 0.96);
+    color: #00a852;
+    border-top: none;
+    border-radius: 16px;
+    max-width: 900px;
+    margin: 12px auto 0;
+    padding: 32px 24px 26px;
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(0, 208, 132, 0.12);
+    border: 1px solid rgba(0, 208, 132, 0.18);
+    text-align: center;
+}
+
+body.page-auth.page-projects .hero h1 {
+    color: #00a852;
+}
+
+body.page-auth.page-projects .hero p {
+    color: #555;
+    opacity: 1;
+}
+
+body.page-auth.page-projects main {
+    max-width: 900px;
+}
+
+body.page-auth.page-projects footer {
+    text-align: center;
+    padding: 28px 20px 40px;
+    color: rgba(255, 255, 255, 0.72);
+    border-top: 1px solid rgba(0, 208, 132, 0.28);
+    background: transparent;
+}
+
+body.page-auth.page-projects .search-bar input {
+    background: rgba(255, 255, 255, 0.97);
+    border-color: rgba(0, 208, 132, 0.3);
+    color: #222;
+}
+
+body.page-auth.page-projects .project-card {
+    box-shadow:
+        0 4px 22px rgba(0, 0, 0, 0.22),
+        0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+body.page-auth.page-projects .project-card:hover {
+    box-shadow:
+        0 12px 36px rgba(0, 0, 0, 0.32),
+        0 0 0 1px rgba(0, 208, 132, 0.14);
+}
+
 @media(max-width:768px) {
     body {
         padding-bottom: 70px;
     }
     .projects-grid {
         grid-template-columns: 1fr;
+    }
+
+    body.page-auth.page-projects > .hero {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+
+    body.page-auth.page-projects .hero {
+        padding: 26px 16px 22px;
+    }
+
+    body.page-auth.page-projects .hero h1 {
+        font-size: 24px;
+    }
+
+    body.page-auth.page-projects main {
+        padding: 20px 12px 48px;
+    }
+
+    body.page-auth.page-projects header {
+        padding: 14px 16px !important;
+    }
+
+    body.page-auth.page-projects .site-name {
+        display: none;
     }
 }
